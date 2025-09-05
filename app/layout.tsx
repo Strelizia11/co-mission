@@ -52,11 +52,12 @@ export default function RootLayout({
           <header className="flex justify-between items-center p-4 bg-gray-100 shadow-md">
             <h1 className="text-xl font-bold text-blue-600">
               { <Link href="/">
-    <Image
+    <Image style={{marginLeft:'10px'}}
       src="/logo.svg"
       alt="App Logo"
-      width={40} // adjust size
-      height={40}
+      width={190} // adjust size
+      height={190}
+      
     />
   </Link>}
             </h1>
