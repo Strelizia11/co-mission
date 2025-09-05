@@ -22,10 +22,15 @@ export default function TestLogin() {
     setRes(await r.json())
   }
 
+    function setIsLogin(arg0: boolean): void {
+        throw new Error('Function not implemented.')
+    }
+
   return (
     <div className="p-4">
-      <button onClick={testRegister} className="px-3 py-1 bg-green-500 text-white mr-2">Test Register</button>
-      <button onClick={testLogin} className="px-3 py-1 bg-blue-500 text-white">Test Login</button>
+<button onClick={() => setIsLogin(true)}>Login</button>
+<button onClick={() => setIsLogin(false)}>Register</button>
+
       <pre className="mt-4">{JSON.stringify(res, null, 2)}</pre>
     </div>
   )

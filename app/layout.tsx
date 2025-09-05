@@ -4,6 +4,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import Link from "next/link";
+import { link } from "fs";
+import Image from "next/image"
+
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -48,8 +51,16 @@ export default function RootLayout({
           {/* Header with Login/Register */}
           <header className="flex justify-between items-center p-4 bg-gray-100 shadow-md">
             <h1 className="text-xl font-bold text-blue-600">
-              {process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME}
+              { <Link href="/">
+    <Image
+      src="/logo.svg"
+      alt="App Logo"
+      width={40} // adjust size
+      height={40}
+    />
+  </Link>}
             </h1>
+            
             <nav className="flex gap-4">
               <Link
                 href="/auth/login"

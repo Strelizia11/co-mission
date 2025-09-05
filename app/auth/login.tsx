@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter()
   const [form, setForm] = useState({ email: '', password: '' })
+  const [message, setMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -13,46 +15,61 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Call your API for login
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
-
-    if (res.ok) router.push('/dashboard') // Redirect to dashboard
-    else alert('Invalid credentials')
+    const data = await res.json()
+    if (res.ok) {
+      setMessage(data.message)
+      router.push('/dashboard') // Redirect after login
+    } else {
+      setMessage(data.error)
+    }
   }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6">Login</h2>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full p-2 mb-6 border rounded"
-          required
-        />
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-          Login
-        </button>
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        {message && <p className="text-red-500 mb-4 text-center">{message}</p>}
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          >
+            Login
+          </button>
+        </form>
+
         <p className="mt-4 text-sm text-center">
-          Don't have an account? <a href="/auth/register" className="text-blue-600">Register</a>
+          Don't have an account?{' '}
+          <Link href="/auth/register" className="text-blue-600">
+            Register
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   )
 }
