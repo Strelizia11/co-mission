@@ -46,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-background min-h-screen">
+      <body className="bg-white min-h-screen">
         <Providers>
           {/* Header with Login/Register */}
           <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md">
