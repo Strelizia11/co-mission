@@ -72,8 +72,8 @@ export default function App() {
     setActiveTab("home");
   };
 
-  // Freelancer claims quest
-  const handleClaimQuest = (id: number) => {
+  // Freelancer claims mission
+  const handleClaimMission = (id: number) => {
     setQuests((prev) =>
       prev.map((q) => (q.id === id ? { ...q, taken: true } : q))
     );
@@ -111,7 +111,7 @@ export default function App() {
             }`}
             onClick={() => setActiveTab("home")}
           >
-            Browse Quests
+            Browse Missions
           </button>
           <button
             className={`px-3 py-2 rounded ${
@@ -119,7 +119,7 @@ export default function App() {
             }`}
             onClick={() => setActiveTab("post")}
           >
-            Post Quest
+            Post Mission
           </button>
         </nav>
 
@@ -128,7 +128,7 @@ export default function App() {
           {activeTab === "home" && (
             <div>
               {quests.length === 0 ? (
-                <p className="text-center text-gray-500">No quests yet. Post one!</p>
+                <p className="text-center text-gray-500">No missions yet. Post one!</p>
               ) : (
                 <ul className="space-y-3">
                   {quests.map((quest) => (
@@ -144,9 +144,9 @@ export default function App() {
                       ) : (
                         <button
                           className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
-                          onClick={() => handleClaimQuest(quest.id)}
+                          onClick={() => handleClaimMission(quest.id)}
                         >
-                          Claim Quest
+                          Claim Mission
                         </button>
                       )}
                     </li>
@@ -160,13 +160,13 @@ export default function App() {
             <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Quest Title"
+                placeholder="Mission Title"
                 value={newQuest.title}
                 onChange={(e) => setNewQuest({ ...newQuest, title: e.target.value })}
                 className="w-full border rounded p-2"
               />
               <textarea
-                placeholder="Quest Description"
+                placeholder="Mission Description"
                 value={newQuest.description}
                 onChange={(e) =>
                   setNewQuest({ ...newQuest, description: e.target.value })
@@ -186,7 +186,7 @@ export default function App() {
                 className="w-full py-2 bg-green-600 text-white rounded"
                 onClick={handlePostQuest}
               >
-                Post Quest
+                Post Mission
               </button>
             </div>
           )}
