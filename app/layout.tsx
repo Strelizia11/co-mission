@@ -3,6 +3,7 @@ import "@coinbase/onchainkit/styles.css";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import Link from "next/link";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -42,8 +43,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-background">
-        <Providers>{children}</Providers>
+      <body className="bg-background min-h-screen">
+        <Providers>
+          {/* Header with Login/Register */}
+          <header className="flex justify-between items-center p-4 bg-gray-100 shadow-md">
+            <h1 className="text-xl font-bold text-blue-600">
+              {process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME}
+            </h1>
+            <nav className="flex gap-4">
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/register"
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Register
+              </Link>
+            </nav>
+          </header>
+
+          {/* Main content */}
+          <main className="p-4">{children}</main>
+        </Providers>
       </body>
     </html>
   );
