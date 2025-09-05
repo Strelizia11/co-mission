@@ -77,9 +77,10 @@ export default function RootLayout({
             <nav className="flex gap-4">
               <Wallet className="z-10 " >
                             <div className="text-black px-4 py-2 text-lg font-semibold">
-                              <ConnectWallet className=" text-white bg-[#FFBF00] rounded hover:bg-[#AE8200] ">
-                                <span className="text-xl w-40">Connect Wallet</span>
+                              <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
+                                <span className="text-l w-36">Connected</span>
                               </ConnectWallet>
+
                             </div>
                             <WalletDropdown>
                               <Identity className="px-4 pt-3 pb-2 " hasCopyAddressOnClick>
@@ -91,12 +92,7 @@ export default function RootLayout({
                               <WalletDropdownDisconnect />
                             </WalletDropdown>
                           </Wallet>
-              <Link
-  href="https://www.coinbase.com/setup/account-setup"
-  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
->
-  Register
-</Link>
+
             </nav>
           </header>
 

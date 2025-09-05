@@ -30,20 +30,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">Register</h2>
+    <div className="flex justify-center items-start min-h-screen bg-gray-100 pt-20">
+      <div className="bg-white p-8 rounded-lg shadow-md shadow-black/30 w-full max-w-md">
+        <h2 className="text-3xl font-bold mb-6 text-center text-black">Register</h2>
 
         {message && <p className="text-red-500 mb-4 text-center">{message}</p>}
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+          {/* Underlined Inputs */}
           <input
             type="text"
             name="name"
             placeholder="Name"
             value={form.name}
             onChange={handleChange}
-            className="w-full p-2 border rounded text-black placeholder-gray-500"
+            className="w-full p-2 border-b-2 border-gray-400 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
             required
           />
           <input
@@ -52,7 +53,7 @@ export default function RegisterPage() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full p-2 border rounded text-black placeholder-gray-500"
+            className="w-full p-2 border-b-2 border-gray-400 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
             required
           />
           <input
@@ -61,22 +62,25 @@ export default function RegisterPage() {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full p-2 border rounded text-black placeholder-gray-500"
+            className="w-full p-2 border-b-2 border-gray-400 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
             required
           />
-          <Link href={"auth/register"}>
+
+          {/* Fixed Button */}
           <button
             type="submit"
-            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
+            className="w-full bg-[#FFBF00] text-black font-semibold py-2 rounded-lg hover:bg-[#AE8200] transition duration-300"
           >
-            
-              Register
-            
-
+            Register
           </button>
-          </Link>
         </form>
 
+        <p className="mt-6 text-sm text-center text-gray-600">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-blue-600 hover:underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   )
