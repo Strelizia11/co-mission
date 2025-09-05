@@ -49,7 +49,7 @@ export default function RootLayout({
       <body className="bg-background min-h-screen">
         <Providers>
           {/* Header with Login/Register */}
-          <header className="flex justify-between items-center p-4 bg-gray-100 shadow-md">
+          <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md">
             <h1 className="text-xl font-bold text-blue-600">
               { <Link href="/">
     <Image style={{marginLeft:'10px'}}
