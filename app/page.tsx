@@ -137,22 +137,7 @@ export default function App() {
       <div className="w-full max-w-md mx-auto px-4 py-3">
         {/* Header with wallet */}
         <header className="flex justify-between items-center mb-3 h-11">
-          <div className="flex items-center space-x-2">
-            <Wallet className="z-10">
-              <ConnectWallet>
-                <Name className="text-inherit" />
-              </ConnectWallet>
-              <WalletDropdown>
-                <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-                  <Avatar />
-                  <Name />
-                  <Address />
-                  <EthBalance />
-                </Identity>
-                <WalletDropdownDisconnect />
-              </WalletDropdown>
-            </Wallet>
-          </div>
+          
           <div>{saveFrameButton}</div>
         </header>
 

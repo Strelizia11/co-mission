@@ -20,7 +20,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --app-background: #111111;
+    --app-background: #ff0404;
     --app-foreground: #ffffff;
     --app-foreground-muted: #c8c8d1;
     --app-accent: #0052ff;
