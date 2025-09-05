@@ -33,7 +33,7 @@ export default function App() {
       taken: boolean;
       author: string;
       expiresAt: number;
-      closed: boolean; // new field
+      closed: boolean;
     }[]
   >([]);
 
@@ -41,7 +41,10 @@ export default function App() {
     title: "",
     description: "",
     reward: "",
-    duration: 60,
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 60,
   });
 
   const addFrame = useAddFrame();
@@ -69,7 +72,7 @@ export default function App() {
     return null;
   }, [frameAdded]);
 
-  // Timer: auto-close instead of auto-delete
+  // Auto-close expired quests
   useEffect(() => {
     const interval = setInterval(() => {
       setQuests((prev) =>
@@ -83,6 +86,12 @@ export default function App() {
 
   const handlePostQuest = () => {
     if (!newQuest.title || !newQuest.description || !newQuest.reward) return;
+
+    const duration =
+      newQuest.days * 24 * 60 * 60 * 1000 +
+      newQuest.hours * 60 * 60 * 1000 +
+      newQuest.minutes * 60 * 1000 +
+      newQuest.seconds * 1000;
 
     const userAddress =
       (context as any)?.user?.wallet?.address ||
@@ -98,12 +107,12 @@ export default function App() {
         reward: newQuest.reward,
         taken: false,
         author: userAddress,
-        expiresAt: Date.now() + newQuest.duration * 1000,
+        expiresAt: Date.now() + duration,
         closed: false,
       },
     ]);
 
-    setNewQuest({ title: "", description: "", reward: "", duration: 60 });
+    setNewQuest({ title: "", description: "", reward: "", days: 0, hours: 0, minutes: 0, seconds: 60 });
     setActiveTab("myMissions");
   };
 
@@ -134,9 +143,15 @@ export default function App() {
   const formatTimeLeft = (expiresAt: number, closed: boolean) => {
     if (closed) return "Closed";
     const diff = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
-    const minutes = Math.floor(diff / 60);
+
+    if (diff <= 0) return "Closed";
+
+    const days = Math.floor(diff / (24 * 60 * 60));
+    const hours = Math.floor((diff % (24 * 60 * 60)) / 3600);
+    const minutes = Math.floor((diff % 3600) / 60);
     const seconds = diff % 60;
-    return `${minutes}m ${seconds}s`;
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
   return (
@@ -144,7 +159,6 @@ export default function App() {
       <div className="w-full max-w-md mx-auto px-4 py-3">
         {/* Header with wallet */}
         <header className="flex justify-between items-center mb-3 h-11">
-          
           <div>{saveFrameButton}</div>
         </header>
 
@@ -180,34 +194,36 @@ export default function App() {
         <main className="flex-1">
           {activeTab === "home" && (
             <div>
-              {quests.length === 0 ? (
+              {quests.filter((q) => !q.closed).length === 0 ? (
                 <p className="text-center text-gray-500">No missions yet. Post one!</p>
               ) : (
                 <ul className="space-y-3">
-                  {quests.map((quest) => (
-                    <li
-                      key={quest.id}
-                      className="border rounded-lg p-3 bg-white shadow-sm"
-                    >
-                      <h3 className="font-semibold">{quest.title}</h3>
-                      <p className="text-sm text-gray-600">{quest.description}</p>
-                      <p className="text-sm mt-1">Reward: {quest.reward}</p>
-                      <p className="text-xs text-gray-500">
-                        {quest.closed
-                          ? "Status: Closed"
-                          : `Expires in: ${formatTimeLeft(quest.expiresAt, quest.closed)}`}
-                      </p>
-                      {quest.taken && <span className="text-green-600 text-sm">✅ Taken</span>}
-                      {!quest.taken && !quest.closed && (
-                        <button
-                          className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
-                          onClick={() => handleClaimMission(quest.id)}
-                        >
-                          Claim Mission
-                        </button>
-                      )}
-                    </li>
-                  ))}
+                  {quests
+                    .filter((q) => !q.closed)
+                    .map((quest) => (
+                      <li
+                        key={quest.id}
+                        className="border rounded-lg p-3 bg-white shadow-sm"
+                      >
+                        <h3 className="font-semibold">{quest.title}</h3>
+                        <p className="text-sm text-gray-600">{quest.description}</p>
+                        <p className="text-sm mt-1">Reward: {quest.reward}</p>
+                        <p className="text-xs text-gray-500">
+                          Expires in: {formatTimeLeft(quest.expiresAt, quest.closed)}
+                        </p>
+                        {quest.taken && (
+                          <span className="text-green-600 text-sm">✅ Taken</span>
+                        )}
+                        {!quest.taken && !quest.closed && (
+                          <button
+                            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
+                            onClick={() => handleClaimMission(quest.id)}
+                          >
+                            Claim Mission
+                          </button>
+                        )}
+                      </li>
+                    ))}
                 </ul>
               )}
             </div>
@@ -239,15 +255,59 @@ export default function App() {
                 }
                 className="w-full border rounded p-2"
               />
-              <input
-                type="number"
-                placeholder="Duration in seconds"
-                value={newQuest.duration}
-                onChange={(e) =>
-                  setNewQuest({ ...newQuest, duration: Number(e.target.value) })
-                }
-                className="w-full border rounded p-2"
-              />
+
+              {/* Better time input fields */}
+              <div className="grid grid-cols-4 gap-2">
+                <div>
+                  <label className="block text-xs text-gray-500">Days</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newQuest.days}
+                    onChange={(e) =>
+                      setNewQuest({ ...newQuest, days: Number(e.target.value) })
+                    }
+                    className="w-full border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500">Hours</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newQuest.hours}
+                    onChange={(e) =>
+                      setNewQuest({ ...newQuest, hours: Number(e.target.value) })
+                    }
+                    className="w-full border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500">Minutes</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newQuest.minutes}
+                    onChange={(e) =>
+                      setNewQuest({ ...newQuest, minutes: Number(e.target.value) })
+                    }
+                    className="w-full border rounded p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500">Seconds</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newQuest.seconds}
+                    onChange={(e) =>
+                      setNewQuest({ ...newQuest, seconds: Number(e.target.value) })
+                    }
+                    className="w-full border rounded p-2"
+                  />
+                </div>
+              </div>
+
               <button
                 className="w-full py-2 bg-green-600 text-white rounded"
                 onClick={handlePostQuest}
@@ -275,7 +335,7 @@ export default function App() {
                       <p className="text-sm mt-1">Reward: {quest.reward}</p>
                       <p className="text-xs text-gray-500">
                         {quest.closed
-                          ? "Status: Closed"
+                          ? "Closed"
                           : `Expires in: ${formatTimeLeft(quest.expiresAt, quest.closed)}`}
                       </p>
                       <p className="text-xs text-gray-400">
