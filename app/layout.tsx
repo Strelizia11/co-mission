@@ -92,11 +92,11 @@ export default function RootLayout({
                             </WalletDropdown>
                           </Wallet>
               <Link
-                href="/auth/register"
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Register
-              </Link>
+  href="https://www.coinbase.com/setup/account-setup"
+  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+>
+  Register
+</Link>
             </nav>
           </header>
 
