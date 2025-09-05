@@ -6,7 +6,20 @@ import { Providers } from "./providers";
 import Link from "next/link";
 import { link } from "fs";
 import Image from "next/image"
-
+import {
+  Name,
+  Identity,
+  Address,
+  Avatar,
+  EthBalance,
+} from "@coinbase/onchainkit/identity";
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownDisconnect,
+} from "@coinbase/onchainkit/wallet";
+import { useEffect, useMemo, useState, useCallback } from "react";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -62,12 +75,20 @@ export default function RootLayout({
             </h1>
             
             <nav className="flex gap-4">
-              <Link
-                href="/auth/login"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Login
-              </Link>
+              <Wallet className="z-10 " >
+                            <ConnectWallet className="bg-[#FFBF00] text-white rounded hover:bg-[#AE8200]">
+                              <Name className="text-inherit" />
+                            </ConnectWallet>
+                            <WalletDropdown>
+                              <Identity className="px-4 pt-3 pb-2 " hasCopyAddressOnClick>
+                                <Avatar />
+                                <Name />
+                                <Address />
+                                <EthBalance />
+                              </Identity>
+                              <WalletDropdownDisconnect />
+                            </WalletDropdown>
+                          </Wallet>
               <Link
                 href="/auth/register"
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
