@@ -23,7 +23,9 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState<"home" | "post" | "myMissions">("home");
+  const [activeTab, setActiveTab] = useState<"home" | "post" | "myMissions">(
+    "home"
+  );
   const [quests, setQuests] = useState<
     {
       id: number;
@@ -41,10 +43,7 @@ export default function App() {
     title: "",
     description: "",
     reward: "",
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 60,
+    expiresAt: "",
   });
 
   const addFrame = useAddFrame();
@@ -85,13 +84,14 @@ export default function App() {
   }, []);
 
   const handlePostQuest = () => {
-    if (!newQuest.title || !newQuest.description || !newQuest.reward) return;
+    if (!newQuest.title || !newQuest.description || !newQuest.reward || !newQuest.expiresAt) return;
 
-    const duration =
-      newQuest.days * 24 * 60 * 60 * 1000 +
-      newQuest.hours * 60 * 60 * 1000 +
-      newQuest.minutes * 60 * 1000 +
-      newQuest.seconds * 1000;
+    const expiresAt = new Date(newQuest.expiresAt).getTime();
+
+    if (isNaN(expiresAt) || expiresAt <= Date.now()) {
+      alert("Please select a valid future date and time.");
+      return;
+    }
 
     const userAddress =
       (context as any)?.user?.wallet?.address ||
@@ -107,12 +107,12 @@ export default function App() {
         reward: newQuest.reward,
         taken: false,
         author: userAddress,
-        expiresAt: Date.now() + duration,
+        expiresAt,
         closed: false,
       },
     ]);
 
-    setNewQuest({ title: "", description: "", reward: "", days: 0, hours: 0, minutes: 0, seconds: 60 });
+    setNewQuest({ title: "", description: "", reward: "", expiresAt: "" });
     setActiveTab("myMissions");
   };
 
@@ -141,10 +141,9 @@ export default function App() {
   );
 
   const formatTimeLeft = (expiresAt: number, closed: boolean) => {
-    if (closed) return "Closed";
+    if (closed) return null;
     const diff = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
-
-    if (diff <= 0) return "Closed";
+    if (diff <= 0) return null;
 
     const days = Math.floor(diff / (24 * 60 * 60));
     const hours = Math.floor((diff % (24 * 60 * 60)) / 3600);
@@ -155,7 +154,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme from-[var(--app-background)] to-[var(--app-gray)]">
+    <div className="flex flex-col min-h-screen font-sans text-black bg-gray-100">
       <div className="w-full max-w-md mx-auto px-4 py-3">
         {/* Header with wallet */}
         <header className="flex justify-between items-center mb-3 h-11">
@@ -205,12 +204,16 @@ export default function App() {
                         key={quest.id}
                         className="border rounded-lg p-3 bg-white shadow-sm"
                       >
-                        <h3 className="font-semibold">{quest.title}</h3>
-                        <p className="text-sm text-gray-600">{quest.description}</p>
-                        <p className="text-sm mt-1">Reward: {quest.reward}</p>
-                        <p className="text-xs text-gray-500">
-                          Expires in: {formatTimeLeft(quest.expiresAt, quest.closed)}
+                        <h3 className="font-semibold text-gray-900">{quest.title}</h3>
+                        <p className="text-sm text-gray-700">{quest.description}</p>
+                        <p className="text-sm mt-1 text-gray-900">
+                          Reward: {quest.reward}
                         </p>
+                        {formatTimeLeft(quest.expiresAt, quest.closed) && (
+                          <p className="text-xs text-gray-500">
+                            Expires in: {formatTimeLeft(quest.expiresAt, quest.closed)}
+                          </p>
+                        )}
                         {quest.taken && (
                           <span className="text-green-600 text-sm">✅ Taken</span>
                         )}
@@ -236,7 +239,7 @@ export default function App() {
                 placeholder="Mission Title"
                 value={newQuest.title}
                 onChange={(e) => setNewQuest({ ...newQuest, title: e.target.value })}
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-black"
               />
               <textarea
                 placeholder="Mission Description"
@@ -244,7 +247,7 @@ export default function App() {
                 onChange={(e) =>
                   setNewQuest({ ...newQuest, description: e.target.value })
                 }
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-black"
               />
               <input
                 type="text"
@@ -253,59 +256,22 @@ export default function App() {
                 onChange={(e) =>
                   setNewQuest({ ...newQuest, reward: e.target.value })
                 }
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-black"
               />
 
-              {/* Better time input fields */}
-              <div className="grid grid-cols-4 gap-2">
-                <div>
-                  <label className="block text-xs text-gray-500">Days</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newQuest.days}
-                    onChange={(e) =>
-                      setNewQuest({ ...newQuest, days: Number(e.target.value) })
-                    }
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500">Hours</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newQuest.hours}
-                    onChange={(e) =>
-                      setNewQuest({ ...newQuest, hours: Number(e.target.value) })
-                    }
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500">Minutes</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newQuest.minutes}
-                    onChange={(e) =>
-                      setNewQuest({ ...newQuest, minutes: Number(e.target.value) })
-                    }
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500">Seconds</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={newQuest.seconds}
-                    onChange={(e) =>
-                      setNewQuest({ ...newQuest, seconds: Number(e.target.value) })
-                    }
-                    className="w-full border rounded p-2"
-                  />
-                </div>
+              {/* Expiration Date/Time Picker */}
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">
+                  Expiration Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={newQuest.expiresAt}
+                  onChange={(e) =>
+                    setNewQuest({ ...newQuest, expiresAt: e.target.value })
+                  }
+                  className="w-full border rounded p-2 text-black"
+                />
               </div>
 
               <button
@@ -330,14 +296,18 @@ export default function App() {
                       key={quest.id}
                       className="border rounded-lg p-3 bg-white shadow-sm"
                     >
-                      <h3 className="font-semibold">{quest.title}</h3>
-                      <p className="text-sm text-gray-600">{quest.description}</p>
-                      <p className="text-sm mt-1">Reward: {quest.reward}</p>
-                      <p className="text-xs text-gray-500">
-                        {quest.closed
-                          ? "Closed"
-                          : `Expires in: ${formatTimeLeft(quest.expiresAt, quest.closed)}`}
+                      <h3 className="font-semibold text-gray-900">{quest.title}</h3>
+                      <p className="text-sm text-gray-700">{quest.description}</p>
+                      <p className="text-sm mt-1 text-gray-900">
+                        Reward: {quest.reward}
                       </p>
+                      {quest.closed ? (
+                        <p className="text-xs text-red-500">Closed</p>
+                      ) : (
+                        <p className="text-xs text-gray-500">
+                          Expires in: {formatTimeLeft(quest.expiresAt, quest.closed)}
+                        </p>
+                      )}
                       <p className="text-xs text-gray-400">
                         Status: {quest.closed ? "Closed" : quest.taken ? "Taken" : "Open"}
                       </p>
