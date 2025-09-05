@@ -23,7 +23,12 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState<"home" | "post">("home");
+  const [quests, setQuests] = useState<
+    { id: number; title: string; description: string; reward: string; taken: boolean }[]
+  >([]);
+
+  const [newQuest, setNewQuest] = useState({ title: "", description: "", reward: "" });
 
   const addFrame = useAddFrame();
   const openUrl = useOpenUrl();
@@ -40,10 +45,6 @@ export default function App() {
   }, [addFrame]);
 
   const saveFrameButton = useMemo(() => {
-    if (context && !context.client.added) {
-
-    }
-
     if (frameAdded) {
       return (
         <div className="flex items-center space-x-1 text-sm font-medium text-[#0052FF] animate-fade-out">
@@ -51,40 +52,145 @@ export default function App() {
         </div>
       );
     }
-
     return null;
-  }, [context, frameAdded, handleAddFrame]);
+  }, [frameAdded]);
+
+  // Add new quest
+  const handlePostQuest = () => {
+    if (!newQuest.title || !newQuest.description || !newQuest.reward) return;
+    setQuests((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        title: newQuest.title,
+        description: newQuest.description,
+        reward: newQuest.reward,
+        taken: false,
+      },
+    ]);
+    setNewQuest({ title: "", description: "", reward: "" });
+    setActiveTab("home");
+  };
+
+  // Freelancer claims quest
+  const handleClaimQuest = (id: number) => {
+    setQuests((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, taken: true } : q))
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme from-[var(--app-background)] to-[var(--app-gray)]">
       <div className="w-full max-w-md mx-auto px-4 py-3">
+        {/* Header with wallet */}
         <header className="flex justify-between items-center mb-3 h-11">
-          <div>
-            <div className="flex items-center space-x-2">
-              <Wallet className="z-10">
-                <ConnectWallet>
-                  <Name className="text-inherit" />
-                </ConnectWallet>
-                <WalletDropdown>
-                  <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-                    <Avatar />
-                    <Name />
-                    <Address />
-                    <EthBalance />
-                  </Identity>
-                  <WalletDropdownDisconnect />
-                </WalletDropdown>
-              </Wallet>
-            </div>
+          <div className="flex items-center space-x-2">
+            <Wallet className="z-10">
+              <ConnectWallet>
+                <Name className="text-inherit" />
+              </ConnectWallet>
+              <WalletDropdown>
+                <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                  <Avatar />
+                  <Name />
+                  <Address />
+                  <EthBalance />
+                </Identity>
+                <WalletDropdownDisconnect />
+              </WalletDropdown>
+            </Wallet>
           </div>
           <div>{saveFrameButton}</div>
         </header>
 
-        <main className="flex-1">
-        </main>
+        {/* Navigation */}
+        <nav className="flex justify-around mb-4">
+          <button
+            className={`px-3 py-2 rounded ${
+              activeTab === "home" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setActiveTab("home")}
+          >
+            Browse Quests
+          </button>
+          <button
+            className={`px-3 py-2 rounded ${
+              activeTab === "post" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setActiveTab("post")}
+          >
+            Post Quest
+          </button>
+        </nav>
 
-        <footer className="mt-2 pt-4 flex justify-center">
-        </footer>
+        {/* Main content */}
+        <main className="flex-1">
+          {activeTab === "home" && (
+            <div>
+              {quests.length === 0 ? (
+                <p className="text-center text-gray-500">No quests yet. Post one!</p>
+              ) : (
+                <ul className="space-y-3">
+                  {quests.map((quest) => (
+                    <li
+                      key={quest.id}
+                      className="border rounded-lg p-3 bg-white shadow-sm"
+                    >
+                      <h3 className="font-semibold">{quest.title}</h3>
+                      <p className="text-sm text-gray-600">{quest.description}</p>
+                      <p className="text-sm mt-1">Reward: {quest.reward}</p>
+                      {quest.taken ? (
+                        <span className="text-green-600 text-sm">✅ Taken</span>
+                      ) : (
+                        <button
+                          className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
+                          onClick={() => handleClaimQuest(quest.id)}
+                        >
+                          Claim Quest
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {activeTab === "post" && (
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Quest Title"
+                value={newQuest.title}
+                onChange={(e) => setNewQuest({ ...newQuest, title: e.target.value })}
+                className="w-full border rounded p-2"
+              />
+              <textarea
+                placeholder="Quest Description"
+                value={newQuest.description}
+                onChange={(e) =>
+                  setNewQuest({ ...newQuest, description: e.target.value })
+                }
+                className="w-full border rounded p-2"
+              />
+              <input
+                type="text"
+                placeholder="Reward (e.g. 0.01 ETH)"
+                value={newQuest.reward}
+                onChange={(e) =>
+                  setNewQuest({ ...newQuest, reward: e.target.value })
+                }
+                className="w-full border rounded p-2"
+              />
+              <button
+                className="w-full py-2 bg-green-600 text-white rounded"
+                onClick={handlePostQuest}
+              >
+                Post Quest
+              </button>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );
