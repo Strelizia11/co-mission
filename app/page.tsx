@@ -67,12 +67,14 @@ export default function RegisterPage() {
           />
 
           {/* Fixed Button */}
+          <Link href={"/auth/register"}>
           <button
             type="submit"
             className="w-full bg-[#FFBF00] text-black font-semibold py-2 rounded-lg hover:bg-[#AE8200] transition duration-300"
           >
             Register
           </button>
+          </Link>
         </form>
 
         <p className="mt-6 text-sm text-center text-gray-600">
