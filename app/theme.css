@@ -40,8 +40,8 @@
   --ock-border-radius-inner: 0.5rem;
 
   /* Text colors */
-  --ock-text-inverse: var(--app-background);
-  --ock-text-foreground: var(--app-foreground);
+  --ock-text-foreground: #ffffff;
+  --ock-text-inverse: #ffffff;
   --ock-text-foreground-muted: var(--app-foreground-muted);
   --ock-text-error: #ef4444;
   --ock-text-primary: var(--app-accent);

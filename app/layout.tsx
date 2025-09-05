@@ -77,8 +77,8 @@ export default function RootLayout({
             <nav className="flex gap-4">
               <Wallet className="z-10 " >
                             <div className="text-black px-4 py-2 text-lg font-semibold">
-                              <ConnectWallet className=" text-black bg-[#FFBF00] rounded hover:bg-[#AE8200] ">
-                                <span className="text-xl text-black ">Connect Wallet</span>
+                              <ConnectWallet className=" text-white bg-[#FFBF00] rounded hover:bg-[#AE8200] ">
+                                <span className="text-xl w-40">Connect Wallet</span>
                               </ConnectWallet>
                             </div>
                             <WalletDropdown>
