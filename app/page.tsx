@@ -84,7 +84,10 @@ export default function App() {
   const handlePostQuest = () => {
     if (!newQuest.title || !newQuest.description || !newQuest.reward) return;
 
-    const userAddress = context?.user?.wallet?.address || "anonymous";
+    const userAddress =
+      (context as any)?.user?.wallet?.address ||
+      (context as any)?.user?.address ||
+      "anonymous";
 
     setQuests((prev) => [
       ...prev,
@@ -121,7 +124,11 @@ export default function App() {
   };
 
   const myMissions = quests.filter(
-    (q) => q.author === (context?.user?.wallet?.address || "anonymous")
+    (q) =>
+      q.author ===
+      ((context as any)?.user?.wallet?.address ||
+        (context as any)?.user?.address ||
+        "anonymous")
   );
 
   const formatTimeLeft = (expiresAt: number, closed: boolean) => {

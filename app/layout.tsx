@@ -76,9 +76,11 @@ export default function RootLayout({
             
             <nav className="flex gap-4">
               <Wallet className="z-10 " >
-                            <ConnectWallet className="bg-[#FFBF00] text-white rounded hover:bg-[#AE8200]">
-                              <Name className="text-inherit" />
-                            </ConnectWallet>
+                            <div className="text-black px-4 py-2 text-lg font-semibold">
+                              <ConnectWallet className=" text-black bg-[#FFBF00] rounded hover:bg-[#AE8200] ">
+                                <span className="text-xl text-black ">Connect Wallet</span>
+                              </ConnectWallet>
+                            </div>
                             <WalletDropdown>
                               <Identity className="px-4 pt-3 pb-2 " hasCopyAddressOnClick>
                                 <Avatar />
