@@ -1,25 +1,8 @@
+import "./globals.css";
 import "./theme.css";
 import "@coinbase/onchainkit/styles.css";
 import type { Metadata, Viewport } from "next";
-import "./globals.css";
 import { Providers } from "./providers";
-import Link from "next/link";
-import { link } from "fs";
-import Image from "next/image"
-import {
-  Name,
-  Identity,
-  Address,
-  Avatar,
-  EthBalance,
-} from "@coinbase/onchainkit/identity";
-import {
-  ConnectWallet,
-  Wallet,
-  WalletDropdown,
-  WalletDropdownDisconnect,
-} from "@coinbase/onchainkit/wallet";
-import { useEffect, useMemo, useState, useCallback } from "react";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -54,51 +37,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className="bg-white min-h-screen">
-        <Providers>
-          {/* Header with Login/Register */}
-          <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md">
-            <h1 className="text-xl font-bold text-blue-600">
-              { <Link href="/">
-    <Image style={{marginLeft:'10px', padding:'15px'}}
-      src="/logo.svg"
-      alt="App Logo"
-      width={250} // adjust size
-      height={250}
-    />
-  </Link>}
-            </h1>
-            
-            <nav className="flex gap-4">
-              <Wallet className="z-10 " >
-                            <div className="text-black px-4 py-2 text-lg font-semibold">
-                              <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
-                                <span className="text-l w-36">Connected</span>
-                              </ConnectWallet>
-
-                            </div>
-                            <WalletDropdown>
-                              <Identity className="px-4 pt-3 pb-2 " hasCopyAddressOnClick>
-                                <Avatar />
-                                <Name />
-                                <Address />
-                                <EthBalance />
-                              </Identity>
-                              <WalletDropdownDisconnect />
-                            </WalletDropdown>
-                          </Wallet>
-
-            </nav>
-          </header>
-
-          {/* Main content */}
-          <main className="p-4">{children}</main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

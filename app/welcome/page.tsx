@@ -25,6 +25,10 @@ export default function WelcomePage() {
         >
           Connect, explore, and grow — a platform made for you.
         </motion.p>
+        <motion.button
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}>
         <div className="mt-8 flex gap-4">
           <Link
             href="/auth/register"
@@ -32,13 +36,8 @@ export default function WelcomePage() {
           >
             Get Started
           </Link>
-          <Link
-            href="/auth/login"
-            className="bg-white border-2 border-black text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-          >
-            Sign In
-          </Link>
         </div>
+        </motion.button>
       </section>
 
       {/* Showcase / Images Section */}
