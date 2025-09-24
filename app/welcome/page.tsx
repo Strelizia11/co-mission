@@ -1,35 +1,39 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function WelcomePage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <main className="bg-white text-black min-h-screen">
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center min-h-screen bg-[#FFBF00] px-6">
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-5xl md:text-6xl font-extrabold mb-6 text-black"
+        <h1
+          className={`text-5xl md:text-6xl font-extrabold mb-6 text-black transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
           Welcome to <span className="text-white">Co-Mission</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-lg md:text-xl text-black max-w-2xl"
+        </h1>
+        <p
+          className={`text-lg md:text-xl text-black max-w-2xl transition-all duration-700 delay-200 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
           Connect, explore, and grow — a platform made for you.
-        </motion.p>
-        <motion.button
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}>
-        <div className="mt-8 flex gap-4">
+        </p>
+        <div
+          className={`mt-8 flex gap-4 transition-all duration-700 delay-500 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        >
           <Link
             href="/auth/register"
             className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
@@ -37,33 +41,30 @@ export default function WelcomePage() {
             Get Started
           </Link>
         </div>
-        </motion.button>
       </section>
 
-      {/* Showcase / Images Section */}
+      {/* Showcase Section */}
       <section className="px-6 py-20 bg-white">
-        <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-3xl font-bold text-center mb-12"
+        <h2
+          className={`text-3xl font-bold text-center mb-12 transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
           Explore Our Features
-        </motion.h2>
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Example picture containers */}
-          {[1, 2, 3].map((i) => (
-            <motion.div
+          {[1, 2, 3].map((i, idx) => (
+            <div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.2 }}
-              viewport={{ once: true }}
-              className="bg-[#FFBF00] rounded-lg shadow-lg overflow-hidden flex items-center justify-center h-64"
+              className={`bg-[#FFBF00] rounded-lg shadow-lg overflow-hidden flex items-center justify-center h-64 transition-all duration-700 delay-${
+                idx * 200 + 300
+              } ${
+                mounted
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-6"
+              }`}
             >
-              {/* Replace these placeholders with real images */}
               <Image
                 src={`/placeholder-${i}.jpg`}
                 alt={`Feature ${i}`}
@@ -71,27 +72,24 @@ export default function WelcomePage() {
                 height={400}
                 className="object-cover w-full h-full"
               />
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Call to Action Section */}
+      {/* CTA Section */}
       <section className="px-6 py-20 bg-[#191B1F] text-center text-white">
-        <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-3xl font-bold mb-6"
+        <h2
+          className={`text-3xl font-bold mb-6 transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
           Ready to Get Started?
-        </motion.h2>
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          viewport={{ once: true }}
+        </h2>
+        <div
+          className={`transition-all duration-700 delay-300 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
           <Link
             href="/auth/register"
@@ -99,7 +97,7 @@ export default function WelcomePage() {
           >
             Join Now
           </Link>
-        </motion.div>
+        </div>
       </section>
     </main>
   );
