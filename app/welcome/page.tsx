@@ -73,20 +73,12 @@ export default function WelcomePage() {
               </Link>
             </>
           ) : (
-            <>
-              <Link
-                href="/auth/register"
-                className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
-              >
-                Get Started
-              </Link>
-              <Link
-                href="/auth/login"
-                className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-              >
-                Sign In
-              </Link>
-            </>
+            <Link
+              href="/auth/register"
+              className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
+            >
+              Get Started
+            </Link>
           )}
         </div>
       </section>
