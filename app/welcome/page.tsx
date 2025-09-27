@@ -3,6 +3,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  Name,
+  Identity,
+  Address,
+  Avatar,
+  EthBalance,
+} from "@coinbase/onchainkit/identity";
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownDisconnect,
+} from "@coinbase/onchainkit/wallet";
 
 export default function WelcomePage() {
   const [mounted, setMounted] = useState(false);
@@ -19,6 +32,41 @@ export default function WelcomePage() {
 
   return (
     <main className="bg-white text-black min-h-screen">
+      {/* Header with Wallet Connection for Logged-in Users */}
+      {user && (
+        <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md">
+          <h1 className="text-xl font-bold text-blue-600">
+            <Link href="/">
+              <Image
+                style={{ marginLeft: "10px", padding: "15px" }}
+                src="/logo.svg"
+                alt="App Logo"
+                width={250}
+                height={250}
+              />
+            </Link>
+          </h1>
+          <nav className="flex gap-4">
+            <Wallet className="z-10">
+              <div className="text-black px-4 py-2 text-lg font-semibold">
+                <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
+                  <span className="text-l w-36">Connect Wallet</span>
+                </ConnectWallet>
+              </div>
+              <WalletDropdown>
+                <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                  <Avatar />
+                  <Name />
+                  <Address />
+                  <EthBalance />
+                </Identity>
+                <WalletDropdownDisconnect />
+              </WalletDropdown>
+            </Wallet>
+          </nav>
+        </header>
+      )}
+
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center text-center min-h-screen bg-[#FFBF00] px-6">
         <h1
