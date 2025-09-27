@@ -1,64 +1,63 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-export default function RegisterFormPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role");
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: role || "",
-  });
-  const [message, setMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  useEffect(() => {
-    if (role) {
-      setForm((prev) => ({ ...prev, role }));
-    }
-  }, [role]);
+export default function LoginPage() {
+  const router = useRouter()
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [message, setMessage] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setMessage(data.message);
-      // Redirect to login page after successful registration
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 1500);
-    } else {
-      setMessage(data.error);
+    e.preventDefault()
+    setIsLoading(true)
+    setMessage('')
+    
+    console.log('Attempting login with:', { email: form.email, password: '***' })
+    
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      
+      console.log('Response status:', res.status)
+      const data = await res.json()
+      console.log('Response data:', data)
+      
+      if (res.ok) {
+        setMessage(data.message)
+        // Save user data to localStorage for dashboard
+        localStorage.setItem('user', JSON.stringify(data.user))
+        // Use window.location for more reliable redirect to dashboard
+        window.location.href = '/dashboard'
+      } else {
+        console.log('Login failed with error:', data.error)
+        setMessage(data.error)
+      }
+    } catch (error) {
+      console.error('Login fetch error:', error)
+      setMessage('Login failed. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 pt-20 px-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="mb-6">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-500 hover:text-gray-700 mb-2"
-          >
-            ← Back
-          </button>
           <h2 className="text-2xl font-bold text-center text-black">
-            Register as{" "}
-            <span className="capitalize text-[#FFBF00]">{role}</span>
+            Welcome Back to{" "}
+            <span className="text-[#FFBF00]">Co-Mission</span>
           </h2>
         </div>
 
@@ -67,15 +66,6 @@ export default function RegisterFormPage() {
         )}
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
-            required
-          />
           <input
             type="email"
             name="email"
@@ -115,12 +105,31 @@ export default function RegisterFormPage() {
 
           <button
             type="submit"
-            className="w-full py-2 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
+            disabled={isLoading}
+            className={`w-full py-2 font-semibold rounded transition ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed text-gray-600' 
+                : 'bg-[#FFBF00] hover:bg-[#AE8200] text-black'
+            }`}
           >
-            Register
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-6 text-sm text-center space-y-2">
+          <p>
+            Don't have an account?{' '}
+            <Link href="/auth/register" className="text-[#FFBF00] hover:underline">
+              Register here
+            </Link>
+          </p>
+          <p>
+            <Link href="/reset-password" className="text-gray-500 hover:underline">
+              Forgot your password?
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
-  );
+  )
 }

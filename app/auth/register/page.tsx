@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterChoicePage() {
   const router = useRouter();
@@ -13,22 +14,29 @@ export default function RegisterChoicePage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="bg-white shadow-md rounded-lg p-10 max-w-md w-full text-center">
         <h1 className="text-3xl font-bold mb-6 text-black">
-          Join as a
+          Join Co-Mission as a
         </h1>
         <div className="flex flex-col gap-4">
           <button
             onClick={() => handleChoice("employer")}
             className="w-full py-3 text-lg font-medium bg-[#FFBF00] text-black rounded hover:bg-[#AE8200] transition"
           >
-            I’m an Employer
+            I'm an Employer
           </button>
           <button
             onClick={() => handleChoice("freelancer")}
             className="w-full py-3 text-lg font-medium border-2 border-[#FFBF00] text-black rounded hover:bg-gray-200 transition"
           >
-            I’m a Freelancer
+            I'm a Freelancer
           </button>
         </div>
+        
+        <p className="mt-6 text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-[#FFBF00] hover:underline">
+            Sign in here
+          </Link>
+        </p>
       </div>
     </div>
   );

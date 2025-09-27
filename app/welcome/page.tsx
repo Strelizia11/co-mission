@@ -6,9 +6,15 @@ import Image from "next/image";
 
 export default function WelcomePage() {
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
+    // Check if user is logged in
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
   }, []);
 
   return (
@@ -20,26 +26,68 @@ export default function WelcomePage() {
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          Welcome to <span className="text-white">Co-Mission</span>
+          {user ? (
+            <>
+              Welcome back, <span className="text-white">{user.name}</span>!
+            </>
+          ) : (
+            <>
+              Welcome to <span className="text-white">Co-Mission</span>
+            </>
+          )}
         </h1>
         <p
           className={`text-lg md:text-xl text-black max-w-2xl transition-all duration-700 delay-200 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          Connect, explore, and grow — a platform made for you.
+          {user ? (
+            <>
+              Ready to {user.role === 'employer' ? 'post missions' : 'find work'}? 
+              Let's get started with your {user.role} journey.
+            </>
+          ) : (
+            <>
+              Connect, explore, and grow — a platform made for you.
+            </>
+          )}
         </p>
         <div
           className={`mt-8 flex gap-4 transition-all duration-700 delay-500 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <Link
-            href="/auth/register"
-            className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
-          >
-            Get Started
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/"
+                className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
+              >
+                Go to App
+              </Link>
+              <Link
+                href="/dashboard"
+                className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+              >
+                Dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth/register"
+                className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
+              >
+                Get Started
+              </Link>
+              <Link
+                href="/auth/login"
+                className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
@@ -78,27 +126,29 @@ export default function WelcomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="px-6 py-20 bg-[#191B1F] text-center text-white">
-        <h2
-          className={`text-3xl font-bold mb-6 transition-all duration-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          Ready to Get Started?
-        </h2>
-        <div
-          className={`transition-all duration-700 delay-300 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          <Link
-            href="/auth/register"
-            className="bg-[#FFBF00] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#e6ac00] transition"
+      {!user && (
+        <section className="px-6 py-20 bg-[#191B1F] text-center text-white">
+          <h2
+            className={`text-3xl font-bold mb-6 transition-all duration-700 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}
           >
-            Join Now
-          </Link>
-        </div>
-      </section>
+            Ready to Get Started?
+          </h2>
+          <div
+            className={`transition-all duration-700 delay-300 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}
+          >
+            <Link
+              href="/auth/register"
+              className="bg-[#FFBF00] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#e6ac00] transition"
+            >
+              Join Now
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
