@@ -1,6 +1,7 @@
 "use client";
 
-import { ConnectWallet } from "@coinbase/onchainkit/wallet";
+import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
+import { Identity, Avatar, Name, Address, EthBalance } from "@coinbase/onchainkit/identity";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -29,7 +30,22 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
 
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center">
-        <ConnectWallet />
+        <Wallet className="z-10">
+          <div className="text-black px-4 py-2 text-lg font-semibold">
+            <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
+              <span className="text-l w-36">Connected</span>
+            </ConnectWallet>
+          </div>
+          <WalletDropdown>
+            <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+              <Avatar />
+              <Name />
+              <Address />
+              <EthBalance />
+            </Identity>
+            <WalletDropdownDisconnect />
+          </WalletDropdown>
+        </Wallet>
       </div>
 
       {/* Mobile menu button */}
@@ -59,12 +75,29 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           </svg>
         </button>
       </div>
-
+    
+    
+    
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="absolute top-16 right-4 bg-[#191B1F] rounded-lg shadow-lg p-4 z-50">
+        <div className="absolute top-16 right-4 bg-[#FCBA03] rounded-lg shadow-lg p-4 z-50">
           <div className="mb-4">
-            <ConnectWallet />
+            <Wallet className="z-10">
+              <div className="text-black px-4 py-2 text-lg font-semibold">
+                <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
+                  <span className="text-l w-36">Connected</span>
+                </ConnectWallet>
+              </div>
+              <WalletDropdown>
+                <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                  <Avatar />
+                  <Name />
+                  <Address />
+                  <EthBalance />
+                </Identity>
+                <WalletDropdownDisconnect />
+              </WalletDropdown>
+            </Wallet>
           </div>
         </div>
       )}
