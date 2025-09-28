@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "name": "Ramojh Salazar",
+    "email": "salazarjhomar39@gmail.com",
+    "password": "$2b$10$XPh4RUHJEidbbq1iqYtN7uhrsF6SxRLvSXoB0ssGnAVDp12MgoOlK",
+    "role": "freelancer",
+    "createdAt": "2025-09-28T15:10:41.592Z"
+  },
+  {
+    "name": "Strelizia",
+    "email": "belugaezrael@gmail.com",
+    "password": "$2b$10$HrGm1QFwTlI.iQb8BzIntO2yM7blANrs0lFGxmrLeTZ8J4TQgeBYy",
+    "role": "employer",
+    "createdAt": "2025-09-28T15:12:59.624Z"
+  }
+]

@@ -37,9 +37,15 @@ export default function RegisterFormPage() {
     const data = await res.json();
     if (res.ok) {
       setMessage(data.message);
-      // Redirect to login page after successful registration
+      // Auto-login: Save user data to localStorage and redirect to dashboard
+      localStorage.setItem('user', JSON.stringify(data.user));
       setTimeout(() => {
-        router.push("/auth/login");
+        // Check if freelancer needs skills setup
+        if (data.user.role === 'freelancer') {
+          router.push("/auth/skills-setup");
+        } else {
+          router.push("/dashboard");
+        }
       }, 1500);
     } else {
       setMessage(data.error);
