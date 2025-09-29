@@ -47,9 +47,9 @@ export default function LoginPage() {
       <div className="bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25),0_1.5px_8px_0_rgba(255,191,0,0.10)] w-full max-w-md animate-fade-in">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-extrabold text-black mb-2 tracking-tight">
-            Welcome Back
+            Welcome Back!
           </h2>
-          <span className="text-lg font-semibold text-[#FFBF00]">to Co-Mission</span>
+          <p className="text-gray-600">Please enter your details</p>
         </div>
 
         {message && (
