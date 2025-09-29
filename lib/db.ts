@@ -41,6 +41,19 @@ export type FreelancerProfile = {
   updatedAt: string;
 }
 
+// Employer profile type
+export type EmployerProfile = {
+  email: string;
+  companyName?: string;
+  bio?: string;
+  website?: string;
+  location?: string;
+  hiringPreferences?: string;
+  joinedAt: string;
+  updatedAt: string;
+  postedTasks?: number;
+}
+
 // User type definition
 export type User = {
   name: string;
@@ -50,6 +63,7 @@ export type User = {
   createdAt: string;
   walletAddress?: string;
   profile?: FreelancerProfile; // Only for freelancers
+  employerProfile?: EmployerProfile; // Only for employers
 }
 
 // Read users from file
@@ -99,6 +113,43 @@ export function updateFreelancerProfile(email: string, profile: Partial<Freelanc
     updatedAt: new Date().toISOString()
   };
   
+  saveUsers(users);
+  return true;
+}
+
+// Get employer profile by email
+export function getEmployerProfile(email: string): EmployerProfile | null {
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.role === 'employer');
+  return user?.employerProfile || null;
+}
+
+// Update employer profile
+export function updateEmployerProfile(email: string, profile: Partial<EmployerProfile>): boolean {
+  const users = getUsers();
+  const userIndex = users.findIndex(u => u.email === email && u.role === 'employer');
+  if (userIndex === -1) return false;
+
+  if (!users[userIndex].employerProfile) {
+    users[userIndex].employerProfile = {
+      email,
+      companyName: users[userIndex].name,
+      bio: '',
+      website: '',
+      location: '',
+      hiringPreferences: '',
+      postedTasks: 0,
+      joinedAt: users[userIndex].createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  users[userIndex].employerProfile = {
+    ...users[userIndex].employerProfile!,
+    ...profile,
+    updatedAt: new Date().toISOString(),
+  };
+
   saveUsers(users);
   return true;
 }
