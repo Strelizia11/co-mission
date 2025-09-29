@@ -47,9 +47,62 @@ export async function addTask(task: any) {
   return task;
 }
 
+export async function addFreelancerApplication(taskId: string, freelancerData: any) {
+  const tasks = await readTasksFromFile();
+  const taskIndex = tasks.findIndex((task: any) => task.id === taskId);
+  
+  if (taskIndex !== -1) {
+    if (!tasks[taskIndex].applications) {
+      tasks[taskIndex].applications = [];
+    }
+    
+    // Check if freelancer already applied
+    const existingApplication = tasks[taskIndex].applications.find(
+      (app: any) => app.email === freelancerData.email
+    );
+    
+    if (!existingApplication) {
+      tasks[taskIndex].applications.push({
+        ...freelancerData,
+        appliedAt: new Date().toISOString()
+      });
+      await writeTasksToFile(tasks);
+      console.log('Application added:', freelancerData);
+    }
+    
+    return tasks[taskIndex];
+  }
+  return null;
+}
+
+export async function selectFreelancer(taskId: string, freelancerEmail: string) {
+  const tasks = await readTasksFromFile();
+  const taskIndex = tasks.findIndex((task: any) => task.id === taskId);
+  
+  if (taskIndex !== -1) {
+    const application = tasks[taskIndex].applications?.find(
+      (app: any) => app.email === freelancerEmail
+    );
+    
+    if (application) {
+      tasks[taskIndex].acceptedBy = {
+        email: application.email,
+        name: application.name
+      };
+      tasks[taskIndex].acceptedAt = new Date().toISOString();
+      tasks[taskIndex].status = 'in_progress';
+      await writeTasksToFile(tasks);
+      console.log('Freelancer selected:', application);
+    }
+    
+    return tasks[taskIndex];
+  }
+  return null;
+}
+
 export async function updateTask(taskId: string, updates: any) {
   const tasks = await readTasksFromFile();
-  const taskIndex = tasks.findIndex(task => task.id === taskId);
+  const taskIndex = tasks.findIndex((task: any) => task.id === taskId);
   if (taskIndex !== -1) {
     tasks[taskIndex] = { ...tasks[taskIndex], ...updates };
     await writeTasksToFile(tasks);
@@ -61,15 +114,15 @@ export async function updateTask(taskId: string, updates: any) {
 
 export async function getTaskById(taskId: string) {
   const tasks = await readTasksFromFile();
-  return tasks.find(task => task.id === taskId);
+  return tasks.find((task: any) => task.id === taskId);
 }
 
 export async function getTasksByEmployer(employerEmail: string) {
   const tasks = await readTasksFromFile();
-  return tasks.filter(task => task.employerEmail === employerEmail);
+  return tasks.filter((task: any) => task.employerEmail === employerEmail);
 }
 
 export async function getTasksByFreelancer(freelancerEmail: string) {
   const tasks = await readTasksFromFile();
-  return tasks.filter(task => task.acceptedBy?.email === freelancerEmail);
+  return tasks.filter((task: any) => task.acceptedBy?.email === freelancerEmail);
 }

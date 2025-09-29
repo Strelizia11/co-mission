@@ -3,7 +3,16 @@ import { getTasks, addTask } from '@/lib/task-storage-persistent';
 
 export async function POST(req: Request) {
   try {
-    const { title, description, price, selectedTags, employerName, employerEmail } = await req.json();
+    const { 
+      title, 
+      description, 
+      price, 
+      selectedTags, 
+      employerName, 
+      employerEmail,
+      acceptanceDeadline,
+      completionDeadline
+    } = await req.json();
 
     if (!title || !description || !price || !selectedTags || !employerName || !employerEmail) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
@@ -17,6 +26,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'At least one skill tag is required' }, { status: 400 });
     }
 
+    if (!acceptanceDeadline || !completionDeadline) {
+      return NextResponse.json({ error: 'Both acceptance and completion deadlines are required' }, { status: 400 });
+    }
+
+    // Validate deadlines
+    const now = new Date();
+    const acceptanceDate = new Date(acceptanceDeadline);
+    const completionDate = new Date(completionDeadline);
+
+    if (acceptanceDate <= now) {
+      return NextResponse.json({ error: 'Acceptance deadline must be in the future' }, { status: 400 });
+    }
+
+    if (completionDate <= acceptanceDate) {
+      return NextResponse.json({ error: 'Completion deadline must be after acceptance deadline' }, { status: 400 });
+    }
+
     const newTask = {
       id: Date.now().toString(),
       title,
@@ -25,10 +51,15 @@ export async function POST(req: Request) {
       requiredSkills: selectedTags,
       employerName,
       employerEmail,
-      status: 'open', // open, in_progress, completed, cancelled
+      status: 'accepting_applications', // accepting_applications, in_progress, completed, cancelled
       createdAt: new Date().toISOString(),
+      acceptanceDeadline,
+      completionDeadline,
+      applications: [],
       acceptedBy: null,
-      completedAt: null
+      acceptedAt: null,
+      completedAt: null,
+      submittedFiles: null
     };
 
     await addTask(newTask);

@@ -66,25 +66,29 @@ export default function BrowseTasksPage() {
     }
   };
 
-  const handleAcceptTask = async (taskId: string) => {
+  const handleApplyToTask = async (taskId: string) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}/accept`, {
+      const response = await fetch(`/api/tasks/${taskId}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ freelancerEmail: user.email, freelancerName: user.name })
+        body: JSON.stringify({ 
+          freelancerEmail: user.email, 
+          freelancerName: user.name,
+          coverLetter: ''
+        })
       });
 
       const data = await response.json();
       
       if (response.ok) {
-        setMessage('Task accepted successfully!');
+        setMessage('Application submitted successfully! The employer will review applications and select a freelancer.');
         fetchTasks(); // Refresh tasks
       } else {
-        setMessage(data.error || 'Failed to accept task');
+        setMessage(data.error || 'Failed to submit application');
       }
     } catch (error) {
-      console.error('Error accepting task:', error);
-      setMessage('Failed to accept task');
+      console.error('Error submitting application:', error);
+      setMessage('Failed to submit application');
     }
   };
 
@@ -190,16 +194,45 @@ export default function BrowseTasksPage() {
                       </div>
                     </div>
 
+                    <div className="mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                        <div>
+                          <span className="font-medium">Application Deadline:</span>
+                          <br />
+                          {new Date(task.acceptanceDeadline).toLocaleString()}
+                        </div>
+                        <div>
+                          <span className="font-medium">Completion Deadline:</span>
+                          <br />
+                          {new Date(task.completionDeadline).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="flex justify-between items-center">
                       <div className="text-sm text-gray-500">
-                        Status: <span className="capitalize text-green-600">{task.status}</span>
+                        Status: <span className="capitalize text-green-600">{task.status.replace('_', ' ')}</span>
+                        {task.applications && (
+                          <span className="ml-2 text-blue-600">
+                            ({task.applications.length} application{task.applications.length !== 1 ? 's' : ''})
+                          </span>
+                        )}
                       </div>
-                      <button
-                        onClick={() => handleAcceptTask(task.id)}
-                        className="px-6 py-2 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
-                      >
-                        Accept Task
-                      </button>
+                      {task.status === 'accepting_applications' && (
+                        <button
+                          onClick={() => handleApplyToTask(task.id)}
+                          className="px-6 py-2 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
+                        >
+                          Apply to Task
+                        </button>
+                      )}
+                      {task.status !== 'accepting_applications' && (
+                        <span className="px-6 py-2 bg-gray-300 text-gray-600 font-semibold rounded">
+                          {task.status === 'in_progress' ? 'In Progress' : 
+                           task.status === 'completed' ? 'Completed' : 
+                           task.status === 'cancelled' ? 'Cancelled' : 'Not Available'}
+                        </span>
+                      )}
                     </div>
                   </div>
                 );

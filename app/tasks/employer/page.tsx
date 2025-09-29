@@ -14,12 +14,22 @@ interface Task {
   employerEmail: string;
   status: string;
   createdAt: string;
+  acceptanceDeadline: string;
+  completionDeadline: string;
+  applications?: Array<{
+    email: string;
+    name: string;
+    coverLetter: string;
+    appliedAt: string;
+  }>;
   acceptedBy?: {
     email: string;
     name: string;
   };
   acceptedAt?: string;
   completedAt?: string;
+  submittedFiles?: any[];
+  submittedNotes?: string;
 }
 
 export default function EmployerTasksPage() {
@@ -65,6 +75,31 @@ export default function EmployerTasksPage() {
       setMessage('Failed to load tasks');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSelectFreelancer = async (taskId: string, freelancerEmail: string) => {
+    try {
+      const response = await fetch(`/api/tasks/${taskId}/select`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          freelancerEmail,
+          employerEmail: user.email
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage('Freelancer selected successfully!');
+        fetchTasks(); // Refresh tasks
+      } else {
+        setMessage(data.error || 'Failed to select freelancer');
+      }
+    } catch (error) {
+      console.error('Error selecting freelancer:', error);
+      setMessage('Failed to select freelancer');
     }
   };
 
@@ -185,6 +220,75 @@ export default function EmployerTasksPage() {
                       ))}
                     </div>
                   </div>
+
+                  <div className="mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                      <div>
+                        <span className="font-medium">Application Deadline:</span>
+                        <br />
+                        {new Date(task.acceptanceDeadline).toLocaleString()}
+                      </div>
+                      <div>
+                        <span className="font-medium">Completion Deadline:</span>
+                        <br />
+                        {new Date(task.completionDeadline).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Applications Section */}
+                  {task.applications && task.applications.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-sm font-medium text-gray-700 mb-3">
+                        Applications ({task.applications.length}):
+                      </div>
+                      <div className="space-y-3">
+                        {task.applications.map((application, index) => (
+                          <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <div className="font-medium text-gray-900">{application.name}</div>
+                                <div className="text-sm text-gray-600">{application.email}</div>
+                                <div className="text-xs text-gray-500">
+                                  Applied: {new Date(application.appliedAt).toLocaleString()}
+                                </div>
+                              </div>
+                              {task.status === 'accepting_applications' && (
+                                <button
+                                  onClick={() => handleSelectFreelancer(task.id, application.email)}
+                                  className="px-4 py-2 bg-[#FFBF00] text-black text-sm font-semibold rounded hover:bg-[#AE8200] transition"
+                                >
+                                  Select
+                                </button>
+                              )}
+                            </div>
+                            {application.coverLetter && (
+                              <div className="mt-2 text-sm text-gray-700">
+                                <span className="font-medium">Cover Letter:</span>
+                                <p className="mt-1">{application.coverLetter}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submitted Work Section */}
+                  {task.submittedFiles && task.submittedFiles.length > 0 && (
+                    <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+                      <div className="text-sm font-medium text-blue-800 mb-2">Submitted Work:</div>
+                      <div className="text-sm text-blue-700">
+                        {task.submittedFiles.length} file(s) submitted
+                      </div>
+                      {task.submittedNotes && (
+                        <div className="mt-2 text-sm text-blue-600">
+                          <span className="font-medium">Notes:</span>
+                          <p className="mt-1">{task.submittedNotes}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {task.acceptedBy && (
                     <div className="mb-4 p-4 bg-green-50 rounded-lg">

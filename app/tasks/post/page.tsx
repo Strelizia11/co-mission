@@ -19,7 +19,9 @@ export default function PostTaskPage() {
     title: "",
     description: "",
     price: "",
-    selectedTags: [] as string[]
+    selectedTags: [] as string[],
+    acceptanceDeadline: "",
+    completionDeadline: ""
   });
   const [message, setMessage] = useState("");
 
@@ -54,7 +56,7 @@ export default function PostTaskPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!form.title || !form.description || !form.price || form.selectedTags.length === 0) {
+    if (!form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline) {
       setMessage("Please fill in all fields and select at least one skill tag");
       return;
     }
@@ -195,6 +197,43 @@ export default function PostTaskPage() {
                     {form.selectedTags.length} skill{form.selectedTags.length !== 1 ? 's' : ''} selected
                   </p>
                 )}
+              </div>
+
+              {/* Deadlines */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Application Deadline *
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="acceptanceDeadline"
+                    value={form.acceptanceDeadline}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black"
+                    required
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    When freelancers can no longer apply
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Completion Deadline *
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="completionDeadline"
+                    value={form.completionDeadline}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black"
+                    required
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    When the chosen freelancer must complete the task
+                  </p>
+                </div>
               </div>
 
               <div className="flex gap-4">

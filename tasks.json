@@ -14,5 +14,88 @@
     "createdAt": "2025-09-29T01:17:28.312Z",
     "acceptedBy": null,
     "completedAt": null
+  },
+  {
+    "id": "1759109710496",
+    "title": "Clean roof",
+    "description": "Please clean my roof",
+    "price": 0.008,
+    "requiredSkills": [
+      "SEO"
+    ],
+    "employerName": "Zedekiah",
+    "employerEmail": "example@gmail.com",
+    "status": "open",
+    "createdAt": "2025-09-29T01:35:10.496Z",
+    "acceptedBy": null,
+    "completedAt": null
+  },
+  {
+    "id": "1759111380603",
+    "title": "code",
+    "description": "java",
+    "price": 1,
+    "requiredSkills": [
+      "Web Development"
+    ],
+    "employerName": "Zedekiah",
+    "employerEmail": "example@gmail.com",
+    "status": "accepting_applications",
+    "createdAt": "2025-09-29T02:03:00.603Z",
+    "acceptanceDeadline": "2025-09-29T10:04",
+    "completionDeadline": "2025-09-29T10:10",
+    "applications": [],
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "completedAt": null,
+    "submittedFiles": null
+  },
+  {
+    "id": "1759111380774",
+    "title": "code",
+    "description": "java",
+    "price": 1,
+    "requiredSkills": [
+      "Web Development"
+    ],
+    "employerName": "Zedekiah",
+    "employerEmail": "example@gmail.com",
+    "status": "accepting_applications",
+    "createdAt": "2025-09-29T02:03:00.774Z",
+    "acceptanceDeadline": "2025-09-29T10:04",
+    "completionDeadline": "2025-09-29T10:10",
+    "applications": [],
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "completedAt": null,
+    "submittedFiles": null
+  },
+  {
+    "id": "1759111730682",
+    "title": "jonel",
+    "description": "ventrue",
+    "price": 2,
+    "requiredSkills": [
+      "Photography",
+      "Web Development",
+      "Graphic Design",
+      "Mobile Development",
+      "Content Writing",
+      "UI/UX Design",
+      "Digital Marketing",
+      "Video Editing",
+      "Translation"
+    ],
+    "employerName": "Zedekiah",
+    "employerEmail": "example@gmail.com",
+    "status": "accepting_applications",
+    "createdAt": "2025-09-29T02:08:50.682Z",
+    "acceptanceDeadline": "2025-09-29T10:11",
+    "completionDeadline": "2025-09-29T10:15",
+    "applications": [],
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "completedAt": null,
+    "submittedFiles": null
   }
 ]
