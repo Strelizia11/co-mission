@@ -55,33 +55,36 @@ export default function RegisterFormPage() {
   };
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-gray-100 pt-20 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="flex flex-col items-center min-h-screen bg-white pt-20 px-4">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 px-4 py-2 mb-4 bg-gray-100 text-gray-700 font-semibold rounded-full shadow-sm hover:bg-gray-200 hover:text-black active:bg-[#FFBF00] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFBF00]/40"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
         <div className="mb-6">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-500 hover:text-gray-700 mb-2"
-          >
-            ← Back
-          </button>
-          <h2 className="text-2xl font-bold text-center text-black">
-            Register as{" "}
-            <span className="capitalize text-[#FFBF00]">{role}</span>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center text-black mb-2">
+            Register as <span className="capitalize text-[#FFBF00]">{role}</span>
           </h2>
+          <p className="text-center text-gray-500 text-base mb-2">Create your account to get started</p>
         </div>
 
         {message && (
           <p className="text-red-500 mb-4 text-center">{message}</p>
         )}
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
             placeholder="Name"
             value={form.name}
             onChange={handleChange}
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+            className="w-full p-3 border-b-2 border-gray-200 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500 rounded-md bg-gray-50"
             required
           />
           <input
@@ -90,7 +93,7 @@ export default function RegisterFormPage() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+            className="w-full p-3 border-b-2 border-gray-200 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500 rounded-md bg-gray-50"
             required
           />
           <div className="relative">
@@ -100,7 +103,7 @@ export default function RegisterFormPage() {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              className="w-full p-2 pr-10 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+              className="w-full p-3 pr-10 border-b-2 border-gray-200 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500 rounded-md bg-gray-50"
               required
             />
             <button
@@ -123,7 +126,7 @@ export default function RegisterFormPage() {
 
           <button
             type="submit"
-            className="w-full py-2 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
+            className="w-full py-3 bg-[#FFBF00] text-black font-bold rounded-lg shadow-md hover:bg-[#AE8200] transition text-lg tracking-wide"
           >
             Register
           </button>

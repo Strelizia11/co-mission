@@ -68,5 +68,12 @@
     "password": "$2b$10$MnM0CASNApFP9S9wxyLtDeuby.Bop3H6lGVX9ek1Aivfa3W2TyAwW",
     "role": "freelancer",
     "createdAt": "2025-09-29T06:40:23.868Z"
+  },
+  {
+    "name": "cscc",
+    "email": "1dwd@wd32e",
+    "password": "$2b$10$MzS2mjqNQeiMD9fJ2oNZHeU3vqRTLvUjE1t2v1Nep3U6XGrQXQBRG",
+    "role": "employer",
+    "createdAt": "2025-09-29T07:18:11.186Z"
   }
 ]
