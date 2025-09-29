@@ -40,5 +40,12 @@
     "password": "$2b$10$uoSK0vnpfhm7aarSq9oykO4EsyDb.wD/N4RmZMCN3TwOAJC5kdDgG",
     "role": "employer",
     "createdAt": "2025-09-29T00:48:24.442Z"
+  },
+  {
+    "name": "BBC",
+    "email": "bbc@email.com",
+    "password": "$2b$10$A0v8C2SG1zq82uxls7W4vuX1tR5/IIyGDwV2M.iSRpj1odMhlm1wu",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T05:48:17.454Z"
   }
 ]

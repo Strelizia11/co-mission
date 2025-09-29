@@ -14,6 +14,22 @@ interface Task {
   employerEmail: string;
   status: string;
   createdAt: string;
+  acceptanceDeadline: string;
+  completionDeadline: string;
+  applications?: Array<{
+    email: string;
+    name: string;
+    coverLetter: string;
+    appliedAt: string;
+  }>;
+  acceptedBy?: {
+    email: string;
+    name: string;
+  };
+  acceptedAt?: string;
+  completedAt?: string;
+  submittedFiles?: any[];
+  submittedNotes?: string;
 }
 
 export default function BrowseTasksPage() {
