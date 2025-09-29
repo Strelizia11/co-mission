@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { updateTask } from '@/lib/task-storage';
+import { updateTask } from '@/lib/task-storage-persistent';
 
 export async function POST(
   req: Request,
@@ -14,7 +14,7 @@ export async function POST(
     }
 
     // Update task status to submitted
-    const updatedTask = updateTask(taskId, {
+    const updatedTask = await updateTask(taskId, {
       status: 'submitted',
       submittedAt: new Date().toISOString()
     });

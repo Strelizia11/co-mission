@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasksByFreelancer } from '@/lib/task-storage';
+import { getTasksByFreelancer } from '@/lib/task-storage-persistent';
 
 export async function GET(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Freelancer email is required' }, { status: 400 });
     }
 
-    const tasks = getTasksByFreelancer(freelancerEmail);
+    const tasks = await getTasksByFreelancer(freelancerEmail);
     return NextResponse.json({ tasks });
   } catch (error) {
     console.error('Error fetching freelancer tasks:', error);

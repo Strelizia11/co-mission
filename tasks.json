@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1759108648312",
+    "title": "asdas",
+    "description": "asdasd",
+    "price": 2,
+    "requiredSkills": [
+      "DeFi Development",
+      "Blockchain Development"
+    ],
+    "employerName": "Strelizia",
+    "employerEmail": "belugaezrael@gmail.com",
+    "status": "open",
+    "createdAt": "2025-09-29T01:17:28.312Z",
+    "acceptedBy": null,
+    "completedAt": null
+  }
+]

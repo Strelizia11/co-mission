@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasks, addTask } from '@/lib/task-storage';
+import { getTasks, addTask } from '@/lib/task-storage-persistent';
 
 export async function POST(req: Request) {
   try {
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       completedAt: null
     };
 
-    addTask(newTask);
+    await addTask(newTask);
     console.log('Task posted successfully:', newTask);
 
     return NextResponse.json({ 
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     // Return only open tasks for freelancers to see
-    const allTasks = getTasks();
+    const allTasks = await getTasks();
     console.log('All tasks in storage:', allTasks);
     const openTasks = allTasks.filter(task => task.status === 'open');
     console.log('Open tasks:', openTasks);

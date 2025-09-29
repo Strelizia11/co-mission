@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasks, updateTask } from '@/lib/task-storage';
+import { getTasks, updateTask } from '@/lib/task-storage-persistent';
 
 export async function POST(
   req: Request,
@@ -14,7 +14,7 @@ export async function POST(
     }
 
     // Find the task
-    const tasks = getTasks();
+    const tasks = await getTasks();
     const task = tasks.find(task => task.id === taskId);
     
     if (!task) {
@@ -27,7 +27,7 @@ export async function POST(
     }
 
     // Update task status
-    const updatedTask = updateTask(taskId, {
+    const updatedTask = await updateTask(taskId, {
       status: 'in_progress',
       acceptedBy: {
         email: freelancerEmail,

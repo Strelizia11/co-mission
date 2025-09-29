@@ -12,5 +12,19 @@
     "password": "$2b$10$HrGm1QFwTlI.iQb8BzIntO2yM7blANrs0lFGxmrLeTZ8J4TQgeBYy",
     "role": "employer",
     "createdAt": "2025-09-28T15:12:59.624Z"
+  },
+  {
+    "name": "jonel",
+    "email": "jonel@email",
+    "password": "$2b$10$S8PN7ilC0MCE/oio68D/4uRSt86fhxvMq1PzKe54H.vK6wVg285s.",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T00:44:50.447Z"
+  },
+  {
+    "name": "jonel2",
+    "email": "jonel2@email",
+    "password": "$2b$10$uoSK0vnpfhm7aarSq9oykO4EsyDb.wD/N4RmZMCN3TwOAJC5kdDgG",
+    "role": "employer",
+    "createdAt": "2025-09-29T00:48:24.442Z"
   }
 ]

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasksByEmployer } from '@/lib/task-storage';
+import { getTasksByEmployer } from '@/lib/task-storage-persistent';
 
 export async function GET(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Employer email is required' }, { status: 400 });
     }
 
-    const tasks = getTasksByEmployer(employerEmail);
+    const tasks = await getTasksByEmployer(employerEmail);
     return NextResponse.json({ tasks });
   } catch (error) {
     console.error('Error fetching employer tasks:', error);
