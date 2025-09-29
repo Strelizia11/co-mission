@@ -24,6 +24,7 @@ export default function PostTaskPage() {
     completionDeadline: ""
   });
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -55,6 +56,7 @@ export default function PostTaskPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // prevent duplicate submits
     
     if (!form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline) {
       setMessage("Please fill in all fields and select at least one skill tag");
@@ -62,6 +64,7 @@ export default function PostTaskPage() {
     }
 
     try {
+      setIsSubmitting(true);
       const response = await fetch('/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,15 +80,18 @@ export default function PostTaskPage() {
       
       if (response.ok) {
         setMessage("Task posted successfully!");
+        // Keep button disabled while redirecting to avoid duplicate posts
         setTimeout(() => {
           router.push('/dashboard');
-        }, 1500);
+        }, 1000);
       } else {
         setMessage(data.error || "Failed to post task");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Error posting task:', error);
       setMessage("Failed to post task. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
@@ -236,21 +242,25 @@ export default function PostTaskPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 items-center">
                 <button
                   type="button"
                   onClick={() => router.push('/dashboard')}
-                  className="flex-1 py-3 bg-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-400 transition"
+                  disabled={isSubmitting}
+                  className={`flex-1 py-3 font-semibold rounded transition ${isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-700 hover:bg-gray-400'}`}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={!form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline}
-                  className="flex-1 py-3 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
+                  disabled={isSubmitting || !form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline}
+                  className={`flex-1 py-3 font-semibold rounded transition ${isSubmitting ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#FFBF00] text-black hover:bg-[#AE8200]'}`}
                 >
-                  Post Task
+                  {isSubmitting ? 'Posting...' : 'Post Task'}
                 </button>
+                {message && (
+                  <span className={`text-sm ${message.includes('successfully') ? 'text-green-700' : 'text-red-700'}`}>{message}</span>
+                )}
               </div>
             </form>
           </div>

@@ -43,6 +43,7 @@ export default function EmployerTasksPage() {
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [selectingId, setSelectingId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -85,6 +86,8 @@ export default function EmployerTasksPage() {
 
   const handleSelectFreelancer = async (taskId: string, freelancerEmail: string) => {
     try {
+      if (selectingId) return;
+      setSelectingId(taskId);
       const response = await fetch(`/api/tasks/${taskId}/select`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -105,6 +108,8 @@ export default function EmployerTasksPage() {
     } catch (error) {
       console.error('Error selecting freelancer:', error);
       setMessage('Failed to select freelancer');
+    } finally {
+      setSelectingId(null);
     }
   };
 
@@ -299,9 +304,10 @@ export default function EmployerTasksPage() {
                               {task.status === 'accepting_applications' && (
                                 <button
                                   onClick={() => handleSelectFreelancer(task.id, application.email)}
-                                  className="px-4 py-2 bg-[#FFBF00] text-black text-sm font-semibold rounded hover:bg-[#AE8200] transition"
+                                  disabled={!!selectingId}
+                                  className={`px-4 py-2 text-sm font-semibold rounded transition ${selectingId ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-[#FFBF00] text-black hover:bg-[#AE8200]'}`}
                                 >
-                                  Select
+                                  {selectingId === task.id ? 'Selecting...' : 'Select'}
                                 </button>
                               )}
                             </div>

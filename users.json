@@ -24,12 +24,103 @@
       "skills": [],
       "availability": "available",
       "portfolio": [],
-      "ratings": [],
-      "averageRating": 0,
-      "totalRatings": 0,
+      "ratings": [
+        {
+          "id": "1759161027535",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.535Z"
+        },
+        {
+          "id": "1759161027545",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.545Z"
+        },
+        {
+          "id": "1759161027549",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.549Z"
+        },
+        {
+          "id": "1759161027553",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.553Z"
+        },
+        {
+          "id": "1759161027567",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.567Z"
+        },
+        {
+          "id": "1759161027580",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.580Z"
+        },
+        {
+          "id": "1759161038318",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:38.318Z"
+        },
+        {
+          "id": "1759161038331",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:38.331Z"
+        },
+        {
+          "id": "1759161040320",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:40.320Z"
+        },
+        {
+          "id": "1759162400459",
+          "taskId": "1759160991008",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 3,
+          "review": "aecx",
+          "createdAt": "2025-09-29T16:13:20.459Z"
+        }
+      ],
+      "averageRating": 4.8,
+      "totalRatings": 10,
       "completedTasks": 0,
       "joinedAt": "2025-09-29T00:44:50.447Z",
-      "updatedAt": "2025-09-29T03:02:21.757Z",
+      "updatedAt": "2025-09-29T16:13:20.460Z",
       "bio": "hehe",
       "hourlyRate": 2
     }

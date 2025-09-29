@@ -16,6 +16,7 @@ export default function RegisterFormPage() {
   });
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (role) {
@@ -29,6 +30,8 @@ export default function RegisterFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -51,6 +54,7 @@ export default function RegisterFormPage() {
       }
     } else {
       setMessage(data.error);
+      setIsSubmitting(false);
     }
   };
 
@@ -74,7 +78,7 @@ export default function RegisterFormPage() {
         </div>
 
         {message && (
-          <p className="text-red-500 mb-4 text-center">{message}</p>
+          <p className={`mb-4 text-center ${message.toLowerCase().includes('success') ? 'text-green-600' : 'text-red-600'}`}>{message}</p>
         )}
 
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -126,9 +130,10 @@ export default function RegisterFormPage() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-[#FFBF00] text-black font-bold rounded-lg shadow-md hover:bg-[#AE8200] transition text-lg tracking-wide"
+            disabled={isSubmitting}
+            className={`w-full py-3 font-bold rounded-lg shadow-md transition text-lg tracking-wide ${isSubmitting ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#FFBF00] text-black hover:bg-[#AE8200]'}`}
           >
-            Register
+            {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
       </div>

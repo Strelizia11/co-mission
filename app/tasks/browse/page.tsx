@@ -28,6 +28,8 @@ export default function BrowseTasksPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [applyingId, setApplyingId] = useState<string | null>(null);
+  const [applyFeedbackByTask, setApplyFeedbackByTask] = useState<Record<string, { type: 'success' | 'error'; text: string }>>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -74,6 +76,8 @@ export default function BrowseTasksPage() {
 
   const handleApplyToTask = async (taskId: string) => {
     try {
+      if (applyingId) return; // prevent double submit across tasks
+      setApplyingId(taskId);
       const response = await fetch(`/api/tasks/${taskId}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,14 +91,25 @@ export default function BrowseTasksPage() {
       const data = await response.json();
       
       if (response.ok) {
-        setMessage('Application submitted successfully! The employer will review applications and select a freelancer.');
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'success', text: 'Application submitted successfully!' }
+        }));
         fetchTasks(); // Refresh tasks
       } else {
-        setMessage(data.error || 'Failed to submit application');
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'error', text: data.error || 'Failed to submit application' }
+        }));
       }
     } catch (error) {
       console.error('Error submitting application:', error);
-      setMessage('Failed to submit application');
+      setApplyFeedbackByTask(prev => ({
+        ...prev,
+        [taskId]: { type: 'error', text: 'Failed to submit application' }
+      }));
+    } finally {
+      setApplyingId(null);
     }
   };
 
@@ -180,6 +195,7 @@ export default function BrowseTasksPage() {
                 const now = new Date();
                 const acceptanceDeadline = new Date(task.acceptanceDeadline);
                 const isDeadlinePassed = now > acceptanceDeadline;
+                const alreadyApplied = Array.isArray(task.applications) && task.applications.some((a: any) => a?.email === user?.email);
                 const canApply = task.status === 'accepting_applications' && !isDeadlinePassed;
 
                 return (
@@ -289,9 +305,12 @@ export default function BrowseTasksPage() {
                       {canApply && (
                         <button
                           onClick={() => handleApplyToTask(task.id)}
-                          className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                          disabled={!!applyingId || alreadyApplied}
+                          className={`bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
+                            !!applyingId || alreadyApplied ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-lg transform hover:scale-105'
+                          }`}
                         >
-                          Apply to Task
+                          {alreadyApplied ? 'Applied' : (applyingId === task.id ? 'Applying...' : 'Apply to Task')}
                         </button>
                       )}
                       {!canApply && (
@@ -307,6 +326,14 @@ export default function BrowseTasksPage() {
                         </span>
                       )}
                     </div>
+                    {applyFeedbackByTask[task.id] && (
+                      <div className={`mt-4 rounded-lg text-sm px-3 py-2 inline-flex items-center gap-2 ${
+                        applyFeedbackByTask[task.id].type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                      }`}>
+                        <span>{applyFeedbackByTask[task.id].type === 'success' ? '✅' : '❌'}</span>
+                        <span>{applyFeedbackByTask[task.id].text}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}

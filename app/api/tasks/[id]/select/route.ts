@@ -27,14 +27,10 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized to select freelancer for this task' }, { status: 403 });
     }
 
-    // Allow selection when there is an accepted freelancer
-    if (task.status !== 'accepted') {
-      return NextResponse.json({ error: 'No accepted freelancer to select yet' }, { status: 400 });
-    }
-
-    // Ensure selected freelancer matches acceptedBy
-    if (task.acceptedBy?.email !== freelancerEmail) {
-      return NextResponse.json({ error: 'Selected freelancer must be the accepted freelancer' }, { status: 400 });
+    // Ensure the freelancer has applied to this task
+    const hasApplied = Array.isArray(task.applications) && task.applications.some((a: any) => a?.email === freelancerEmail);
+    if (!hasApplied) {
+      return NextResponse.json({ error: 'Freelancer has not applied to this task' }, { status: 400 });
     }
 
     // Select freelancer

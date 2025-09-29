@@ -4,6 +4,8 @@ import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from 
 import { Identity, Avatar, Name, Address, EthBalance } from "@coinbase/onchainkit/identity";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import SideNavigation from "./SideNavigation";
 
 interface DashboardHeaderProps {
   user?: {
@@ -15,7 +17,10 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderProps) {
+  const router = useRouter();
   const [unread, setUnread] = useState<number>(0);
+  const [internalNavOpen, setInternalNavOpen] = useState(false);
+  const [navBusy, setNavBusy] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,13 +41,19 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
 
   return (
     <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md relative z-30">
+      {/* If no external onToggleNav provided, mount internal SideNavigation */}
+      {!onToggleNav && (
+        <SideNavigation user={user} isOpen={internalNavOpen} onClose={() => setInternalNavOpen(false)} />
+      )}
       {/* Left Side - Logo */}
       <div className="flex items-center gap-4">
         {/* Burger for mobile */}
         <button
           aria-label="Open menu"
           className="text-white mr-2"
-          onClick={onToggleNav}
+          onClick={() => {
+            if (onToggleNav) onToggleNav(); else setInternalNavOpen(true);
+          }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -64,9 +75,14 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
       <div className="flex items-center gap-3">
             {/* Notifications button */}
             {user && (
-              <a
-                href="/notifications"
-                className="relative p-3 hover:bg-[#FFBF00]/10 transition-colors duration-200 rounded-lg"
+              <button
+                aria-label="Notifications"
+                disabled={navBusy}
+                onClick={() => {
+                  setNavBusy(true);
+                  router.push('/notifications');
+                }}
+                className={`relative p-3 rounded-lg transition-colors duration-200 ${navBusy ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#FFBF00]/10'}`}
               >
                 <Image
                   src="/Bell-removebg-preview.png"
@@ -80,7 +96,7 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
                     {unread}
                   </span>
                 )}
-              </a>
+              </button>
             )}
         <Wallet className="z-10">
           <div className="text-black px-4 py-2 text-lg font-semibold">
