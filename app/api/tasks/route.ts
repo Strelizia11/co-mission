@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasks, addTask } from '@/lib/task-storage-persistent';
+import { getTasksWithCleanup, addTask } from '@/lib/task-storage-persistent';
 
 export async function POST(req: Request) {
   try {
@@ -77,12 +77,13 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    // Return only open tasks for freelancers to see
-    const allTasks = await getTasks();
-    console.log('All tasks in storage:', allTasks);
-    const openTasks = allTasks.filter(task => task.status === 'open');
-    console.log('Open tasks:', openTasks);
-    return NextResponse.json({ tasks: openTasks });
+    // Return only tasks accepting applications for freelancers to see
+    // This will automatically clean up expired tasks (3+ days past completion deadline)
+    const allTasks = await getTasksWithCleanup();
+    console.log('All tasks in storage (after cleanup):', allTasks);
+    const availableTasks = allTasks.filter(task => task.status === 'accepting_applications');
+    console.log('Available tasks:', availableTasks);
+    return NextResponse.json({ tasks: availableTasks });
   } catch (error) {
     console.error('Error fetching tasks:', error);
     return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 });

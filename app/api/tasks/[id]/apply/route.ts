@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasks, addFreelancerApplication } from '@/lib/task-storage-persistent';
+import { addFreelancerApplication, getTaskById } from '@/lib/task-storage-persistent';
 
 export async function POST(
   req: Request,
@@ -13,10 +13,8 @@ export async function POST(
       return NextResponse.json({ error: 'Freelancer information is required' }, { status: 400 });
     }
 
-    // Find the task
-    const tasks = await getTasks();
-    const task = tasks.find(task => task.id === taskId);
-    
+    // First, get the task to check deadline
+    const task = await getTaskById(taskId);
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
@@ -31,10 +29,12 @@ export async function POST(
     const acceptanceDeadline = new Date(task.acceptanceDeadline);
     
     if (now > acceptanceDeadline) {
-      return NextResponse.json({ error: 'Application deadline has passed' }, { status: 400 });
+      return NextResponse.json({ 
+        error: 'Application deadline has passed. This task is no longer accepting applications.' 
+      }, { status: 400 });
     }
 
-    // Add freelancer application
+    // Add application to task
     const updatedTask = await addFreelancerApplication(taskId, {
       email: freelancerEmail,
       name: freelancerName,

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTasksByEmployer } from '@/lib/task-storage-persistent';
+import { getTasksByEmployer, cleanupExpiredTasks } from '@/lib/task-storage-persistent';
 
 export async function GET(req: Request) {
   try {
@@ -10,6 +10,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Employer email is required' }, { status: 400 });
     }
 
+    // Clean up expired tasks first
+    await cleanupExpiredTasks();
     const tasks = await getTasksByEmployer(employerEmail);
     return NextResponse.json({ tasks });
   } catch (error) {

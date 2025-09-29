@@ -126,3 +126,30 @@ export async function getTasksByFreelancer(freelancerEmail: string) {
   const tasks = await readTasksFromFile();
   return tasks.filter((task: any) => task.acceptedBy?.email === freelancerEmail);
 }
+
+// Clean up expired tasks (3+ days past completion deadline)
+export async function cleanupExpiredTasks() {
+  const tasks = await readTasksFromFile();
+  const now = new Date();
+  const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000)); // 3 days ago
+  
+  const activeTasks = tasks.filter((task: any) => {
+    const completionDeadline = new Date(task.completionDeadline);
+    // Keep tasks that are not yet 3 days past their completion deadline
+    return completionDeadline > threeDaysAgo;
+  });
+  
+  // Only write if there were changes
+  if (activeTasks.length !== tasks.length) {
+    await writeTasksToFile(activeTasks);
+    console.log(`Cleaned up ${tasks.length - activeTasks.length} expired tasks`);
+  }
+  
+  return activeTasks;
+}
+
+// Get tasks with automatic cleanup
+export async function getTasksWithCleanup() {
+  await cleanupExpiredTasks();
+  return await readTasksFromFile();
+}

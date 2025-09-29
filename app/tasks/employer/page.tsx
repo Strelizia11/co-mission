@@ -38,6 +38,10 @@ export default function EmployerTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState("");
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -103,11 +107,12 @@ export default function EmployerTasksPage() {
     }
   };
 
-  const handleCompleteTask = async (taskId: string) => {
+  const handleCompleteTask = async (taskId: string, rating?: number, review?: string) => {
     try {
       const response = await fetch(`/api/tasks/${taskId}/complete`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating, review })
       });
 
       const data = await response.json();
@@ -115,12 +120,27 @@ export default function EmployerTasksPage() {
       if (response.ok) {
         setMessage('Task marked as completed!');
         fetchTasks(); // Refresh tasks
+        setShowRatingModal(false);
+        setSelectedTask(null);
+        setRating(5);
+        setReview("");
       } else {
         setMessage(data.error || 'Failed to complete task');
       }
     } catch (error) {
       console.error('Error completing task:', error);
       setMessage('Failed to complete task');
+    }
+  };
+
+  const openRatingModal = (task: any) => {
+    setSelectedTask(task);
+    setShowRatingModal(true);
+  };
+
+  const submitRating = () => {
+    if (selectedTask) {
+      handleCompleteTask(selectedTask.id, rating, review);
     }
   };
 
@@ -303,10 +323,10 @@ export default function EmployerTasksPage() {
                   {task.status === 'in_progress' && task.acceptedBy && (
                     <div className="flex justify-end">
                       <button
-                        onClick={() => handleCompleteTask(task.id)}
+                        onClick={() => openRatingModal(task)}
                         className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
                       >
-                        Mark as Completed
+                        Complete & Rate
                       </button>
                     </div>
                   )}
@@ -324,6 +344,69 @@ export default function EmployerTasksPage() {
           )}
         </div>
       </div>
+
+      {/* Rating Modal */}
+      {showRatingModal && selectedTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Rate Freelancer: {selectedTask.acceptedBy?.name}
+            </h3>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rating (1-5 stars)
+              </label>
+              <div className="flex space-x-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setRating(star)}
+                    className={`text-2xl ${
+                      star <= rating ? 'text-yellow-400' : 'text-gray-300'
+                    } hover:text-yellow-400`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Review
+              </label>
+              <textarea
+                value={review}
+                onChange={(e) => setReview(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={4}
+                placeholder="Share your experience working with this freelancer..."
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={submitRating}
+                className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              >
+                Complete & Submit Rating
+              </button>
+              <button
+                onClick={() => {
+                  setShowRatingModal(false);
+                  setSelectedTask(null);
+                  setRating(5);
+                  setReview("");
+                }}
+                className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -18,7 +18,21 @@
     "email": "jonel@email",
     "password": "$2b$10$S8PN7ilC0MCE/oio68D/4uRSt86fhxvMq1PzKe54H.vK6wVg285s.",
     "role": "freelancer",
-    "createdAt": "2025-09-29T00:44:50.447Z"
+    "createdAt": "2025-09-29T00:44:50.447Z",
+    "profile": {
+      "email": "jonel@email",
+      "skills": [],
+      "availability": "available",
+      "portfolio": [],
+      "ratings": [],
+      "averageRating": 0,
+      "totalRatings": 0,
+      "completedTasks": 0,
+      "joinedAt": "2025-09-29T00:44:50.447Z",
+      "updatedAt": "2025-09-29T03:02:21.757Z",
+      "bio": "hehe",
+      "hourlyRate": 2
+    }
   },
   {
     "name": "jonel2",
