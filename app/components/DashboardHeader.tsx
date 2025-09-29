@@ -5,17 +5,28 @@ import { Identity, Avatar, Name, Address, EthBalance } from "@coinbase/onchainki
 import Image from "next/image";
 
 interface DashboardHeaderProps {
-  user: {
+  user?: {
     name: string;
     role: string;
   };
+  onToggleNav?: () => void;
 }
 
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderProps) {
   return (
     <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md relative z-30">
       {/* Left Side - Logo */}
       <div className="flex items-center gap-4">
+        {/* Burger for mobile */}
+        <button
+          aria-label="Open menu"
+          className="text-white mr-2"
+          onClick={onToggleNav}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image

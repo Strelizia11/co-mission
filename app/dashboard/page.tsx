@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
     // In a real app, you'd get this from a session/token
@@ -38,12 +39,12 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
       {/* Side Navigation */}
-      <SideNavigation user={user} />
+      <SideNavigation user={user} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
       
       {/* Main Content Area */}
-      <div className="flex-1 ml-64">
+      <div className={`flex-1 ${isNavOpen ? '' : ''}`}>
         {/* Header */}
-        <DashboardHeader user={user} />
+        <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
         
         {/* Dashboard Content */}
         <div className="max-w-7xl mx-auto p-6">

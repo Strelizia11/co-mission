@@ -37,16 +37,18 @@ export default function RegisterFormPage() {
     const data = await res.json();
     if (res.ok) {
       setMessage(data.message);
-      // Auto-login: Save user data to localStorage and redirect to dashboard
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setTimeout(() => {
-        // Check if freelancer needs skills setup
-        if (data.user.role === 'freelancer') {
-          router.push("/auth/skills-setup");
-        } else {
-          router.push("/dashboard");
+      // Auto-login: Save user data to localStorage and redirect immediately
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(data.user));
         }
-      }, 1500);
+      } catch (_) {}
+      // Redirect based on role without delay
+      if (data.user.role === 'freelancer') {
+        router.push("/auth/skills-setup");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       setMessage(data.error);
     }

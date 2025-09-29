@@ -35,6 +35,7 @@ export default function FreelancerTasksPage() {
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [submissionNotes, setSubmissionNotes] = useState("");
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -136,12 +137,12 @@ export default function FreelancerTasksPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
       {/* Side Navigation */}
-      <SideNavigation user={user} />
+      <SideNavigation user={user} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
       
       {/* Main Content Area */}
-      <div className="flex-1 ml-64">
+      <div className={`flex-1`}>
         {/* Header */}
-        <DashboardHeader user={user} />
+        <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
         
         {/* Accepted Tasks Content */}
         <div className="max-w-7xl mx-auto p-6">

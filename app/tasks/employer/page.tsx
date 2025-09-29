@@ -42,6 +42,7 @@ export default function EmployerTasksPage() {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -160,7 +161,7 @@ export default function EmployerTasksPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <DashboardHeader user={user} />
+      <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
