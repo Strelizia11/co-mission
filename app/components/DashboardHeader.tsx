@@ -9,6 +9,7 @@ interface DashboardHeaderProps {
   user?: {
     name: string;
     role: string;
+    email: string;
   };
   onToggleNav?: () => void;
 }
@@ -61,20 +62,26 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
 
       {/* Right Side - Notifications + Connect Wallet */}
       <div className="flex items-center gap-3">
-        {/* Notifications button */}
-        {user && (
-          <a
-            href="/notifications"
-            className="relative text-white border-2 border-[#FFBF00] rounded-[12px] px-3 py-2 hover:bg-[#AE8200]"
-          >
-            Notifications
-            {unread > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                {unread}
-              </span>
+            {/* Notifications button */}
+            {user && (
+              <a
+                href="/notifications"
+                className="relative p-3 hover:bg-[#FFBF00]/10 transition-colors duration-200 rounded-lg"
+              >
+                <Image
+                  src="/Bell-removebg-preview.png"
+                  alt="Notifications"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8"
+                />
+                {unread > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
+                    {unread}
+                  </span>
+                )}
+              </a>
             )}
-          </a>
-        )}
         <Wallet className="z-10">
           <div className="text-black px-4 py-2 text-lg font-semibold">
             <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">

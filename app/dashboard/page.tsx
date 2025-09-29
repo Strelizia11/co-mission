@@ -207,12 +207,12 @@ export default function DashboardPage() {
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900">Accomplished Tasks</h3>
                     </div>
-                    <p className="text-gray-600 mb-4">View all your completed tasks and achievements</p>
+                    <p className="text-gray-600 mb-4">View all your completed tasks and achievement                                    </p>
                     <button 
                       onClick={() => router.push('/tasks/accomplished')}
                       className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
                     >
-                      View Accomplishments
+                      My Accomplishments
                     </button>
                   </div>
                 </>

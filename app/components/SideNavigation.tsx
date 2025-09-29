@@ -66,32 +66,64 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
       <div className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-gray-900/80 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => onClose && onClose()}
         />
         {/* Panel */}
-        <div className={`absolute left-0 top-0 h-full w-64 md:w-[35vw] bg-[#FFBF00] shadow-2xl border-r-2 border-black transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform ease-out duration-300 will-change-transform`}
+        <div className={`absolute left-0 top-0 h-full w-80 sm:w-96 md:w-[35vw] lg:w-80 bg-[#FFFFFF] shadow-2xl border-r-2 border-black transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform ease-out duration-300 will-change-transform`}
         >
           <div className="h-full flex flex-col">
             {/* Header with close */}
-            <div className="p-6 border-b-2 border-black flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-black">
+            <div className="p-4 sm:p-6 border-b-2 border-black flex items-center justify-between bg-black relative overflow-hidden">
+              {/* Abstract geometric background pattern */}
+              <div className="absolute inset-0 opacity-30">
+                <svg className="w-full h-full" viewBox="0 0 400 200" fill="none" preserveAspectRatio="xMidYMid slice">
+                  {/* Large U-shaped element */}
+                  <path d="M360 160 L360 120 L320 120 L320 80 L280 80 L280 120 L240 120 L240 160 L360 160 Z" stroke="#FFBF00" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  
+                  {/* Small circle */}
+                  <circle cx="350" cy="90" r="4" fill="#FFBF00"/>
+                  
+                  {/* Chevron arrows */}
+                  <path d="M300 140 L290 150 L300 160" stroke="#FFBF00" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M280 130 L270 140 L280 150" stroke="#FFBF00" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M260 120 L250 130 L260 140" stroke="#FFBF00" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  
+                  {/* Parallel diagonal lines */}
+                  <path d="M40 40 L80 80" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  <path d="M60 30 L100 70" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  <path d="M80 20 L120 60" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  <path d="M100 10 L140 50" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  
+                  {/* Additional geometric elements */}
+                  <path d="M160 60 L200 100 L240 60 L200 20 Z" stroke="#FFBF00" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20 160 L60 200" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  <path d="M30 150 L70 190" stroke="#FFBF00" strokeWidth="3" strokeLinecap="round"/>
+                  
+                  {/* Circuit-like elements */}
+                  <path d="M50 50 L70 50 L70 70 L90 70" stroke="#FFBF00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="70" cy="50" r="3" fill="#FFBF00"/>
+                  <circle cx="70" cy="70" r="3" fill="#FFBF00"/>
+                </svg>
+              </div>
+              
+              <div className="relative z-10">
+                <h2 className="text-lg sm:text-xl font-bold text-white">
                   {user.role === 'employer' ? 'Employer' : 'Freelancer'} Tools
                 </h2>
-                <p className="text-sm text-black/70 mt-1">Welcome back, {user.name}!</p>
+                <p className="text-xs sm:text-sm text-white/70 mt-1">Welcome back, {user.name}!</p>
               </div>
               <button
                 aria-label="Close menu"
                 onClick={() => onClose && onClose()}
-                className="text-black hover:text-black/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FFBF00] rounded-md"
+                className="text-white hover:text-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md relative z-10"
               >
                 ✕
               </button>
             </div>
 
             {/* Items */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               <div className="space-y-3">
                 {/* Dashboard button */}
                 <button
@@ -101,8 +133,8 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                 >
                   <span className="text-2xl mr-4 transition-transform duration-200 group-hover:translate-x-0.5">🏠</span>
                   <div>
-                    <div className="font-semibold text-black text-lg group-hover:text-black">Dashboard</div>
-                    <div className="text-sm text-black/70">Overview and quick actions</div>
+                    <div className="font-semibold text-black text-base sm:text-lg group-hover:text-black">Dashboard</div>
+                    <div className="text-xs sm:text-sm text-black/70">Overview and quick actions</div>
                   </div>
                 </button>
 
@@ -121,8 +153,8 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                     >
                       <span className="text-2xl mr-4 transition-transform duration-200 group-hover:translate-x-0.5">{tool.icon}</span>
                       <div>
-                        <div className="font-semibold text-black text-lg group-hover:text-black">{tool.name}</div>
-                        <div className="text-sm text-black/70">{tool.description}</div>
+                        <div className="font-semibold text-black text-base sm:text-lg group-hover:text-black">{tool.name}</div>
+                        <div className="text-xs sm:text-sm text-black/70">{tool.description}</div>
                       </div>
                     </button>
                   );
@@ -131,7 +163,7 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
             </div>
 
             {/* Footer pinned bottom */}
-            <div className="p-6 border-t-2 border-black">
+            <div className="p-4 sm:p-6 border-t-2 border-black">
               <button
                 onClick={() => { handleLogout(); onClose && onClose(); }}
                 className="w-full flex items-center p-4 text-left hover:bg-red-500/20 rounded-lg transition-all duration-200 text-red-700 border border-red-500/30 hover:border-red-500/50 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FFBF00]"
