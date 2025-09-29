@@ -47,6 +47,14 @@ export async function POST(
       submittedAt: new Date().toISOString()
     });
 
+    // Notify employer that work was submitted
+    await createNotification({
+      userEmail: task.employerEmail,
+      title: 'Work submitted',
+      message: `Freelancer submitted work for "${task.title}". Please review.`,
+      meta: { taskId }
+    });
+
     if (!updatedTask) {
       return NextResponse.json({ error: 'Failed to submit work' }, { status: 500 });
     }

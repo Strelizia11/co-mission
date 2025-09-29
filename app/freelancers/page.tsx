@@ -28,7 +28,7 @@ interface FreelancerProfile {
   email: string;
   bio?: string;
   skills: string[];
-  hourlyRate?: number;
+  minimumRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
   portfolio: PortfolioItem[];
   ratings: Rating[];
@@ -45,6 +45,14 @@ export default function FreelancersPage() {
   const [profiles, setProfiles] = useState<FreelancerProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [showHireModal, setShowHireModal] = useState(false);
+  const [hireTarget, setHireTarget] = useState<FreelancerProfile | null>(null);
+  const [hireForm, setHireForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    completionDeadline: ''
+  });
   const [filters, setFilters] = useState({
     skills: '',
     minRating: '',
@@ -252,10 +260,10 @@ export default function FreelancersPage() {
                   </div>
                 </div>
 
-                {profile.hourlyRate && (
+                {profile.minimumRate && (
                   <div className="mb-4">
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Hourly Rate:</span> ${profile.hourlyRate}
+                      <span className="font-medium">Minimum Rate:</span> ${profile.minimumRate}
                     </p>
                   </div>
                 )}
@@ -296,7 +304,6 @@ export default function FreelancersPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      // Navigate to freelancer detail page or open modal
                       console.log('View profile:', profile.email);
                     }}
                     className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
@@ -305,8 +312,9 @@ export default function FreelancersPage() {
                   </button>
                   <button
                     onClick={() => {
-                      // Navigate to tasks page to hire this freelancer
-                      router.push('/tasks/browse');
+                      setHireTarget(profile);
+                      setHireForm({ title: '', description: '', price: String(profile.minimumRate || ''), completionDeadline: '' });
+                      setShowHireModal(true);
                     }}
                     className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
                   >
@@ -330,6 +338,99 @@ export default function FreelancersPage() {
           )}
         </div>
       </div>
+      {/* Direct Hire Modal */}
+      {showHireModal && hireTarget && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Direct Hire: {hireTarget.email.split('@')[0]}</h3>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                <input
+                  type="text"
+                  value={hireForm.title}
+                  onChange={(e) => setHireForm(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  placeholder="e.g., Build landing page"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={hireForm.description}
+                  onChange={(e) => setHireForm(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  rows={4}
+                  placeholder="Describe the task requirements..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Offer Price ($, must be ≥ minimum)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={hireForm.price}
+                  onChange={(e) => setHireForm(prev => ({ ...prev, price: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  min={hireTarget.minimumRate || 0}
+                />
+                <p className="text-xs text-gray-500 mt-1">Minimum rate: ${hireTarget.minimumRate || 'Not set'}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Completion Deadline</label>
+                <input
+                  type="datetime-local"
+                  value={hireForm.completionDeadline}
+                  onChange={(e) => setHireForm(prev => ({ ...prev, completionDeadline: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 justify-end mt-5">
+              <button
+                onClick={() => { setShowHireModal(false); setHireTarget(null); }}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!hireForm.title || !hireForm.description || !hireForm.price || !hireForm.completionDeadline) return;
+                  const employer = JSON.parse(localStorage.getItem('user') || '{}');
+                  const res = await fetch('/api/tasks/direct-hire', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      title: hireForm.title,
+                      description: hireForm.description,
+                      price: parseFloat(hireForm.price),
+                      employerName: employer.name || '',
+                      employerEmail: employer.email || '',
+                      freelancerEmail: hireTarget.email,
+                      completionDeadline: hireForm.completionDeadline,
+                    })
+                  });
+                  const data = await res.json();
+                  if (res.ok) {
+                    setMessage('Direct hire task created!');
+                    setShowHireModal(false);
+                    setHireTarget(null);
+                  } else {
+                    setMessage(data.error || 'Failed to create direct hire task');
+                  }
+                }}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                disabled={
+                  !hireForm.title || !hireForm.description || !hireForm.price || !hireForm.completionDeadline ||
+                  (hireTarget.minimumRate != null && parseFloat(hireForm.price) < (hireTarget.minimumRate as number))
+                }
+              >
+                Create Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

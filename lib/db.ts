@@ -30,7 +30,7 @@ export type FreelancerProfile = {
   email: string;
   bio?: string;
   skills: string[];
-  hourlyRate?: number;
+  minimumRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
   portfolio: PortfolioItem[];
   ratings: Rating[];

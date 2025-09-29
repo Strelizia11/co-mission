@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getTasks, updateTask } from '@/lib/task-storage-persistent';
+import { createNotification } from '@/lib/notifications';
 
 export async function POST(
   req: Request,
@@ -26,14 +27,27 @@ export async function POST(
       return NextResponse.json({ error: 'Task is no longer accepting applications' }, { status: 400 });
     }
 
-    // Update task status
+    // If task is private, only invited freelancer can accept
+    if (task.visibility === 'private' && task.directHireFreelancer && task.directHireFreelancer !== freelancerEmail) {
+      return NextResponse.json({ error: 'This task is a direct hire and cannot be accepted by you' }, { status: 403 });
+    }
+
+    // Update task status to accepted (employer still needs to select to start)
     const updatedTask = await updateTask(taskId, {
-      status: 'in_progress',
+      status: 'accepted',
       acceptedBy: {
         email: freelancerEmail,
         name: freelancerName
       },
       acceptedAt: new Date().toISOString()
+    });
+
+    // Notify employer of acceptance
+    await createNotification({
+      userEmail: task.employerEmail,
+      title: 'Task accepted',
+      message: `${freelancerName} accepted your task "${task.title}". Select to start.`,
+      meta: { taskId }
     });
 
     return NextResponse.json({ 

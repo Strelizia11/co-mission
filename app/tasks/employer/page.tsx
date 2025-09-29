@@ -147,9 +147,12 @@ export default function EmployerTasksPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'open': return 'bg-green-100 text-green-800';
-      case 'in_progress': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
+      case 'accepting_applications': return 'bg-gray-100 text-gray-800';
+      case 'accepted': return 'bg-yellow-100 text-yellow-800';
+      case 'in_progress': return 'bg-blue-100 text-blue-800';
+      case 'submitted': return 'bg-purple-100 text-purple-800';
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'rated': return 'bg-green-200 text-green-900';
       case 'cancelled': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -229,6 +232,25 @@ export default function EmployerTasksPage() {
                   </div>
 
                   <div className="mb-4">
+                    {/* Progress bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                      <div
+                        className={`h-2 rounded-full ${
+                          task.status === 'accepting_applications' ? 'w-1/5 bg-gray-500' :
+                          task.status === 'accepted' ? 'w-2/5 bg-yellow-500' :
+                          task.status === 'in_progress' ? 'w-3/5 bg-blue-500' :
+                          task.status === 'submitted' ? 'w-4/5 bg-purple-500' :
+                          (task.status === 'completed' || task.status === 'rated') ? 'w-full bg-green-500' : 'w-0'
+                        }`}
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-600 mb-4">
+                      <span>pending request</span>
+                      <span>accepted</span>
+                      <span>ongoing</span>
+                      <span>completed</span>
+                      <span>Rated</span>
+                    </div>
                     <div className="text-sm font-medium text-gray-700 mb-2">Required Skills:</div>
                     <div className="flex flex-wrap gap-2">
                       {task.requiredSkills.map((skill, index) => (

@@ -29,7 +29,7 @@ interface FreelancerProfile {
   email: string;
   bio?: string;
   skills: string[];
-  hourlyRate?: number;
+  minimumRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
   portfolio: PortfolioItem[];
   ratings: Rating[];
@@ -52,7 +52,7 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     bio: '',
     skills: [] as string[],
-    hourlyRate: '',
+    minimumRate: '',
     availability: 'available' as 'available' | 'busy' | 'unavailable'
   });
   const [employerForm, setEmployerForm] = useState({
@@ -101,7 +101,7 @@ export default function ProfilePage() {
         setFormData({
           bio: data.profile.bio || '',
           skills: data.profile.skills || [],
-          hourlyRate: data.profile.hourlyRate?.toString() || '',
+          minimumRate: data.profile.minimumRate?.toString() || '',
           availability: data.profile.availability || 'available'
         });
       } else {
@@ -147,7 +147,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           email: user.email,
           ...formData,
-          hourlyRate: formData.hourlyRate ? parseFloat(formData.hourlyRate) : undefined
+          minimumRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined
         })
       });
       
@@ -438,12 +438,12 @@ export default function ProfilePage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            Hourly Rate ($)
+                            Minimum Rate ($)
                           </label>
                           <input
                             type="number"
-                            value={formData.hourlyRate}
-                            onChange={(e) => setFormData(prev => ({ ...prev, hourlyRate: e.target.value }))}
+                            value={formData.minimumRate}
+                            onChange={(e) => setFormData(prev => ({ ...prev, minimumRate: e.target.value }))}
                             className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                             placeholder="e.g., 25"
                           />
@@ -511,9 +511,9 @@ export default function ProfilePage() {
                       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <span className="text-xl">💰</span>
-                          Hourly Rate
+                          Minimum Rate
                         </h3>
-                        <p className="text-2xl font-bold text-gray-900">${profile?.hourlyRate || 'Not set'}</p>
+                        <p className="text-2xl font-bold text-gray-900">${profile?.minimumRate || 'Not set'}</p>
                       </div>
                       <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
