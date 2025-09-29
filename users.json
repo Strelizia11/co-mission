@@ -26,12 +26,5 @@
     "password": "$2b$10$uoSK0vnpfhm7aarSq9oykO4EsyDb.wD/N4RmZMCN3TwOAJC5kdDgG",
     "role": "employer",
     "createdAt": "2025-09-29T00:48:24.442Z"
-  },
-  {
-    "name": "Zedekiah",
-    "email": "example@gmail.com",
-    "password": "$2b$10$CeFDNRJyfvXxLYRcfaYsZe1t7pBiFVoh2kLi0viY4qIssHkIQu0Ki",
-    "role": "employer",
-    "createdAt": "2025-09-29T01:31:12.397Z"
   }
 ]
