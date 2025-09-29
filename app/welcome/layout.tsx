@@ -23,7 +23,7 @@ export default function WelcomeLayout({
   return (
     <>
       {/* Header */}
-      <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md">
+      <header className="absolute top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-[#191B1F] shadow-lg drop-shadow-lg">
         <h1 className="text-xl font-bold text-blue-600">
           <Link href="/">
             <Image
@@ -50,7 +50,7 @@ export default function WelcomeLayout({
       </header>
 
       {/* Main content */}
-      <main className="p-4">{children}</main>
+      <main>{children}</main>
     </>
   );
 }

@@ -21,20 +21,20 @@ export default function WelcomePage() {
     <main className="bg-white text-black min-h-screen">
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center text-center min-h-screen bg-[#FFBF00] px-6">
+      <section className="flex flex-col items-center justify-center text-center min-h-screen bg-[#FFBF00] px-6 pt-20">
         <h1
           className={`text-5xl md:text-6xl font-extrabold mb-6 text-black transition-all duration-700 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          Welcome to <span className="text-white">Co-Mission</span>
+          Welcome to <span className="text-white drop-shadow-lg">Co-Mission</span>
         </h1>
         <p
           className={`text-lg md:text-xl text-black max-w-2xl transition-all duration-700 delay-200 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          Connect, explore, and grow — a platform made for you.
+          Explore, Accept, and Earn — a platform made for you.
         </p>
         <div
           className={`mt-8 flex gap-4 transition-all duration-700 delay-500 ${
@@ -43,7 +43,7 @@ export default function WelcomePage() {
         >
           <Link
             href="/auth/register"
-            className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#333] transition"
+            className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#333] hover:scale-125 transition-all duration-300"
           >
             Get Started
           </Link>
@@ -84,28 +84,18 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="px-6 py-20 bg-[#191B1F] text-center text-white">
-        <h2
-          className={`text-3xl font-bold mb-6 transition-all duration-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          Ready to Get Started?
-        </h2>
+      {/* Footer */}
+      <footer className="px-6 py-8 bg-[#191B1F] text-center text-white">
         <div
-          className={`transition-all duration-700 delay-300 ${
+          className={`transition-all duration-700 ${
             mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <Link
-            href="/auth/register"
-            className="bg-[#FFBF00] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#e6ac00] transition"
-          >
-            Join Now
-          </Link>
+          <p className="text-gray-400 text-sm">
+            © {new Date().getFullYear()} Co-Mission. All rights reserved.
+          </p>
         </div>
-      </section>
+      </footer>
     </main>
   );
 }
