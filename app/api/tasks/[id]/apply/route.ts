@@ -24,6 +24,11 @@ export async function POST(
       return NextResponse.json({ error: 'Task is no longer accepting applications' }, { status: 400 });
     }
 
+    // Private tasks cannot receive public applications
+    if (task.visibility === 'private') {
+      return NextResponse.json({ error: 'This is a direct hire task and does not accept applications' }, { status: 403 });
+    }
+
     // Check if acceptance deadline has passed
     const now = new Date();
     const acceptanceDeadline = new Date(task.acceptanceDeadline);

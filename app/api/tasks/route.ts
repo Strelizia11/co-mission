@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getTasksWithCleanup, addTask } from '@/lib/task-storage-persistent';
+import { listNotifications, createNotification } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   try {
@@ -43,6 +44,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Completion deadline must be after acceptance deadline' }, { status: 400 });
     }
 
+    // Prevent duplicate posting by same employer for same title if an active task exists
+    const allTasks = await getTasksWithCleanup();
+    const hasActive = allTasks.some(t => t.employerEmail === employerEmail && t.title.trim().toLowerCase() === String(title).trim().toLowerCase() && ['accepting_applications','accepted','in_progress','submitted'].includes(t.status));
+    if (hasActive) {
+      return NextResponse.json({ error: 'You already have an active task with the same title' }, { status: 409 });
+    }
+
     const newTask = {
       id: Date.now().toString(),
       title,
@@ -51,10 +59,12 @@ export async function POST(req: Request) {
       requiredSkills: selectedTags,
       employerName,
       employerEmail,
-      status: 'accepting_applications', // accepting_applications, in_progress, completed, cancelled
+      status: 'accepting_applications', // accepting_applications, accepted, in_progress, submitted, completed, rated, cancelled
       createdAt: new Date().toISOString(),
       acceptanceDeadline,
       completionDeadline,
+      visibility: 'public', // public | private
+      directHireFreelancer: null,
       applications: [],
       acceptedBy: null,
       acceptedAt: null,
@@ -64,6 +74,14 @@ export async function POST(req: Request) {
 
     await addTask(newTask);
     console.log('Task posted successfully:', newTask);
+
+    // Notify employer that task was posted
+    await createNotification({
+      userEmail: employerEmail,
+      title: 'Task posted',
+      message: `Your task "${title}" is now public (pending request).`,
+      meta: { taskId: newTask.id, status: newTask.status }
+    });
 
     return NextResponse.json({ 
       message: 'Task posted successfully!',

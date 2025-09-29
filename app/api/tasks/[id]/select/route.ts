@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getTasks, selectFreelancer } from '@/lib/task-storage-persistent';
+import { createNotification } from '@/lib/notifications';
 
 export async function POST(
   req: Request,
@@ -26,18 +27,14 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized to select freelancer for this task' }, { status: 403 });
     }
 
-    // Check if task is still accepting applications or in review
-    if (task.status !== 'accepting_applications' && task.status !== 'employer_review') {
-      return NextResponse.json({ error: 'Task is no longer accepting freelancer selection' }, { status: 400 });
+    // Allow selection when there is an accepted freelancer
+    if (task.status !== 'accepted') {
+      return NextResponse.json({ error: 'No accepted freelancer to select yet' }, { status: 400 });
     }
 
-    // Check if freelancer has applied
-    const hasApplied = task.applications?.some(
-      (app: any) => app.email === freelancerEmail
-    );
-
-    if (!hasApplied) {
-      return NextResponse.json({ error: 'Freelancer has not applied for this task' }, { status: 400 });
+    // Ensure selected freelancer matches acceptedBy
+    if (task.acceptedBy?.email !== freelancerEmail) {
+      return NextResponse.json({ error: 'Selected freelancer must be the accepted freelancer' }, { status: 400 });
     }
 
     // Select freelancer
@@ -46,6 +43,20 @@ export async function POST(
     if (!updatedTask) {
       return NextResponse.json({ error: 'Failed to select freelancer' }, { status: 500 });
     }
+
+    // Notify both parties
+    await createNotification({
+      userEmail: freelancerEmail,
+      title: 'You were selected',
+      message: `You were selected to work on "${task.title}".`,
+      meta: { taskId }
+    });
+    await createNotification({
+      userEmail: employerEmail,
+      title: 'Task started',
+      message: `You selected a freelancer for "${task.title}". Ongoing.`,
+      meta: { taskId }
+    });
 
     return NextResponse.json({ 
       message: 'Freelancer selected successfully!',

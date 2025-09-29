@@ -246,6 +246,7 @@ export default function PostTaskPage() {
                 </button>
                 <button
                   type="submit"
+                  disabled={!form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline}
                   className="flex-1 py-3 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
                 >
                   Post Task

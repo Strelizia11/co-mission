@@ -29,7 +29,7 @@ interface FreelancerProfile {
   email: string;
   bio?: string;
   skills: string[];
-  hourlyRate?: number;
+  minimumRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
   portfolio: PortfolioItem[];
   ratings: Rating[];
@@ -44,6 +44,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<FreelancerProfile | null>(null);
+  const [employerProfile, setEmployerProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<'profile' | 'portfolio' | 'ratings'>('profile');
@@ -51,8 +52,15 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     bio: '',
     skills: [] as string[],
-    hourlyRate: '',
+    minimumRate: '',
     availability: 'available' as 'available' | 'busy' | 'unavailable'
+  });
+  const [employerForm, setEmployerForm] = useState({
+    companyName: '',
+    bio: '',
+    website: '',
+    location: '',
+    hiringPreferences: ''
   });
   const [newPortfolioItem, setNewPortfolioItem] = useState({
     title: '',
@@ -76,12 +84,11 @@ export default function ProfilePage() {
     const parsedUser = JSON.parse(userData);
     setUser(parsedUser);
     
-    if (parsedUser.role !== 'freelancer') {
-      router.push('/dashboard');
-      return;
+    if (parsedUser.role === 'freelancer') {
+      fetchProfile(parsedUser.email);
+    } else {
+      fetchEmployer(parsedUser.email);
     }
-    
-    fetchProfile(parsedUser.email);
   }, [router]);
 
   const fetchProfile = async (email: string) => {
@@ -94,7 +101,7 @@ export default function ProfilePage() {
         setFormData({
           bio: data.profile.bio || '',
           skills: data.profile.skills || [],
-          hourlyRate: data.profile.hourlyRate?.toString() || '',
+          minimumRate: data.profile.minimumRate?.toString() || '',
           availability: data.profile.availability || 'available'
         });
       } else {
@@ -102,6 +109,30 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      setMessage('Failed to fetch profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchEmployer = async (email: string) => {
+    try {
+      const response = await fetch(`/api/employer/profile?email=${email}`);
+      const data = await response.json();
+      if (response.ok) {
+        setEmployerProfile(data.profile);
+        setEmployerForm({
+          companyName: data.profile.companyName || '',
+          bio: data.profile.bio || '',
+          website: data.profile.website || '',
+          location: data.profile.location || '',
+          hiringPreferences: data.profile.hiringPreferences || ''
+        });
+      } else {
+        setMessage(data.error || 'Failed to fetch profile');
+      }
+    } catch (error) {
+      console.error('Error fetching employer profile:', error);
       setMessage('Failed to fetch profile');
     } finally {
       setLoading(false);
@@ -116,7 +147,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           email: user.email,
           ...formData,
-          hourlyRate: formData.hourlyRate ? parseFloat(formData.hourlyRate) : undefined
+          minimumRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined
         })
       });
       
@@ -124,6 +155,30 @@ export default function ProfilePage() {
       
       if (response.ok) {
         setProfile(data.profile);
+        setEditing(false);
+        setMessage('Profile updated successfully!');
+      } else {
+        setMessage(data.error || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setMessage('Failed to update profile');
+    }
+  };
+
+  const handleUpdateEmployerProfile = async () => {
+    try {
+      const response = await fetch('/api/employer/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.email,
+          ...employerForm,
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setEmployerProfile(data.profile);
         setEditing(false);
         setMessage('Profile updated successfully!');
       } else {
@@ -235,7 +290,7 @@ export default function ProfilePage() {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
-  if (!user || user.role !== 'freelancer') {
+  if (!user) {
     return <div className="flex justify-center items-center min-h-screen">Access denied</div>;
   }
 
@@ -259,7 +314,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-                  <p className="text-white/90 text-lg">Manage your professional profile and showcase your work</p>
+                  <p className="text-white/90 text-lg">{user.role === 'freelancer' ? 'Manage your professional profile and showcase your work' : 'Manage your company profile and hiring preferences'}</p>
                 </div>
                 {!editing && (
                   <button
@@ -286,27 +341,29 @@ export default function ProfilePage() {
             )}
 
             {/* Tab Navigation */}
-            <div className="flex space-x-2 mb-8 bg-gray-100 p-2 rounded-xl">
-              {['profile', 'portfolio', 'ratings'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab as any)}
-                  className={`px-6 py-3 rounded-lg font-semibold capitalize transition-all duration-300 ${
-                    activeTab === tab
-                      ? 'bg-white text-purple-600 shadow-md'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                  }`}
-                >
-                  {tab === 'profile' && '👤 '}
-                  {tab === 'portfolio' && '💼 '}
-                  {tab === 'ratings' && '⭐ '}
-                  {tab}
-                </button>
-              ))}
-            </div>
+            {user.role === 'freelancer' ? (
+              <div className="flex space-x-2 mb-8 bg-gray-100 p-2 rounded-xl">
+                {['profile', 'portfolio', 'ratings'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab as any)}
+                    className={`px-6 py-3 rounded-lg font-semibold capitalize transition-all duration-300 ${
+                      activeTab === tab
+                        ? 'bg-white text-purple-600 shadow-md'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                    }`}
+                  >
+                    {tab === 'profile' && '👤 '}
+                    {tab === 'portfolio' && '💼 '}
+                    {tab === 'ratings' && '⭐ '}
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            ) : null}
 
-            {/* Profile Tab */}
-            {activeTab === 'profile' && (
+          {/* Profile Tab */}
+          {user.role === 'freelancer' && activeTab === 'profile' && (
               <div className="space-y-8">
                 {editing ? (
                   <div className="space-y-6">
@@ -381,12 +438,12 @@ export default function ProfilePage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            Hourly Rate ($)
+                            Minimum Rate ($)
                           </label>
                           <input
                             type="number"
-                            value={formData.hourlyRate}
-                            onChange={(e) => setFormData(prev => ({ ...prev, hourlyRate: e.target.value }))}
+                            value={formData.minimumRate}
+                            onChange={(e) => setFormData(prev => ({ ...prev, minimumRate: e.target.value }))}
                             className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                             placeholder="e.g., 25"
                           />
@@ -454,9 +511,9 @@ export default function ProfilePage() {
                       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <span className="text-xl">💰</span>
-                          Hourly Rate
+                          Minimum Rate
                         </h3>
-                        <p className="text-2xl font-bold text-gray-900">${profile?.hourlyRate || 'Not set'}</p>
+                        <p className="text-2xl font-bold text-gray-900">${profile?.minimumRate || 'Not set'}</p>
                       </div>
                       <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -497,7 +554,7 @@ export default function ProfilePage() {
             )}
 
           {/* Portfolio Tab */}
-          {activeTab === 'portfolio' && (
+          {user.role === 'freelancer' && activeTab === 'portfolio' && (
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Portfolio Item</h3>
@@ -651,7 +708,7 @@ export default function ProfilePage() {
           )}
 
           {/* Ratings Tab */}
-          {activeTab === 'ratings' && (
+          {user.role === 'freelancer' && activeTab === 'ratings' && (
             <div className="space-y-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-gray-900 mb-2">
@@ -692,6 +749,147 @@ export default function ProfilePage() {
             </div>
           )}
           </div>
+          {/* Employer Profile Content */}
+          {user.role === 'employer' && (
+            <div className="space-y-8">
+              {editing ? (
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <span className="text-xl">🏢</span>
+                      Company Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Company Name</label>
+                        <input
+                          type="text"
+                          value={employerForm.companyName}
+                          onChange={(e) => setEmployerForm(prev => ({ ...prev, companyName: e.target.value }))}
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Your company or display name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Website</label>
+                        <input
+                          type="url"
+                          value={employerForm.website}
+                          onChange={(e) => setEmployerForm(prev => ({ ...prev, website: e.target.value }))}
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="https://example.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                        <input
+                          type="text"
+                          value={employerForm.location}
+                          onChange={(e) => setEmployerForm(prev => ({ ...prev, location: e.target.value }))}
+                          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="City, Country"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">About / Bio</label>
+                        <textarea
+                          value={employerForm.bio}
+                          onChange={(e) => setEmployerForm(prev => ({ ...prev, bio: e.target.value }))}
+                          className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={4}
+                          placeholder="Tell freelancers about your company or yourself as an employer"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Hiring Preferences</label>
+                        <textarea
+                          value={employerForm.hiringPreferences}
+                          onChange={(e) => setEmployerForm(prev => ({ ...prev, hiringPreferences: e.target.value }))}
+                          className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          rows={3}
+                          placeholder="e.g., preferred skills, communication style, timezone, budget range, etc."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-2">
+                    <button
+                      onClick={handleUpdateEmployerProfile}
+                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                    >
+                      💾 Save Changes
+                    </button>
+                    <button
+                      onClick={() => setEditing(false)}
+                      className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                    >
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <span className="text-xl">🏢</span>
+                      Company Profile
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <div className="text-sm text-gray-600">Company Name</div>
+                        <div className="text-lg font-semibold text-gray-900">{employerProfile?.companyName || user.name}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Website</div>
+                        <div className="text-lg font-semibold text-gray-900 break-all">{employerProfile?.website || 'Not set'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Location</div>
+                        <div className="text-lg font-semibold text-gray-900">{employerProfile?.location || 'Not set'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600">Member Since</div>
+                        <div className="text-lg font-semibold text-gray-900">{employerProfile?.joinedAt ? new Date(employerProfile.joinedAt).toLocaleDateString() : new Date(user.createdAt).toLocaleDateString()}</div>
+                      </div>
+                    </div>
+                    <div className="mt-6">
+                      <div className="text-sm text-gray-600 mb-1">About / Bio</div>
+                      <p className="text-gray-700">{employerProfile?.bio || 'No bio provided'}</p>
+                    </div>
+                    <div className="mt-6">
+                      <div className="text-sm text-gray-600 mb-1">Hiring Preferences</div>
+                      <p className="text-gray-700">{employerProfile?.hiringPreferences || 'No preferences specified'}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="text-xl">📦</span>
+                        Posted Tasks
+                      </h3>
+                      <p className="text-2xl font-bold text-gray-900">{employerProfile?.postedTasks ?? 0}</p>
+                    </div>
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="text-xl">📧</span>
+                        Contact Email
+                      </h3>
+                      <p className="text-lg font-semibold text-gray-900 break-all">{user.email}</p>
+                    </div>
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="text-xl">🔗</span>
+                        Website
+                      </h3>
+                      <p className="text-lg font-semibold text-gray-900 break-all">{employerProfile?.website || 'Not set'}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
