@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 
 interface SideNavigationProps {
-  user: {
+  user?: {
     name: string;
     role: string;
   };
@@ -51,7 +51,8 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
     }
   ];
 
-  const tools = user.role === 'employer' ? employerTools : freelancerTools;
+  const role = user?.role === 'employer' ? 'employer' : 'freelancer';
+  const tools = role === 'employer' ? employerTools : freelancerTools;
 
   const handleNavigation = (href: string) => {
     router.push(href);
@@ -109,9 +110,9 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
               
               <div className="relative z-10">
                 <h2 className="text-lg sm:text-xl font-bold text-white">
-                  {user.role === 'employer' ? 'Employer' : 'Freelancer'} Tools
+                  {role === 'employer' ? 'Employer' : 'Freelancer'} Tools
                 </h2>
-                <p className="text-xs sm:text-sm text-white/70 mt-1">Welcome back, {user.name}!</p>
+                <p className="text-xs sm:text-sm text-white/70 mt-1">Welcome back, {user?.name || 'User'}!</p>
               </div>
               <button
                 aria-label="Close menu"

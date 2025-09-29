@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardHeader from "../components/DashboardHeader";
+import SideNavigation from "../components/SideNavigation";
 
 export default function NotificationsPage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -31,10 +35,20 @@ export default function NotificationsPage() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <DashboardHeader user={user || undefined} />
+    <div className="min-h-screen bg-gray-100 flex">
+      <SideNavigation user={user || undefined} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+      <div className="flex-1">
+      <DashboardHeader user={user || undefined} onToggleNav={() => setIsNavOpen(true)} />
       <div className="max-w-3xl mx-auto p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Notifications</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+          >
+            ← Back to Dashboard
+          </button>
+        </div>
         {loading ? (
           <div>Loading...</div>
         ) : items.length === 0 ? (
@@ -74,6 +88,7 @@ export default function NotificationsPage() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

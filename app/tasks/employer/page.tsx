@@ -34,6 +34,7 @@ export default function EmployerTasksPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [selectingId, setSelectingId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -76,6 +77,8 @@ export default function EmployerTasksPage() {
 
   const handleSelectFreelancer = async (taskId: string, freelancerEmail: string) => {
     try {
+      if (selectingId) return;
+      setSelectingId(taskId);
       const response = await fetch(`/api/tasks/${taskId}/select`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,6 +99,8 @@ export default function EmployerTasksPage() {
     } catch (error) {
       console.error('Error selecting freelancer:', error);
       setMessage('Failed to select freelancer');
+    } finally {
+      setSelectingId(null);
     }
   };
 
@@ -299,9 +304,10 @@ export default function EmployerTasksPage() {
                               {task.status === 'accepting_applications' && (
                                 <button
                                   onClick={() => handleSelectFreelancer(task.id, application.freelancerEmail)}
-                                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                                  disabled={!!selectingId}
+                                  className={`px-4 py-2 text-sm font-semibold rounded transition ${selectingId ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg'}`}
                                 >
-                                  Select
+                                  {selectingId === task.id ? 'Selecting...' : 'Select'}
                                 </button>
                               )}
                             </div>
