@@ -1,5 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getAllFreelancerProfiles } from '@/lib/db';
+import { getAllFreelancerProfiles } from '../../../../lib/db';
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
 
 // GET all freelancer profiles (for employers to browse)
 export async function GET(req: Request) {
@@ -39,7 +50,13 @@ export async function GET(req: Request) {
     // Sort by average rating (highest first)
     profiles.sort((a, b) => b.averageRating - a.averageRating);
 
-    return NextResponse.json({ profiles });
+    return NextResponse.json({ profiles }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
   } catch (error) {
     console.error('Error fetching freelancer profiles:', error);
     return NextResponse.json({ error: 'Failed to fetch profiles' }, { status: 500 });

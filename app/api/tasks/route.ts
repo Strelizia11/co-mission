@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getTasksWithCleanup, addTask } from '@/lib/task-storage-persistent';
-import { listNotifications, createNotification } from '@/lib/notifications';
+import { getTasksWithCleanup, addTask } from '../../../lib/task-storage-persistent';
+import { listNotifications, createNotification } from '../../../lib/notifications';
 
 export async function POST(req: Request) {
   try {

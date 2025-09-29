@@ -15,6 +15,7 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderProps) {
+  console.log('DashboardHeader: User received:', user);
 
   return (
     <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md relative z-30">

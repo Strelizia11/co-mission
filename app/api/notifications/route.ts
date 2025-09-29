@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 
 interface Notification {
   id: string;
@@ -10,6 +8,17 @@ interface Notification {
   read: boolean;
   createdAt: string;
   taskId?: string;
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
 
 export async function GET(request: NextRequest) {
@@ -62,7 +71,13 @@ export async function GET(request: NextRequest) {
       }
     ];
 
-    return NextResponse.json({ notifications: mockNotifications });
+    return NextResponse.json({ notifications: mockNotifications }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    });
   } catch (error) {
     console.error('Error fetching notifications:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

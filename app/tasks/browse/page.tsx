@@ -69,15 +69,22 @@ export default function BrowseTasksPage() {
     try {
       console.log('Fetching tasks...');
       const response = await fetch('/api/tasks');
-      const data = await response.json();
       
+      if (!response.ok) {
+        console.error('Failed to fetch tasks:', response.status, response.statusText);
+        setMessage('Failed to load tasks');
+        return;
+      }
+      
+      const data = await response.json();
       console.log('Tasks response:', data);
       
-      if (response.ok) {
+      if (Array.isArray(data.tasks)) {
         setTasks(data.tasks);
         console.log('Tasks loaded:', data.tasks.length);
       } else {
-        setMessage('Failed to load tasks');
+        console.error('Invalid tasks data format:', data);
+        setMessage('Invalid tasks data received');
       }
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -101,9 +108,18 @@ export default function BrowseTasksPage() {
         })
       });
 
+      if (!response.ok) {
+        console.error('Failed to apply to task:', response.status, response.statusText);
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'error', text: `Failed to apply: ${response.status} ${response.statusText}` }
+        }));
+        return;
+      }
+
       const data = await response.json();
       
-      if (response.ok) {
+      if (data.success) {
         setApplyFeedbackByTask(prev => ({
           ...prev,
           [taskId]: { type: 'success', text: 'Application submitted successfully!' }

@@ -29,9 +29,12 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
 
   useEffect(() => {
     if (user?.email) {
+      console.log('NotificationDropdown: User email found:', user.email);
       fetchNotifications();
       const interval = setInterval(fetchNotifications, 10000); // Poll every 10 seconds
       return () => clearInterval(interval);
+    } else {
+      console.log('NotificationDropdown: No user email found:', user);
     }
   }, [user?.email]);
 
@@ -47,13 +50,28 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
   }, []);
 
   const fetchNotifications = async () => {
+    if (!user?.email) {
+      console.log('NotificationDropdown: No user email available for fetching notifications');
+      return;
+    }
+    
     try {
-      const response = await fetch(`/api/notifications?email=${encodeURIComponent(user!.email)}`);
-      const data = await response.json();
+      console.log('NotificationDropdown: Fetching notifications for:', user.email);
+      const response = await fetch(`/api/notifications?email=${encodeURIComponent(user.email)}`);
       
-      if (response.ok && Array.isArray(data.notifications)) {
+      if (!response.ok) {
+        console.error('Failed to fetch notifications:', response.status, response.statusText);
+        return;
+      }
+      
+      const data = await response.json();
+      console.log('NotificationDropdown: Received data:', data);
+      
+      if (Array.isArray(data.notifications)) {
         setNotifications(data.notifications);
         setUnread(data.notifications.filter((n: Notification) => !n.read).length);
+      } else {
+        console.error('Invalid notifications data format:', data);
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -73,6 +91,8 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
           prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
         );
         setUnread(prev => Math.max(0, prev - 1));
+      } else {
+        console.error('Failed to mark notification as read:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error marking notification as read:', error);
@@ -90,6 +110,8 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
       if (response.ok) {
         setNotifications(prev => prev.map(n => ({ ...n, read: true })));
         setUnread(0);
+      } else {
+        console.error('Failed to mark all notifications as read:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error marking all notifications as read:', error);

@@ -67,12 +67,21 @@ export default function BrowseFreelancersPage() {
   const fetchFreelancers = async () => {
     try {
       const response = await fetch('/api/freelancer/profiles');
+      
+      if (!response.ok) {
+        console.error('Failed to fetch freelancers:', response.status, response.statusText);
+        setMessage('Failed to load freelancers');
+        return;
+      }
+      
       const data = await response.json();
       
-      if (response.ok) {
-        setFreelancers(data.freelancers);
+      if (Array.isArray(data.profiles)) {
+        console.log('Freelancers data received:', data.profiles);
+        setFreelancers(data.profiles);
       } else {
-        setMessage('Failed to load freelancers');
+        console.error('Invalid freelancers data format:', data);
+        setMessage('Invalid freelancers data received');
       }
     } catch (error) {
       console.error('Error fetching freelancers:', error);
@@ -83,22 +92,26 @@ export default function BrowseFreelancersPage() {
   };
 
   const applyFilters = () => {
+    if (!freelancers || !Array.isArray(freelancers)) {
+      setFilteredFreelancers([]);
+      return;
+    }
     let filtered = [...freelancers];
 
     // Keyword filter
     if (filters.keyword) {
       const keyword = filters.keyword.toLowerCase();
       filtered = filtered.filter(freelancer => 
-        freelancer.name.toLowerCase().includes(keyword) ||
-        freelancer.bio?.toLowerCase().includes(keyword) ||
-        freelancer.skills.some(skill => skill.toLowerCase().includes(keyword))
+        (freelancer.name && freelancer.name.toLowerCase().includes(keyword)) ||
+        (freelancer.bio && freelancer.bio.toLowerCase().includes(keyword)) ||
+        (freelancer.skills && freelancer.skills.some(skill => skill.toLowerCase().includes(keyword)))
       );
     }
 
     // Skills filter
     if (filters.skills.length > 0) {
       filtered = filtered.filter(freelancer =>
-        filters.skills.some(skill => 
+        freelancer.skills && filters.skills.some(skill => 
           freelancer.skills.some(freelancerSkill => 
             freelancerSkill.toLowerCase().includes(skill.toLowerCase())
           )
@@ -423,12 +436,12 @@ export default function BrowseFreelancersPage() {
                 <span className="text-4xl">👥</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {freelancers.length === 0 ? 'No freelancers available' : 'No freelancers match your filters'}
+                {(!freelancers || freelancers.length === 0) ? 'No freelancers available' : 'No freelancers match your filters'}
               </h3>
               <p className="text-gray-600 mb-6">
-                {freelancers.length === 0 ? 'Check back later for new freelancers' : 'Try adjusting your filters to see more results'}
+                {(!freelancers || freelancers.length === 0) ? 'Check back later for new freelancers' : 'Try adjusting your filters to see more results'}
               </p>
-              {freelancers.length === 0 ? (
+              {(!freelancers || freelancers.length === 0) ? (
                 <button
                   onClick={fetchFreelancers}
                   className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
@@ -453,18 +466,18 @@ export default function BrowseFreelancersPage() {
                       <div className="flex items-center gap-4 mb-4">
                         <div className="w-16 h-16 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center">
                           <span className="text-2xl font-bold text-black">
-                            {freelancer.name.charAt(0).toUpperCase()}
+                            {freelancer.name ? freelancer.name.charAt(0).toUpperCase() : '👤'}
                           </span>
                         </div>
                         <div>
-                          <h3 className="text-2xl font-bold text-gray-900">{freelancer.name}</h3>
+                          <h3 className="text-2xl font-bold text-gray-900">{freelancer.name || 'Unknown User'}</h3>
                           <p className="text-gray-600">{freelancer.email}</p>
                           <div className="flex items-center gap-2 mt-2">
                             <div className="flex text-lg">
-                              {renderStars(Math.round(freelancer.averageRating))}
+                              {renderStars(Math.round(freelancer.averageRating || 0))}
                             </div>
                             <span className="text-sm text-gray-600">
-                              {freelancer.averageRating.toFixed(1)} ({freelancer.totalRatings} reviews)
+                              {(freelancer.averageRating || 0).toFixed(1)} ({freelancer.totalRatings || 0} reviews)
                             </span>
                           </div>
                         </div>
@@ -485,11 +498,11 @@ export default function BrowseFreelancersPage() {
                             freelancer.availability === 'available' ? 'bg-green-500' :
                             freelancer.availability === 'busy' ? 'bg-yellow-500' : 'bg-red-500'
                           }`}></span>
-                          <span className="text-sm capitalize">{freelancer.availability}</span>
+                          <span className="text-sm capitalize">{freelancer.availability || 'unknown'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
                           <span className="text-lg">📅</span>
-                          <span className="text-sm">Joined: {new Date(freelancer.joinedAt).toLocaleDateString()}</span>
+                          <span className="text-sm">Joined: {freelancer.joinedAt ? new Date(freelancer.joinedAt).toLocaleDateString() : 'Unknown'}</span>
                         </div>
                       </div>
                     </div>
@@ -498,14 +511,18 @@ export default function BrowseFreelancersPage() {
                   <div className="mb-6">
                     <h4 className="text-lg font-semibold text-gray-900 mb-3">Skills</h4>
                     <div className="flex flex-wrap gap-3">
-                      {freelancer.skills.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="px-4 py-2 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-200"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                      {freelancer.skills && freelancer.skills.length > 0 ? (
+                        freelancer.skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-4 py-2 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-200"
+                          >
+                            {skill}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500 text-sm">No skills listed</span>
+                      )}
                     </div>
                   </div>
 
@@ -516,10 +533,10 @@ export default function BrowseFreelancersPage() {
                         <span className="font-semibold text-gray-900">Rating</span>
                       </div>
                       <div className="text-2xl font-bold text-gray-900">
-                        {freelancer.averageRating.toFixed(1)}
+                        {(freelancer.averageRating || 0).toFixed(1)}
                       </div>
                       <div className="text-sm text-gray-600">
-                        {freelancer.totalRatings} reviews
+                        {freelancer.totalRatings || 0} reviews
                       </div>
                     </div>
                     
@@ -529,7 +546,7 @@ export default function BrowseFreelancersPage() {
                         <span className="font-semibold text-gray-900">Completed Tasks</span>
                       </div>
                       <div className="text-2xl font-bold text-gray-900">
-                        {freelancer.completedTasks}
+                        {freelancer.completedTasks || 0}
                       </div>
                     </div>
                     
@@ -539,7 +556,7 @@ export default function BrowseFreelancersPage() {
                         <span className="font-semibold text-gray-900">Portfolio</span>
                       </div>
                       <div className="text-2xl font-bold text-gray-900">
-                        {freelancer.portfolio.length}
+                        {freelancer.portfolio ? freelancer.portfolio.length : 0}
                       </div>
                       <div className="text-sm text-gray-600">
                         projects
@@ -551,7 +568,7 @@ export default function BrowseFreelancersPage() {
                     <button
                       onClick={() => {
                         // In a real app, this would open a contact modal or navigate to a contact page
-                        setMessage(`Contact information for ${freelancer.name} would be displayed here`);
+                        setMessage(`Contact information for ${freelancer.name || 'this freelancer'} would be displayed here`);
                       }}
                       className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
                     >
