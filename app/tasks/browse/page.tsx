@@ -29,6 +29,16 @@ export default function BrowseTasksPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    keyword: '',
+    skills: [] as string[],
+    minRate: '',
+    maxRate: '',
+    sortBy: 'newest' as 'newest' | 'oldest' | 'price_high' | 'price_low' | 'deadline_soon' | 'deadline_late' | 'rate_high' | 'rate_low'
+  });
+  const [applyingId, setApplyingId] = useState<string | null>(null);
+  const [applyFeedbackByTask, setApplyFeedbackByTask] = useState<Record<string, { type: string; text: string }>>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
