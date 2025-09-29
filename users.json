@@ -42,10 +42,17 @@
     "createdAt": "2025-09-29T00:48:24.442Z"
   },
   {
-    "name": "BBC",
-    "email": "bbc@email.com",
-    "password": "$2b$10$A0v8C2SG1zq82uxls7W4vuX1tR5/IIyGDwV2M.iSRpj1odMhlm1wu",
+    "name": "Emmanuel",
+    "email": "emmanuslsunga200527@gmail.com1234567",
+    "password": "$2b$10$dArps2Uqgv0LjESz1vTsSez3iPrEoShb3uGlomv6iwH7O3tLUnVWC",
     "role": "freelancer",
-    "createdAt": "2025-09-29T05:48:17.454Z"
+    "createdAt": "2025-09-29T04:42:50.044Z"
+  },
+  {
+    "name": "Nigge",
+    "email": "rainealdana147@gmail.com",
+    "password": "$2b$10$jzDQFH6ZvpnUci3B5pZXu.5iTezcM1y.CAVJmZUAjqMHxefJlZur6",
+    "role": "employer",
+    "createdAt": "2025-09-29T06:04:46.026Z"
   }
 ]
