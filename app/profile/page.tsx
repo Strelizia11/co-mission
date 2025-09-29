@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
+import SideNavigation from "../components/SideNavigation";
 
 interface PortfolioItem {
   id: string;
@@ -238,199 +239,261 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <DashboardHeader />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
+      {/* Side Navigation */}
+      <SideNavigation user={user} />
       
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-            {!editing && (
-              <button
-                onClick={() => setEditing(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
-
-          {message && (
-            <div className={`mb-4 p-3 rounded-lg ${
-              message.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}>
-              {message}
+      {/* Main Content Area */}
+      <div className="flex-1 ml-64">
+        {/* Header */}
+        <DashboardHeader user={user} />
+        
+        {/* Profile Content */}
+        <div className="max-w-7xl mx-auto p-6">
+          {/* Page Header */}
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
+                  <p className="text-white/90 text-lg">Manage your professional profile and showcase your work</p>
+                </div>
+                {!editing && (
+                  <button
+                    onClick={() => setEditing(true)}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    ✏️ Edit Profile
+                  </button>
+                )}
+              </div>
             </div>
-          )}
-
-          {/* Tab Navigation */}
-          <div className="flex space-x-1 mb-6">
-            {['profile', 'portfolio', 'ratings'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab as any)}
-                className={`px-4 py-2 rounded-lg font-medium capitalize ${
-                  activeTab === tab
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
           </div>
 
-          {/* Profile Tab */}
-          {activeTab === 'profile' && (
-            <div className="space-y-6">
-              {editing ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bio
-                    </label>
-                    <textarea
-                      value={formData.bio}
-                      onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      rows={4}
-                      placeholder="Tell us about yourself..."
-                    />
-                  </div>
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            {message && (
+              <div className={`mb-6 p-4 rounded-xl shadow-lg ${
+                message.includes('success') ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'
+              }`}>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{message.includes('success') ? '✅' : '❌'}</span>
+                  <span className="font-medium">{message}</span>
+                </div>
+              </div>
+            )}
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Skills
-                    </label>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {formData.skills.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                        >
-                          {skill}
-                          <button
-                            onClick={() => removeSkill(skill)}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
+            {/* Tab Navigation */}
+            <div className="flex space-x-2 mb-8 bg-gray-100 p-2 rounded-xl">
+              {['profile', 'portfolio', 'ratings'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab as any)}
+                  className={`px-6 py-3 rounded-lg font-semibold capitalize transition-all duration-300 ${
+                    activeTab === tab
+                      ? 'bg-white text-purple-600 shadow-md'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  }`}
+                >
+                  {tab === 'profile' && '👤 '}
+                  {tab === 'portfolio' && '💼 '}
+                  {tab === 'ratings' && '⭐ '}
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Profile Tab */}
+            {activeTab === 'profile' && (
+              <div className="space-y-8">
+                {editing ? (
+                  <div className="space-y-6">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">📝</span>
+                        Personal Information
+                      </h3>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                          Bio
+                        </label>
+                        <textarea
+                          value={formData.bio}
+                          onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                          className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          rows={4}
+                          placeholder="Tell us about yourself, your experience, and what makes you unique..."
+                        />
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newSkill}
-                        onChange={(e) => setNewSkill(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                        placeholder="Add a skill..."
-                      />
+
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">🛠️</span>
+                        Skills & Expertise
+                      </h3>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                          Your Skills
+                        </label>
+                        <div className="flex flex-wrap gap-3 mb-4">
+                          {formData.skills.map((skill, index) => (
+                            <span
+                              key={index}
+                              className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 border border-green-200"
+                            >
+                              {skill}
+                              <button
+                                onClick={() => removeSkill(skill)}
+                                className="text-green-600 hover:text-green-800 font-bold"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex gap-3">
+                          <input
+                            type="text"
+                            value={newSkill}
+                            onChange={(e) => setNewSkill(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                            className="flex-1 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                            placeholder="Add a skill (e.g., React, Python, Design)..."
+                          />
+                          <button
+                            onClick={addSkill}
+                            className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold"
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">💰</span>
+                        Pricing & Availability
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Hourly Rate ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.hourlyRate}
+                            onChange={(e) => setFormData(prev => ({ ...prev, hourlyRate: e.target.value }))}
+                            className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            placeholder="e.g., 25"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Availability
+                          </label>
+                          <select
+                            value={formData.availability}
+                            onChange={(e) => setFormData(prev => ({ ...prev, availability: e.target.value as any }))}
+                            className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                          >
+                            <option value="available">🟢 Available</option>
+                            <option value="busy">🟡 Busy</option>
+                            <option value="unavailable">🔴 Unavailable</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-6">
                       <button
-                        onClick={addSkill}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                        onClick={handleUpdateProfile}
+                        className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
                       >
-                        Add
+                        💾 Save Changes
+                      </button>
+                      <button
+                        onClick={() => setEditing(false)}
+                        className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                      >
+                        ❌ Cancel
                       </button>
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Hourly Rate ($)
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.hourlyRate}
-                      onChange={(e) => setFormData(prev => ({ ...prev, hourlyRate: e.target.value }))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., 25"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Availability
-                    </label>
-                    <select
-                      value={formData.availability}
-                      onChange={(e) => setFormData(prev => ({ ...prev, availability: e.target.value as any }))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="available">Available</option>
-                      <option value="busy">Busy</option>
-                      <option value="unavailable">Unavailable</option>
-                    </select>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      onClick={handleUpdateProfile}
-                      className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-                    >
-                      Save Changes
-                    </button>
-                    <button
-                      onClick={() => setEditing(false)}
-                      className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700"
-                    >
-                      Cancel
-                    </button>
-                  </div>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Bio</h3>
-                    <p className="text-gray-700">{profile?.bio || 'No bio provided'}</p>
-                  </div>
+                ) : (
+                  <div className="space-y-8">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">📝</span>
+                        Bio
+                      </h3>
+                      <p className="text-gray-700 text-lg leading-relaxed">{profile?.bio || 'No bio provided'}</p>
+                    </div>
 
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {profile?.skills.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                        >
-                          {skill}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">🛠️</span>
+                        Skills
+                      </h3>
+                      <div className="flex flex-wrap gap-3">
+                        {profile?.skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-200"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <span className="text-xl">💰</span>
+                          Hourly Rate
+                        </h3>
+                        <p className="text-2xl font-bold text-gray-900">${profile?.hourlyRate || 'Not set'}</p>
+                      </div>
+                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <span className="text-xl">🟢</span>
+                          Availability
+                        </h3>
+                        <span className={`px-4 py-2 rounded-full text-sm font-medium ${
+                          profile?.availability === 'available' ? 'bg-green-100 text-green-800 border border-green-200' :
+                          profile?.availability === 'busy' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
+                          'bg-red-100 text-red-800 border border-red-200'
+                        }`}>
+                          {profile?.availability}
                         </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Hourly Rate</h3>
-                      <p className="text-gray-700">${profile?.hourlyRate || 'Not set'}</p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Availability</h3>
-                      <span className={`px-3 py-1 rounded-full text-sm ${
-                        profile?.availability === 'available' ? 'bg-green-100 text-green-800' :
-                        profile?.availability === 'busy' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {profile?.availability}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Rating</h3>
-                      <div className="flex items-center gap-2">
-                        <div className="flex">
-                          {renderStars(Math.round(profile?.averageRating || 0))}
+                      </div>
+                      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <span className="text-xl">⭐</span>
+                          Rating
+                        </h3>
+                        <div className="flex items-center gap-3">
+                          <div className="flex text-2xl">
+                            {renderStars(Math.round(profile?.averageRating || 0))}
+                          </div>
+                          <div>
+                            <div className="text-2xl font-bold text-gray-900">
+                              {profile?.averageRating?.toFixed(1) || '0.0'}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              ({profile?.totalRatings || 0} reviews)
+                            </div>
+                          </div>
                         </div>
-                        <span className="text-gray-700">
-                          ({profile?.totalRatings || 0} reviews)
-                        </span>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
 
           {/* Portfolio Tab */}
           {activeTab === 'portfolio' && (
@@ -627,6 +690,7 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
