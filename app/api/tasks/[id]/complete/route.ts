@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
-import { updateTask } from '@/lib/task-storage-persistent';
+import { updateTask, getTasks } from '@/lib/task-storage-persistent';
+import { addFreelancerRating } from '@/lib/db';
 
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    const { rating, review } = await req.json();
     const taskId = params.id;
+
+    // Get the task to find freelancer info
+    const tasks = await getTasks();
+    const task = tasks.find(t => t.id === taskId);
+    
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
 
     // Update task status to completed
     const updatedTask = await updateTask(taskId, {
@@ -16,6 +26,21 @@ export async function POST(
 
     if (!updatedTask) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    // Add rating if provided
+    if (rating && review && task.acceptedBy) {
+      const newRating = {
+        id: Date.now().toString(),
+        taskId,
+        employerEmail: task.employerEmail,
+        employerName: task.employerName,
+        rating: parseInt(rating),
+        review,
+        createdAt: new Date().toISOString()
+      };
+
+      addFreelancerRating(task.acceptedBy.email, newRating);
     }
 
     return NextResponse.json({ 

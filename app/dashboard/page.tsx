@@ -79,7 +79,7 @@ export default function DashboardPage() {
         {user.role === 'employer' ? (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4 text-black">Employer Tools</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 border rounded-lg">
                 <h3 className="font-semibold text-black">Post a Task</h3>
                 <p className="text-gray-600 text-sm">Create new tasks for freelancers with ETH payment</p>
@@ -100,12 +100,22 @@ export default function DashboardPage() {
                   View Tasks
                 </button>
               </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold text-black">Browse Freelancers</h3>
+                <p className="text-gray-600 text-sm">Find skilled freelancers for your projects</p>
+                <button 
+                  onClick={() => router.push('/freelancers')}
+                  className="mt-2 bg-[#FFBF00] text-black px-4 py-2 rounded hover:bg-[#AE8200]"
+                >
+                  Browse Freelancers
+                </button>
+              </div>
             </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4 text-black">Freelancer Tools</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 border rounded-lg">
                 <h3 className="font-semibold text-black">Browse Tasks</h3>
                 <p className="text-gray-600 text-sm">Find tasks that match your skills</p>
@@ -124,6 +134,16 @@ export default function DashboardPage() {
                   className="mt-2 bg-[#FFBF00] text-black px-4 py-2 rounded hover:bg-[#AE8200]"
                 >
                   View Tasks
+                </button>
+              </div>
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold text-black">My Profile</h3>
+                <p className="text-gray-600 text-sm">Manage your profile and portfolio</p>
+                <button 
+                  onClick={() => router.push('/profile')}
+                  className="mt-2 bg-[#FFBF00] text-black px-4 py-2 rounded hover:bg-[#AE8200]"
+                >
+                  Edit Profile
                 </button>
               </div>
             </div>
