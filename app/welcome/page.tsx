@@ -6,15 +6,9 @@ import Image from "next/image";
 
 export default function WelcomePage() {
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
-    // Check if user is logged in - if they are, redirect to dashboard
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      window.location.href = '/dashboard';
-    }
   }, []);
 
   return (

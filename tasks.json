@@ -1,36 +1,5 @@
 [
   {
-    "id": "1759108648312",
-    "title": "asdas",
-    "description": "asdasd",
-    "price": 2,
-    "requiredSkills": [
-      "DeFi Development",
-      "Blockchain Development"
-    ],
-    "employerName": "Strelizia",
-    "employerEmail": "belugaezrael@gmail.com",
-    "status": "open",
-    "createdAt": "2025-09-29T01:17:28.312Z",
-    "acceptedBy": null,
-    "completedAt": null
-  },
-  {
-    "id": "1759109710496",
-    "title": "Clean roof",
-    "description": "Please clean my roof",
-    "price": 0.008,
-    "requiredSkills": [
-      "SEO"
-    ],
-    "employerName": "Zedekiah",
-    "employerEmail": "example@gmail.com",
-    "status": "open",
-    "createdAt": "2025-09-29T01:35:10.496Z",
-    "acceptedBy": null,
-    "completedAt": null
-  },
-  {
     "id": "1759111380603",
     "title": "code",
     "description": "java",
@@ -44,7 +13,14 @@
     "createdAt": "2025-09-29T02:03:00.603Z",
     "acceptanceDeadline": "2025-09-29T10:04",
     "completionDeadline": "2025-09-29T10:10",
-    "applications": [],
+    "applications": [
+      {
+        "email": "salazarjhomar39@gmail.com",
+        "name": "Ramojh Salazar",
+        "coverLetter": "",
+        "appliedAt": "2025-09-29T03:04:28.149Z"
+      }
+    ],
     "acceptedBy": null,
     "acceptedAt": null,
     "completedAt": null,

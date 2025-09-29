@@ -21,9 +21,9 @@ export async function POST(
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    // Check if task is still open
-    if (task.status !== 'open') {
-      return NextResponse.json({ error: 'Task is no longer available' }, { status: 400 });
+    // Check if task is still accepting applications
+    if (task.status !== 'accepting_applications') {
+      return NextResponse.json({ error: 'Task is no longer accepting applications' }, { status: 400 });
     }
 
     // Update task status

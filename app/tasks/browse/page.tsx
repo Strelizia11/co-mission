@@ -149,6 +149,12 @@ export default function BrowseTasksPage() {
                   ? Math.round((matchingSkills / task.requiredSkills.length) * 100)
                   : 0;
 
+                // Check if acceptance deadline has passed
+                const now = new Date();
+                const acceptanceDeadline = new Date(task.acceptanceDeadline);
+                const isDeadlinePassed = now > acceptanceDeadline;
+                const canApply = task.status === 'accepting_applications' && !isDeadlinePassed;
+
                 return (
                   <div key={task.id} className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex justify-between items-start mb-4">
@@ -199,7 +205,10 @@ export default function BrowseTasksPage() {
                         <div>
                           <span className="font-medium">Application Deadline:</span>
                           <br />
-                          {new Date(task.acceptanceDeadline).toLocaleString()}
+                          <span className={isDeadlinePassed ? 'text-red-600 font-semibold' : 'text-gray-700'}>
+                            {new Date(task.acceptanceDeadline).toLocaleString()}
+                            {isDeadlinePassed && ' (PASSED)'}
+                          </span>
                         </div>
                         <div>
                           <span className="font-medium">Completion Deadline:</span>
@@ -218,7 +227,7 @@ export default function BrowseTasksPage() {
                           </span>
                         )}
                       </div>
-                      {task.status === 'accepting_applications' && (
+                      {canApply && (
                         <button
                           onClick={() => handleApplyToTask(task.id)}
                           className="px-6 py-2 bg-[#FFBF00] text-black font-semibold rounded hover:bg-[#AE8200] transition"
@@ -226,9 +235,14 @@ export default function BrowseTasksPage() {
                           Apply to Task
                         </button>
                       )}
-                      {task.status !== 'accepting_applications' && (
-                        <span className="px-6 py-2 bg-gray-300 text-gray-600 font-semibold rounded">
-                          {task.status === 'in_progress' ? 'In Progress' : 
+                      {!canApply && (
+                        <span className={`px-6 py-2 font-semibold rounded ${
+                          isDeadlinePassed 
+                            ? 'bg-red-100 text-red-600' 
+                            : 'bg-gray-300 text-gray-600'
+                        }`}>
+                          {isDeadlinePassed ? 'Application Deadline Passed' :
+                           task.status === 'in_progress' ? 'In Progress' : 
                            task.status === 'completed' ? 'Completed' : 
                            task.status === 'cancelled' ? 'Cancelled' : 'Not Available'}
                         </span>
