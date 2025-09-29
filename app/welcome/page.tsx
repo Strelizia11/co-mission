@@ -37,7 +37,7 @@ export default function WelcomePage() {
         >
           <Link
             href="/auth/register"
-            className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#333] hover:scale-125 transition-all duration-300"
+            className="bg-[#191B1F] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#333] hover:scale-125 transition-all duration-300"
           >
             Get Started
           </Link>
@@ -79,7 +79,7 @@ export default function WelcomePage() {
       </section>
 
       {/* Freelancer Benefits Section */}
-      <section className="px-6 py-20 bg-gray-50">
+      <section className="px-6 py-20 bg-gradient-to-br from-yellow-50 via-white to-yellow-100">
         <div className="max-w-6xl mx-auto">
           <h2
             className={`text-3xl font-bold text-center mb-12 text-black transition-all duration-700 ${
@@ -89,7 +89,7 @@ export default function WelcomePage() {
             Benefits for <span className="text-[#FFBF00]">Freelancers</span>
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[
               {
                 title: "Flexible Work",
@@ -124,23 +124,27 @@ export default function WelcomePage() {
             ].map((benefit, idx) => (
               <div
                 key={idx}
-                className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ${
+                className={`relative bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-yellow-400 hover:scale-105 group ${
                   mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                 }`}
                 style={{ transitionDelay: `${idx * 100 + 200}ms` }}
               >
-                <div className="text-4xl mb-4">{benefit.icon}</div>
-                <h3 className="text-xl font-semibold mb-3 text-black">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
+                <div className="flex items-center justify-center mb-6">
+                  <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-300 via-yellow-400 to-yellow-500 text-4xl group-hover:scale-110 transition-transform duration-300 shadow-md">
+                    {benefit.icon}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900 text-center">{benefit.title}</h3>
+                <p className="text-gray-600 text-center">{benefit.description}</p>
               </div>
             ))}
           </div>
           
           {/* Freelancer Registration Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-14">
             <Link
               href="auth/register/form?role=freelancer"
-              className="bg-[#FFBF00] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#e6ac00] hover:scale-105 transition-all duration-300 inline-block"
+              className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-10 py-4 rounded-xl font-semibold shadow-lg hover:from-yellow-500 hover:to-yellow-600 hover:scale-105 transition-all duration-300 inline-block"
             >
               Start as a Freelancer
             </Link>
@@ -149,7 +153,7 @@ export default function WelcomePage() {
       </section>
 
       {/* Employer Benefits Section */}
-      <section className="px-6 py-20 bg-white">
+      <section className="px-6 py-20 bg-gradient-to-br from-white via-yellow-50 to-white">
         <div className="max-w-6xl mx-auto">
           <h2
             className={`text-3xl font-bold text-center mb-12 text-black transition-all duration-700 ${
@@ -159,7 +163,7 @@ export default function WelcomePage() {
             Benefits for <span className="text-[#FFBF00]">Employers</span>
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[
               {
                 title: "Access to Talent",
@@ -194,23 +198,27 @@ export default function WelcomePage() {
             ].map((benefit, idx) => (
               <div
                 key={idx}
-                className={`bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ${
+                className={`relative bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-transparent hover:border-yellow-400 hover:scale-105 group ${
                   mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                 }`}
                 style={{ transitionDelay: `${idx * 100 + 200}ms` }}
               >
-                <div className="text-4xl mb-4">{benefit.icon}</div>
-                <h3 className="text-xl font-semibold mb-3 text-black">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
+                <div className="flex items-center justify-center mb-6">
+                  <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-gray-200 via-yellow-200 to-yellow-400 text-4xl group-hover:scale-110 transition-transform duration-300 shadow-md">
+                    {benefit.icon}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900 text-center">{benefit.title}</h3>
+                <p className="text-gray-600 text-center">{benefit.description}</p>
               </div>
             ))}
           </div>
           
           {/* Employer Registration Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-14">
             <Link
               href="/auth/register/form?role=employer"
-              className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#333] hover:scale-105 transition-all duration-300 inline-block"
+              className="bg-[#191B1F] text-white px-10 py-4 rounded-xl font-semibold shadow-lg hover:bg-[#333] hover:scale-105 transition-all duration-300 inline-block"
             >
               Start as an Employer
             </Link>
