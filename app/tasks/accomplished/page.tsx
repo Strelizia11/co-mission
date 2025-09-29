@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../../components/DashboardHeader";
 import SideNavigation from "../../components/SideNavigation";
+import { InlineLoading } from "../../components/LoadingSpinner";
 
 interface Task {
   id: string;
@@ -75,7 +76,7 @@ export default function AccomplishedTasksPage() {
   };
 
   if (!user) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <InlineLoading text="Loading your accomplishments..." />;
   }
 
   return (
@@ -131,14 +132,9 @@ export default function AccomplishedTasksPage() {
             </div>
           )}
 
-          {loading ? (
-            <div className="flex justify-center items-center py-16">
-              <div className="text-center">
-                <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <div className="text-gray-600 text-lg">Loading your accomplishments...</div>
-              </div>
-            </div>
-          ) : tasks.length === 0 ? (
+              {loading ? (
+                <InlineLoading text="Loading your accomplishments..." />
+              ) : tasks.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-4xl">🏆</span>

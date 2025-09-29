@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { getContextualHelp, getQuickHelpTopics, getTroubleshootingTips } from "../../lib/chat-context";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Message {
   id: string;
@@ -191,11 +192,7 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-gray-100 p-3 rounded-2xl">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
+                  <LoadingSpinner size="sm" text="" />
                 </div>
               </div>
             )}

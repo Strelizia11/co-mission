@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
 import SideNavigation from "../components/SideNavigation";
+import { FullScreenLoading } from "../components/LoadingSpinner";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <FullScreenLoading text="Loading your dashboard..." />;
   }
 
   if (!user) {

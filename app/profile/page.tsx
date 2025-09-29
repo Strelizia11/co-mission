@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
 import SideNavigation from "../components/SideNavigation";
+import { InlineLoading } from "../components/LoadingSpinner";
 
 interface PortfolioItem {
   id: string;
@@ -287,7 +288,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <InlineLoading text="Loading your profile..." />;
   }
 
   if (!user) {
