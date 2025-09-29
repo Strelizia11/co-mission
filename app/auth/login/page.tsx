@@ -19,32 +19,22 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
     setMessage('')
-    
-    console.log('Attempting login with:', { email: form.email, password: '***' })
-    
+
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      
-      console.log('Response status:', res.status)
       const data = await res.json()
-      console.log('Response data:', data)
-      
       if (res.ok) {
         setMessage(data.message)
-        // Save user data to localStorage for dashboard
         localStorage.setItem('user', JSON.stringify(data.user))
-        // Use window.location for more reliable redirect to dashboard
         window.location.href = '/dashboard'
       } else {
-        console.log('Login failed with error:', data.error)
         setMessage(data.error)
       }
     } catch (error) {
-      console.error('Login fetch error:', error)
       setMessage('Login failed. Please try again.')
     } finally {
       setIsLoading(false)
@@ -52,43 +42,47 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-gray-100 pt-20 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-center text-black">
-            Welcome Back to{" "}
-            <span className="text-[#FFBF00]">Co-Mission</span>
+    <div className="flex justify-center items-center min-h-screen bg-white px-4">
+      <div className="bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.25),0_1.5px_8px_0_rgba(255,191,0,0.10)] w-full max-w-md animate-fade-in">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-extrabold text-black mb-2 tracking-tight">
+            Welcome Back
           </h2>
+          <span className="text-lg font-semibold text-[#FFBF00]">to Co-Mission</span>
         </div>
 
         {message && (
           <p className="text-red-500 mb-4 text-center">{message}</p>
         )}
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit} autoComplete="off">
+          {/* Email Field */}
           <input
             type="email"
             name="email"
-            placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+            placeholder="Email"
+            className="w-full p-3 border-b-2 border-gray-200 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500 rounded-md bg-gray-50"
             required
           />
+
+          {/* Password Field */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              className="w-full p-2 pr-10 border-b border-gray-300 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+              placeholder="Password"
+              className="w-full p-3 pr-10 border-b-2 border-gray-200 focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500 rounded-md bg-gray-50"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              aria-label="Toggle password visibility"
             >
               {showPassword ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,20 +100,20 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-2 font-semibold rounded transition ${
-              isLoading 
-                ? 'bg-gray-400 cursor-not-allowed text-gray-600' 
-                : 'bg-[#FFBF00] hover:bg-[#AE8200] text-black'
-            }`}
+            className={`w-full py-3 font-bold rounded-lg transition ${
+              isLoading
+                ? 'bg-gray-300 cursor-not-allowed text-gray-500'
+                : 'bg-[#FFBF00] hover:bg-[#AE8200] text-black shadow-md hover:scale-[1.03]'
+            } text-lg tracking-wide`}
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <div className="mt-6 text-sm text-center space-y-2">
+        <div className="mt-8 text-sm text-center space-y-2">
           <p>
             Don't have an account?{' '}
-            <Link href="/auth/register" className="text-[#FFBF00] hover:underline">
+            <Link href="/auth/register" className="text-[#FFBF00] hover:underline font-semibold">
               Register here
             </Link>
           </p>
@@ -130,6 +124,15 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px);}
+          to { opacity: 1; transform: translateY(0);}
+        }
+      `}</style>
     </div>
   )
 }

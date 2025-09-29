@@ -76,7 +76,9 @@ export default function RegisterAnimatedPage() {
         } ${isSliding && step === 'form' ? '-translate-x-full' : ''}`}
         style={{ pointerEvents: step === 'choice' ? 'auto' : 'none' }}
       >
-        <div className="bg-white shadow-md rounded-lg p-10 max-w-2xl w-full text-center">
+        <div
+          className={`bg-white shadow-2xl rounded-lg p-10 max-w-2xl w-full text-center animate-fade-in`}
+        >
           <h1 className="text-3xl md:text-4xl font-bold mb-10 text-black">
             Join Co-Mission as:
           </h1>
@@ -106,7 +108,6 @@ export default function RegisterAnimatedPage() {
           </p>
         </div>
       </div>
-
       {/* Register Form Box */}
       <div
         className={`fixed inset-0 flex items-center justify-center z-20 transition-transform duration-500 ${
@@ -114,7 +115,9 @@ export default function RegisterAnimatedPage() {
         } ${isSliding && step === 'choice' ? 'translate-x-full' : ''}`}
         style={{ pointerEvents: step === 'form' ? 'auto' : 'none' }}
       >
-        <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg relative">
+        <div
+          className={`bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fade-in`}
+        >
           {/* Left Arrow */}
           <button
             onClick={handleBack}
@@ -193,6 +196,15 @@ export default function RegisterAnimatedPage() {
           </form>
         </div>
       </div>
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px);}
+          to { opacity: 1; transform: translateY(0);}
+        }
+      `}</style>
     </div>
   );
 }

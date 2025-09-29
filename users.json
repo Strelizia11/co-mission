@@ -75,5 +75,19 @@
     "password": "$2b$10$MzS2mjqNQeiMD9fJ2oNZHeU3vqRTLvUjE1t2v1Nep3U6XGrQXQBRG",
     "role": "employer",
     "createdAt": "2025-09-29T07:18:11.186Z"
+  },
+  {
+    "name": "fwef",
+    "email": "dwqd@iehoi3i",
+    "password": "$2b$10$7.TRSBTLXJFAgJ6tnmrqjO4DNXFB4nOe714jk8Oi9xNPgLyZv3EoC",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T13:54:50.534Z"
+  },
+  {
+    "name": "dvvsdedv",
+    "email": "1dwd@wd32ej",
+    "password": "$2b$10$tc7fcgACJOLH041chTLv1.AuLW5jXr9fYVdnZVzrfWbxCBfOi7dLK",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T15:00:53.039Z"
   }
 ]
