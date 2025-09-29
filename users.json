@@ -9,7 +9,7 @@
   {
     "name": "Strelizia",
     "email": "belugaezrael@gmail.com",
-    "password": "$2b$10$HrGm1QFwTlI.iQb8BzIntO2yM7blANrs0lFGxmrLeTZ8J4TQgeBYy",
+    "password": "$2b$10$pIIPxEn4zbegjGvCKPUfSOE9gMzzi9IK18UoXYQr5bwXYhaf3QMKi",
     "role": "employer",
     "createdAt": "2025-09-28T15:12:59.624Z"
   },
@@ -89,5 +89,12 @@
     "password": "$2b$10$tc7fcgACJOLH041chTLv1.AuLW5jXr9fYVdnZVzrfWbxCBfOi7dLK",
     "role": "freelancer",
     "createdAt": "2025-09-29T15:00:53.039Z"
+  },
+  {
+    "name": "beluga",
+    "email": "beluga@test",
+    "password": "$2b$10$PoLDzxNrmS1oGOVy6xLOT.6Sn4YkAFd3rVBofMCfPXwQPOEy/V8oq",
+    "role": "employer",
+    "createdAt": "2025-09-29T16:09:24.084Z"
   }
 ]
