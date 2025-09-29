@@ -47,5 +47,12 @@
     "password": "$2b$10$dArps2Uqgv0LjESz1vTsSez3iPrEoShb3uGlomv6iwH7O3tLUnVWC",
     "role": "freelancer",
     "createdAt": "2025-09-29T04:42:50.044Z"
+  },
+  {
+    "name": "Nigge",
+    "email": "rainealdana147@gmail.com",
+    "password": "$2b$10$jzDQFH6ZvpnUci3B5pZXu.5iTezcM1y.CAVJmZUAjqMHxefJlZur6",
+    "role": "employer",
+    "createdAt": "2025-09-29T06:04:46.026Z"
   }
 ]
