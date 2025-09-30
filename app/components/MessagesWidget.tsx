@@ -127,7 +127,7 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
       {/* Messages Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-6 z-[60] bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        className="fixed bottom-24 right-6 z-[60] bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         aria-label="Open messages"
       >
         <svg 
@@ -154,15 +154,15 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
       {isOpen && (
         <div className="fixed bottom-32 right-6 z-[60] w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col">
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-4 rounded-t-2xl">
+          <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                   <span className="text-lg">💬</span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white">Messages</h3>
-                  <p className="text-sm text-white/80">
+                  <h3 className="font-bold text-black">Messages</h3>
+                  <p className="text-sm text-black/70">
                     {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
                     {user?.role === 'freelancer' ? ' with employers' : ' with freelancers'}
                   </p>
@@ -170,7 +170,7 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:text-white/70 transition-colors"
+                className="text-black hover:text-black/70 transition-colors"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -242,7 +242,7 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
                 setIsOpen(false);
                 router.push('/messages');
               }}
-              className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+              className="w-full bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
             >
               View All Messages
             </button>

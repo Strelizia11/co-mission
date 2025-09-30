@@ -145,7 +145,7 @@ export default function ChatModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col relative">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -154,14 +154,14 @@ export default function ChatModal({
                 </span>
               </div>
               <div>
-                <h3 className="font-bold text-lg">Chat with {otherUserName}</h3>
-                <p className="text-sm text-white/80">{otherUserEmail}</p>
+                <h3 className="font-bold text-lg text-black">Chat with {otherUserName}</h3>
+                <p className="text-sm text-black/70">{otherUserEmail}</p>
               </div>
             </div>
             
             <button
               onClick={onClose}
-              className="text-white hover:text-white/70 transition-colors"
+              className="text-black hover:text-black/70 transition-colors"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -180,7 +180,7 @@ export default function ChatModal({
               <div
                 className={`max-w-[80%] p-3 rounded-2xl ${
                   message.sender === currentUserEmail
-                    ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white'
+                    ? 'bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black'
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
@@ -210,13 +210,13 @@ export default function ChatModal({
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFBF00] focus:border-transparent"
               disabled={isLoading}
             />
             <button
               onClick={sendMessage}
               disabled={!newMessage.trim() || isLoading}
-              className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
