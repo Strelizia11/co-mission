@@ -4,15 +4,17 @@ import { listNotifications, createNotification } from '../../../lib/notification
 
 export async function POST(req: Request) {
   try {
-    const { 
-      title, 
-      description, 
-      price, 
-      selectedTags, 
-      employerName, 
+    const {
+      title,
+      description,
+      price,
+      selectedTags,
+      employerName,
       employerEmail,
       acceptanceDeadline,
-      completionDeadline
+      completionDeadline,
+      visibility,
+      directHireFreelancer
     } = await req.json();
 
     if (!title || !description || !price || !selectedTags || !employerName || !employerEmail) {
@@ -51,6 +53,49 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'You already have an active task with the same title' }, { status: 409 });
     }
 
+    // If direct hire (private task)
+    if (visibility === 'private' && directHireFreelancer) {
+      const newTask = {
+        id: Date.now().toString(),
+        title,
+        description,
+        price,
+        requiredSkills: selectedTags,
+        employerName,
+        employerEmail,
+        status: 'pending_acceptance', // waiting for freelancer to accept
+        createdAt: new Date().toISOString(),
+        acceptanceDeadline,
+        completionDeadline,
+        visibility: 'private',
+        directHireFreelancer,
+        applications: [],
+        acceptedBy: null,
+        acceptedAt: null,
+        completedAt: null,
+        submittedFiles: null
+      };
+      await addTask(newTask);
+      // Notify freelancer
+      await createNotification({
+        userEmail: directHireFreelancer,
+        title: 'Direct Hire Invitation',
+        message: `You have been directly hired for the task "${title}". Accept or reject this offer.`,
+        meta: { taskId: newTask.id, status: newTask.status }
+      });
+      // Notify employer
+      await createNotification({
+        userEmail: employerEmail,
+        title: 'Direct Hire Sent',
+        message: `Your direct hire invitation for "${title}" was sent to the freelancer.`,
+        meta: { taskId: newTask.id, status: newTask.status }
+      });
+      return NextResponse.json({
+        message: 'Direct hire task sent successfully!',
+        task: newTask
+      });
+    }
+
     const newTask = {
       id: Date.now().toString(),
       title,
@@ -83,7 +128,7 @@ export async function POST(req: Request) {
       meta: { taskId: newTask.id, status: newTask.status }
     });
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Task posted successfully!',
       task: newTask
     });

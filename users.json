@@ -120,7 +120,7 @@
       "totalRatings": 10,
       "completedTasks": 0,
       "joinedAt": "2025-09-29T00:44:50.447Z",
-      "updatedAt": "2025-09-29T16:13:20.460Z",
+      "updatedAt": "2025-09-30T02:37:20.088Z",
       "bio": "hehe",
       "hourlyRate": 2
     }
@@ -182,18 +182,10 @@
     "createdAt": "2025-09-29T15:00:53.039Z"
   },
   {
-<<<<<<< HEAD
     "name": "xwxxswssws",
     "email": "1dwd@wd32ewsw",
     "password": "$2b$10$mAcb.Se5EfOcst8Lhv7CO.zgB0RAx1ZJAhF76jCO1TBwAb.XqCKaG",
     "role": "freelancer",
     "createdAt": "2025-09-29T16:09:43.974Z"
-=======
-    "name": "beluga",
-    "email": "beluga@test",
-    "password": "$2b$10$PoLDzxNrmS1oGOVy6xLOT.6Sn4YkAFd3rVBofMCfPXwQPOEy/V8oq",
-    "role": "employer",
-    "createdAt": "2025-09-29T16:09:24.084Z"
->>>>>>> b4b0929d37f10f4623065dbcb078f629b7a72e8e
   }
 ]

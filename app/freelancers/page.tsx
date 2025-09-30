@@ -39,6 +39,20 @@ export default function BrowseFreelancersPage() {
     sortBy: 'newest' as 'newest' | 'oldest' | 'rating_high' | 'rating_low' | 'rate_high' | 'rate_low'
   });
 
+  // 1. Add state for modal and form
+  const [showHireModal, setShowHireModal] = useState(false);
+  const [hireTarget, setHireTarget] = useState<Freelancer | null>(null);
+  const [hireForm, setHireForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    selectedTags: [] as string[],
+    acceptanceDeadline: '',
+    completionDeadline: ''
+  });
+  const [hireMessage, setHireMessage] = useState('');
+  const [hireSubmitting, setHireSubmitting] = useState(false);
+
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -206,6 +220,81 @@ export default function BrowseFreelancersPage() {
         ★
       </span>
     ));
+  };
+
+  // 2. Add handler to open modal
+  const openHireModal = (freelancer: Freelancer) => {
+    setHireTarget(freelancer);
+    setHireForm({
+      title: '',
+      description: '',
+      price: freelancer.hourlyRate ? freelancer.hourlyRate.toString() : '',
+      selectedTags: freelancer.skills || [],
+      acceptanceDeadline: '',
+      completionDeadline: ''
+    });
+    setHireMessage('');
+    setShowHireModal(true);
+  };
+
+  // 3. Add handler for form changes
+  const handleHireFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setHireForm({ ...hireForm, [e.target.name]: e.target.value });
+  };
+
+  // 4. Add handler for tag toggle
+  const toggleHireTag = (tag: string) => {
+    setHireForm(prev => ({
+      ...prev,
+      selectedTags: prev.selectedTags.includes(tag)
+        ? prev.selectedTags.filter(t => t !== tag)
+        : [...prev.selectedTags, tag]
+    }));
+  };
+
+  // 5. Add submit handler
+  const handleHireSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!hireTarget) return;
+    if (hireSubmitting) return;
+    setHireMessage('');
+    if (!hireForm.title || !hireForm.description || !hireForm.price || hireForm.selectedTags.length === 0 || !hireForm.acceptanceDeadline || !hireForm.completionDeadline) {
+      setHireMessage('Please fill in all fields and select at least one skill tag');
+      return;
+    }
+    const minRate = hireTarget.hourlyRate || 0;
+    if (parseFloat(hireForm.price) < minRate) {
+      setHireMessage(`Payment cannot be lower than freelancer's minimum rate ($${minRate}/hr)`);
+      return;
+    }
+    try {
+      setHireSubmitting(true);
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...hireForm,
+          employerName: user.name,
+          employerEmail: user.email,
+          price: parseFloat(hireForm.price),
+          visibility: 'private',
+          directHireFreelancer: hireTarget.email
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setHireMessage('Direct hire task sent successfully!');
+        setTimeout(() => {
+          setShowHireModal(false);
+        }, 1200);
+      } else {
+        setHireMessage(data.error || 'Failed to send direct hire task');
+      }
+      setHireSubmitting(false);
+    } catch (error) {
+      setHireMessage('Failed to send direct hire task. Please try again.');
+      setHireSubmitting(false);
+    }
   };
 
   if (!user) {
@@ -564,7 +653,13 @@ export default function BrowseFreelancersPage() {
                     </div>
                   </div>
 
-                  <div className="flex justify-end">
+                  <div className="flex justify-end gap-4">
+                    <button
+                      onClick={() => openHireModal(freelancer)}
+                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+                    >
+                      Hire
+                    </button>
                     <button
                       onClick={() => {
                         // In a real app, this would open a contact modal or navigate to a contact page
@@ -581,6 +676,59 @@ export default function BrowseFreelancersPage() {
           )}
         </div>
       </div>
+      {showHireModal && hireTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
+              onClick={() => setShowHireModal(false)}
+            >×</button>
+            <h2 className="text-2xl font-bold mb-4">Direct Hire: {hireTarget.name}</h2>
+            <form onSubmit={handleHireSubmit} className="space-y-6">
+              <div>
+                <label className="block text-lg font-semibold mb-2">Task Title *</label>
+                <input type="text" name="title" value={hireForm.title} onChange={handleHireFormChange} className="w-full p-3 border rounded-lg" required />
+              </div>
+              <div>
+                <label className="block text-lg font-semibold mb-2">Task Description *</label>
+                <textarea name="description" value={hireForm.description} onChange={handleHireFormChange} className="w-full p-3 border rounded-lg" rows={4} required />
+              </div>
+              <div>
+                <label className="block text-lg font-semibold mb-2">Payment (ETH) *</label>
+                <input type="number" name="price" value={hireForm.price} onChange={handleHireFormChange} min={hireTarget.hourlyRate || 0} step="0.001" className="w-full p-3 border rounded-lg" required />
+                <p className="text-sm text-gray-600 mt-1">Minimum: {hireTarget.hourlyRate ? `$${hireTarget.hourlyRate}/hr` : 'N/A'}</p>
+              </div>
+              <div>
+                <label className="block text-lg font-semibold mb-2">Required Skills *</label>
+                <div className="flex flex-wrap gap-2">
+                  {hireTarget.skills.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => toggleHireTag(tag)}
+                      className={`px-3 py-1 rounded-full border-2 text-sm font-medium ${hireForm.selectedTags.includes(tag) ? 'bg-green-200 border-green-500' : 'bg-white border-gray-300'}`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-lg font-semibold mb-2">Acceptance Deadline *</label>
+                  <input type="datetime-local" name="acceptanceDeadline" value={hireForm.acceptanceDeadline} onChange={handleHireFormChange} className="w-full p-3 border rounded-lg" required />
+                </div>
+                <div>
+                  <label className="block text-lg font-semibold mb-2">Completion Deadline *</label>
+                  <input type="datetime-local" name="completionDeadline" value={hireForm.completionDeadline} onChange={handleHireFormChange} className="w-full p-3 border rounded-lg" required />
+                </div>
+              </div>
+              {hireMessage && <div className={`p-3 rounded ${hireMessage.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{hireMessage}</div>}
+              <button type="submit" disabled={hireSubmitting} className="w-full py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">{hireSubmitting ? 'Sending...' : 'Send Direct Hire'}</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

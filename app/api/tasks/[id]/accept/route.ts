@@ -22,6 +22,29 @@ export async function POST(
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
+    // Direct-hire acceptance
+    if (task.visibility === 'private' && task.status === 'pending_acceptance' && task.directHireFreelancer === freelancerEmail) {
+      const updatedTask = await updateTask(taskId, {
+        status: 'accepted',
+        acceptedBy: {
+          email: freelancerEmail,
+          name: freelancerName
+        },
+        acceptedAt: new Date().toISOString()
+      });
+      // Notify employer
+      await createNotification({
+        userEmail: task.employerEmail,
+        title: 'Direct Hire Accepted',
+        message: `${freelancerName} accepted your direct hire for "${task.title}".`,
+        meta: { taskId }
+      });
+      return NextResponse.json({
+        message: 'Direct hire accepted successfully!',
+        task: updatedTask
+      });
+    }
+
     // Check if task is still accepting applications
     if (task.status !== 'accepting_applications') {
       return NextResponse.json({ error: 'Task is no longer accepting applications' }, { status: 400 });
