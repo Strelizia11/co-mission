@@ -7,6 +7,7 @@ import TokenBalance from "./TokenBalance";
 interface SideNavigationProps {
   user?: {
     name: string;
+    email?: string;
     role: string;
   };
   isOpen?: boolean;
@@ -75,7 +76,7 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
         <div className={`absolute left-0 top-0 h-full w-80 sm:w-96 md:w-[35vw] lg:w-80 bg-[#FFFFFF] shadow-2xl border-r-2 border-black transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform ease-out duration-300 will-change-transform`}
         >
           <div className="h-full flex flex-col">
-            {/* Header with close */}
+            {/* Header with cohesive black close button */}
             <div className="p-4 sm:p-6 border-b-2 border-black flex items-center justify-between bg-black relative overflow-hidden">
               {/* Abstract geometric background pattern */}
               <div className="absolute inset-0 opacity-30">
@@ -115,12 +116,14 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                 </h2>
                 <p className="text-xs sm:text-sm text-white/70 mt-1">Welcome back, {user?.name || 'User'}!</p>
               </div>
+              
+              {/* Cohesive Black Close Button */}
               <button
                 aria-label="Close menu"
                 onClick={() => onClose && onClose()}
-                className="text-white hover:text-white/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md relative z-10"
+                className="relative z-10 text-white bg-black hover:bg-gray-900 focus:bg-gray-800 w-10 h-10 rounded-full border-2 border-white-400 shadow-lg hover:shadow-xl active:shadow-inner transform hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-yellow-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black flex items-center justify-center font-bold text-lg hover:rotate-90 transition-transform"
               >
-                ✕
+                <span className="transform hover:rotate-0 transition-transform">✕</span>
               </button>
             </div>
 
@@ -147,9 +150,6 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                   const hoverClasses = ' hover:bg-black/10 border border-black/20 hover:border-black/40 hover:shadow-md';
                   const classes = `${base}${isActive ? activeClasses : hoverClasses}`;
                   
-                  // Add TokenBalance after the first 2 tools (index 1)
-                  const shouldShowTokenBalance = index === 1;
-                  
                   return (
                     <div key={index}>
                       <button
@@ -164,8 +164,9 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                         </div>
                       </button>
                       
-                      {shouldShowTokenBalance && (
-                        <div className="mb-4">
+                      {/* TokenBalance after Transaction History */}
+                      {tool.name === "Transaction History" && (
+                        <div className="mb-4 mt-4">
                           <TokenBalance className="w-full" userEmail={user?.email} />
                         </div>
                       )}
@@ -179,12 +180,20 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
             <div className="p-4 sm:p-6 border-t-2 border-black">
               <button
                 onClick={() => { handleLogout(); onClose && onClose(); }}
-                className="w-full flex items-center p-4 text-left hover:bg-red-500/20 rounded-lg transition-all duration-200 text-red-700 border border-red-500/30 hover:border-red-500/50 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FFBF00]"
+                className="w-full flex items-center p-4 text-left 
+                          bg-red-50 text-red-700 font-semibold rounded-lg 
+                          border-2 border-red-500
+                          hover:bg-red-600 hover:text-white hover:border-red-700
+                          hover:shadow-lg hover:scale-[1.02] active:scale-95
+                          transition-all duration-200
+                          focus:outline-none focus-visible:ring-2 
+                          focus-visible:ring-red-400 focus-visible:ring-offset-2 
+                          focus-visible:ring-offset-[#FFBF00]"
               >
                 <span className="text-2xl mr-4">🚪</span>
                 <div>
                   <div className="font-semibold text-lg">Logout</div>
-                  <div className="text-sm text-red-600">Sign out of your account</div>
+                  <div className="text-sm opacity-80">Sign out of your account</div>
                 </div>
               </button>
             </div>
