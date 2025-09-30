@@ -8,13 +8,15 @@ interface ProfilePictureUploadProps {
   onImageChange: (imageUrl: string) => void;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  disabled?: boolean;
 }
 
 export default function ProfilePictureUpload({ 
   currentImage, 
   onImageChange, 
   size = 'md',
-  className = ''
+  className = '',
+  disabled = false
 }: ProfilePictureUploadProps) {
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const [isUploading, setIsUploading] = useState(false);
@@ -75,6 +77,7 @@ export default function ProfilePictureUpload({
   };
 
   const handleClick = () => {
+    if (disabled) return;
     fileInputRef.current?.click();
   };
 
@@ -83,7 +86,9 @@ export default function ProfilePictureUpload({
       <div className="relative">
         {/* Profile Picture Display */}
         <div 
-          className={`${sizeClasses[size]} rounded-full bg-gradient-to-r from-[#FFBF00] to-[#FFD700] flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity duration-200 relative overflow-hidden`}
+          className={`${sizeClasses[size]} rounded-full bg-gradient-to-r from-[#FFBF00] to-[#FFD700] flex items-center justify-center transition-opacity duration-200 relative overflow-hidden ${
+            disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:opacity-80'
+          }`}
           onClick={handleClick}
         >
           {preview ? (
@@ -100,11 +105,13 @@ export default function ProfilePictureUpload({
           )}
           
           {/* Upload Overlay */}
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-            <span className="text-white text-sm font-medium">
-              {isUploading ? 'Uploading...' : 'Change'}
-            </span>
-          </div>
+          {!disabled && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+              <span className="text-white text-sm font-medium">
+                {isUploading ? 'Uploading...' : 'Change'}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Upload Progress */}
@@ -125,34 +132,44 @@ export default function ProfilePictureUpload({
       />
 
       {/* Action Buttons */}
-      <div className="flex gap-2 mt-4">
-        <button
-          onClick={handleClick}
-          disabled={isUploading}
-          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {preview ? 'Change Photo' : 'Upload Photo'}
-        </button>
-        
-        {preview && (
+      {!disabled && (
+        <div className="flex gap-2 mt-4">
           <button
-            onClick={handleRemoveImage}
+            onClick={handleClick}
             disabled={isUploading}
-            className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Remove
+            {preview ? 'Change Photo' : 'Upload Photo'}
           </button>
-        )}
-      </div>
+          
+          {preview && (
+            <button
+              onClick={handleRemoveImage}
+              disabled={isUploading}
+              className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Upload Guidelines */}
       <div className="mt-3 text-center">
-        <p className="text-xs text-gray-600">
-          JPG, PNG or GIF. Max size 5MB.
-        </p>
-        <p className="text-xs text-gray-500 mt-1">
-          Recommended: {size === 'sm' ? '64x64px' : size === 'md' ? '128x128px' : '256x256px'}
-        </p>
+        {disabled ? (
+          <p className="text-xs text-gray-500">
+            Click "Edit Profile" to change your photo
+          </p>
+        ) : (
+          <>
+            <p className="text-xs text-gray-600">
+              JPG, PNG or GIF. Max size 5MB.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Recommended: {size === 'sm' ? '64x64px' : size === 'md' ? '128x128px' : '256x256px'}
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

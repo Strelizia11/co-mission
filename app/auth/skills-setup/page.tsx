@@ -42,18 +42,47 @@ export default function SkillsSetupPage() {
       return;
     }
 
-    // Update user with skills and expertise
-    const updatedUser = {
-      ...user,
-      skills: selectedSkills,
-      expertise: expertise,
-      skillsSetupComplete: true
-    };
+    try {
+      console.log('Saving skills:', selectedSkills);
+      console.log('User email:', user.email);
+      
+      // Save skills to backend
+      const response = await fetch('/api/freelancer/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.email,
+          skills: selectedSkills,
+          bio: expertise,
+          availability: 'available'
+        })
+      });
 
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    
-    // Redirect to dashboard
-    router.push("/dashboard");
+      console.log('Response status:', response.status);
+      const responseData = await response.json();
+      console.log('Response data:', responseData);
+
+      if (response.ok) {
+        // Update user with skills and expertise
+        const updatedUser = {
+          ...user,
+          skills: selectedSkills,
+          expertise: expertise,
+          skillsSetupComplete: true
+        };
+
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        // Redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        console.error('Failed to save skills:', responseData);
+        alert(`Failed to save skills: ${responseData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error saving skills:', error);
+      alert("Failed to save skills. Please try again.");
+    }
   };
 
   if (!user) {

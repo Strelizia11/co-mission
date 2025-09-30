@@ -18,6 +18,7 @@ interface Freelancer {
   completedTasks: number;
   joinedAt: string;
   portfolio: any[];
+  profilePicture?: string;
 }
 
 export default function BrowseFreelancersPage() {
@@ -53,6 +54,13 @@ export default function BrowseFreelancersPage() {
   const [hireMessage, setHireMessage] = useState('');
   const [hireSubmitting, setHireSubmitting] = useState(false);
 
+  // Contact chat state
+  const [showContactChat, setShowContactChat] = useState(false);
+  const [contactTarget, setContactTarget] = useState<Freelancer | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [chatSubmitting, setChatSubmitting] = useState(false);
+
   const SKILL_TAGS = [
     "Web Development", "Mobile Development", "UI/UX Design", "Graphic Design",
     "Content Writing", "Digital Marketing", "Data Analysis", "Blockchain Development",
@@ -85,6 +93,10 @@ export default function BrowseFreelancersPage() {
   useEffect(() => {
     applyFilters();
   }, [freelancers, filters]);
+
+  useEffect(() => {
+    console.log('Chat messages updated in employer interface:', chatMessages);
+  }, [chatMessages]);
 
   const fetchFreelancers = async () => {
     try {
@@ -215,11 +227,15 @@ export default function BrowseFreelancersPage() {
   };
 
   const getAllSkills = () => {
-    const allSkills = new Set<string>();
-    freelancers.forEach(freelancer => {
-      freelancer.skills.forEach(skill => allSkills.add(skill));
-    });
-    return Array.from(allSkills).sort();
+    // Use predefined skills list instead of relying on freelancer data
+    const SKILL_TAGS = [
+      "Web Development", "Mobile Development", "UI/UX Design", "Graphic Design",
+      "Content Writing", "Digital Marketing", "Data Analysis", "Blockchain Development",
+      "Smart Contract Development", "DeFi Development", "NFT Development", "Game Development",
+      "Video Editing", "Photography", "Translation", "Virtual Assistant",
+      "Social Media Management", "SEO", "Copywriting", "Technical Writing"
+    ];
+    return SKILL_TAGS;
   };
 
   const renderStars = (rating: number) => {
@@ -243,6 +259,106 @@ export default function BrowseFreelancersPage() {
     });
     setHireMessage('');
     setShowHireModal(true);
+  };
+
+  // Contact chat handler
+  const openContactChat = async (freelancer: Freelancer) => {
+    setContactTarget(freelancer);
+    setChatMessages([]);
+    setNewMessage('');
+    setShowContactChat(true);
+    
+    // Load existing chat messages
+    try {
+      console.log('Loading messages for employer:', { employerEmail: user?.email, freelancerEmail: freelancer.email });
+      const response = await fetch(`/api/chat/message?user1=${user?.email}&user2=${freelancer.email}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Loaded messages for employer:', data.messages);
+        setChatMessages(data.messages || []);
+      } else {
+        console.error('Failed to load messages for employer:', response.status);
+      }
+    } catch (error) {
+      console.error('Error loading chat messages:', error);
+    }
+    
+    // Send notification to freelancer
+    try {
+      const response = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientEmail: freelancer.email,
+          type: 'chat_message',
+          title: 'New Contact Request',
+          message: `${user?.name || 'An employer'} wants to contact you about a potential project.`,
+          data: {
+            employerEmail: user?.email,
+            employerName: user?.name,
+            chatId: `${user?.email}-${freelancer.email}`
+          }
+        })
+      });
+      
+      if (response.ok) {
+        setMessage('Contact request sent! The freelancer will be notified.');
+      }
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  };
+
+  // Send chat message
+  const sendChatMessage = async () => {
+    if (!newMessage.trim() || !contactTarget || chatSubmitting) return;
+
+    setChatSubmitting(true);
+    const messageData = {
+      id: Date.now().toString(),
+      text: newMessage,
+      sender: user?.email,
+      senderName: user?.name,
+      recipient: contactTarget.email,
+      recipientName: contactTarget.name,
+      timestamp: new Date().toISOString(),
+      isFromEmployer: true
+    };
+
+    setChatMessages(prev => [...prev, messageData]);
+    setNewMessage('');
+
+    try {
+      const response = await fetch('/api/chat/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messageData)
+      });
+
+      if (response.ok) {
+        // Send notification to freelancer
+        await fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipientEmail: contactTarget.email,
+            type: 'chat_message',
+            title: 'New Message',
+            message: `${user?.name || 'An employer'} sent you a message.`,
+            data: {
+              employerEmail: user?.email,
+              employerName: user?.name,
+              chatId: `${user?.email}-${contactTarget.email}`,
+              messageId: messageData.id
+            }
+          })
+        });
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setChatSubmitting(false);
+    }
   };
 
   // 3. Add handler for form changes
@@ -561,10 +677,18 @@ export default function BrowseFreelancersPage() {
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-16 h-16 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center">
-                          <span className="text-2xl font-bold text-black">
-                            {freelancer.name ? freelancer.name.charAt(0).toUpperCase() : '👤'}
-                          </span>
+                        <div className="w-16 h-16 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center overflow-hidden">
+                          {freelancer.profilePicture ? (
+                            <img
+                              src={freelancer.profilePicture}
+                              alt={freelancer.name || 'Freelancer'}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-2xl font-bold text-black">
+                              {freelancer.name ? freelancer.name.charAt(0).toUpperCase() : '👤'}
+                            </span>
+                          )}
                         </div>
                         <div>
                           <h3 className="text-2xl font-bold text-gray-900">{freelancer.name || 'Unknown User'}</h3>
@@ -669,10 +793,7 @@ export default function BrowseFreelancersPage() {
                       Hire
                     </button>
                     <button
-                      onClick={() => {
-                        // In a real app, this would open a contact modal or navigate to a contact page
-                        setMessage(`Contact information for ${freelancer.name || 'this freelancer'} would be displayed here`);
-                      }}
+                      onClick={() => openContactChat(freelancer)}
                       className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
                     >
                       Contact Freelancer
@@ -742,6 +863,110 @@ export default function BrowseFreelancersPage() {
               {hireMessage && <div className={`p-3 rounded ${hireMessage.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{hireMessage}</div>}
               <button type="submit" disabled={hireSubmitting} className="w-full py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">{hireSubmitting ? 'Sending...' : 'Send Direct Hire'}</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Chat Modal */}
+      {showContactChat && contactTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col relative">
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    {contactTarget.profilePicture ? (
+                      <img
+                        src={contactTarget.profilePicture}
+                        alt={contactTarget.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <span className="text-lg font-bold text-white">
+                        {contactTarget.name ? contactTarget.name.charAt(0).toUpperCase() : '👤'}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Chat with {contactTarget.name}</h3>
+                    <p className="text-sm text-white/80">{contactTarget.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowContactChat(false)}
+                  className="text-white hover:text-white/70 transition-colors"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {chatMessages.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">💬</span>
+                  </div>
+                  <p>Start a conversation with {contactTarget.name}</p>
+                </div>
+              ) : (
+                chatMessages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.isFromEmployer ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] p-3 rounded-2xl ${
+                        message.isFromEmployer
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
+                      <p className="text-sm">{message.text}</p>
+                      <p className="text-xs opacity-70 mt-1">
+                        {new Date(message.timestamp || message.createdAt).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Message Input */}
+            <div className="p-4 border-t border-gray-200">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendChatMessage();
+                    }
+                  }}
+                  placeholder="Type your message..."
+                  className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={chatSubmitting}
+                />
+                <button
+                  onClick={sendChatMessage}
+                  disabled={!newMessage.trim() || chatSubmitting}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {chatSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

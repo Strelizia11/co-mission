@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "id": "1759206882843",
+    "title": "New Contact Request",
+    "message": "Employer1 wants to contact you about a potential project.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:34:42.843Z",
+    "data": {
+      "employerEmail": "emp1@test",
+      "employerName": "Employer1",
+      "chatId": "emp1@test-user1@test"
+    },
+    "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759206885999",
+    "title": "New Message",
+    "message": "Employer1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:34:45.999Z",
+    "data": {
+      "employerEmail": "emp1@test",
+      "employerName": "Employer1",
+      "chatId": "emp1@test-user1@test",
+      "messageId": "1759206883375"
+    },
+    "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759207171598",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:39:31.598Z",
+    "data": {
+      "freelancerEmail": "user1@test",
+      "freelancerName": "User1",
+      "chatId": "emp1@test-user1@test",
+      "messageId": "1759207169687"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759207357084",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:42:37.084Z",
+    "data": {
+      "freelancerEmail": "user1@test",
+      "freelancerName": "User1",
+      "chatId": "emp1@test-user1@test",
+      "messageId": "1759207348251"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759207528333",
+    "title": "New Contact Request",
+    "message": "Employer1 wants to contact you about a potential project.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:45:28.333Z",
+    "data": {
+      "employerEmail": "emp1@test",
+      "employerName": "Employer1",
+      "chatId": "emp1@test-user1@test"
+    },
+    "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759207532364",
+    "title": "New Message",
+    "message": "Employer1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T04:45:32.364Z",
+    "data": {
+      "employerEmail": "emp1@test",
+      "employerName": "Employer1",
+      "chatId": "emp1@test-user1@test",
+      "messageId": "1759207532300"
+    },
+    "recipientEmail": "user1@test"
+  }
+]

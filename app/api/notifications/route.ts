@@ -4,10 +4,12 @@ interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'task_application' | 'task_selected' | 'task_completed' | 'payment' | 'system';
+  type: 'task_application' | 'task_selected' | 'task_completed' | 'payment' | 'system' | 'chat_message';
   read: boolean;
   createdAt: string;
   taskId?: string;
+  recipientEmail?: string;
+  data?: any;
 }
 
 export async function OPTIONS() {
@@ -30,48 +32,26 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    // In a real app, you'd fetch from a database
-    // For now, we'll return mock notifications
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        title: 'New Application Received',
-        message: 'John Doe applied to your "Website Development" task',
-        type: 'task_application',
-        read: false,
-        createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 minutes ago
-        taskId: 'task-1'
-      },
-      {
-        id: '2',
-        title: 'Task Completed',
-        message: 'Your "Logo Design" task has been completed by Jane Smith',
-        type: 'task_completed',
-        read: false,
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-        taskId: 'task-2'
-      },
-      {
-        id: '3',
-        title: 'Payment Received',
-        message: 'Payment of 0.5 ETH has been released for completed task',
-        type: 'payment',
-        read: true,
-        createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-        taskId: 'task-3'
-      },
-      {
-        id: '4',
-        title: 'You were selected!',
-        message: 'Congratulations! You have been selected for the "Mobile App Development" task',
-        type: 'task_selected',
-        read: false,
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-        taskId: 'task-4'
-      }
-    ];
+    // Read notifications from file
+    const fs = require('fs');
+    const path = require('path');
+    const notificationsFile = path.join(process.cwd(), 'notifications.json');
+    
+    let allNotifications: Notification[] = [];
+    if (fs.existsSync(notificationsFile)) {
+      const data = fs.readFileSync(notificationsFile, 'utf-8');
+      allNotifications = JSON.parse(data);
+    }
 
-    return NextResponse.json({ notifications: mockNotifications }, {
+    // Filter notifications for the specific user
+    const userNotifications = allNotifications.filter(notification => 
+      notification.recipientEmail === email
+    );
+
+    // Sort by creation date (newest first)
+    userNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    return NextResponse.json({ notifications: userNotifications }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

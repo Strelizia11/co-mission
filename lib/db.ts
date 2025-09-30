@@ -28,9 +28,10 @@ export type Rating = {
 // Freelancer profile type
 export type FreelancerProfile = {
   email: string;
+  name: string;
   bio?: string;
   skills: string[];
-  minimumRate?: number;
+  hourlyRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
   portfolio: PortfolioItem[];
   ratings: Rating[];
@@ -39,6 +40,7 @@ export type FreelancerProfile = {
   completedTasks: number;
   joinedAt: string;
   updatedAt: string;
+  profilePicture?: string;
 }
 
 // Employer profile type
@@ -52,6 +54,7 @@ export type EmployerProfile = {
   joinedAt: string;
   updatedAt: string;
   postedTasks?: number;
+  profilePicture?: string;
 }
 
 // User type definition
@@ -82,17 +85,32 @@ export function saveUsers(users: User[]) {
 export function getFreelancerProfile(email: string): FreelancerProfile | null {
   const users = getUsers();
   const user = users.find(u => u.email === email && u.role === 'freelancer');
-  return user?.profile || null;
+  if (!user) return null;
+  
+  if (user.profile) {
+    return {
+      ...user.profile,
+      name: user.name
+    };
+  }
+  
+  return null;
 }
 
 // Update freelancer profile
 export function updateFreelancerProfile(email: string, profile: Partial<FreelancerProfile>): boolean {
+  console.log('updateFreelancerProfile called with:', { email, profile });
+  
   const users = getUsers();
   const userIndex = users.findIndex(u => u.email === email && u.role === 'freelancer');
+  
+  console.log('User index:', userIndex);
+  console.log('User found:', userIndex !== -1);
   
   if (userIndex === -1) return false;
   
   if (!users[userIndex].profile) {
+    console.log('Creating new profile for user');
     users[userIndex].profile = {
       email,
       skills: [],
@@ -107,11 +125,18 @@ export function updateFreelancerProfile(email: string, profile: Partial<Freelanc
     };
   }
   
+  console.log('Before update - profile:', users[userIndex].profile);
+  
+  // Don't allow updating the name through profile updates
+  const { name, ...profileWithoutName } = profile;
+  
   users[userIndex].profile = {
     ...users[userIndex].profile!,
-    ...profile,
+    ...profileWithoutName,
     updatedAt: new Date().toISOString()
   };
+  
+  console.log('After update - profile:', users[userIndex].profile);
   
   saveUsers(users);
   return true;
@@ -190,6 +215,32 @@ export function addFreelancerRating(freelancerEmail: string, rating: Rating): bo
 export function getAllFreelancerProfiles(): FreelancerProfile[] {
   const users = getUsers();
   return users
-    .filter(u => u.role === 'freelancer' && u.profile)
-    .map(u => u.profile!);
+    .filter(u => u.role === 'freelancer')
+    .map(u => {
+      // If user has a profile, use it and add the name
+      if (u.profile) {
+        return {
+          ...u.profile,
+          name: u.name
+        };
+      }
+      
+      // If no profile exists, create a default one
+      return {
+        email: u.email,
+        name: u.name,
+        skills: [],
+        availability: 'available' as 'available' | 'busy' | 'unavailable',
+        portfolio: [],
+        ratings: [],
+        averageRating: 0,
+        totalRatings: 0,
+        completedTasks: 0,
+        joinedAt: u.createdAt,
+        updatedAt: u.createdAt,
+        bio: '',
+        hourlyRate: 0,
+        profilePicture: ''
+      };
+    });
 }

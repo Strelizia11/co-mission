@@ -2,15 +2,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import FreelancerChat from "./FreelancerChat";
 
 interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'task_application' | 'task_selected' | 'task_completed' | 'payment' | 'system';
+  type: 'task_application' | 'task_selected' | 'task_completed' | 'payment' | 'system' | 'chat_message';
   read: boolean;
   createdAt: string;
   taskId?: string;
+  recipientEmail?: string;
+  data?: any;
 }
 
 interface NotificationDropdownProps {
@@ -26,6 +29,13 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unread, setUnread] = useState<number>(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Chat state
+  const [showChat, setShowChat] = useState(false);
+  const [chatEmployer, setChatEmployer] = useState<{
+    email: string;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
     if (user?.email) {
@@ -118,6 +128,22 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
     }
   };
 
+  const handleNotificationClick = (notification: Notification) => {
+    // Mark as read
+    markAsRead(notification.id);
+    
+    // Handle chat message notifications
+    if (notification.type === 'chat_message' && notification.data) {
+      // Open chat interface
+      setChatEmployer({
+        email: notification.data.employerEmail || '',
+        name: notification.data.employerName || 'Employer'
+      });
+      setShowChat(true);
+      setIsOpen(false); // Close notification dropdown
+    }
+  };
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'task_application': return '📝';
@@ -125,6 +151,7 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
       case 'task_completed': return '🎉';
       case 'payment': return '💰';
       case 'system': return '🔔';
+      case 'chat_message': return '💬';
       default: return '📢';
     }
   };
@@ -136,6 +163,7 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
       case 'task_completed': return 'bg-purple-50 border-purple-200';
       case 'payment': return 'bg-yellow-50 border-yellow-200';
       case 'system': return 'bg-gray-50 border-gray-200';
+      case 'chat_message': return 'bg-indigo-50 border-indigo-200';
       default: return 'bg-gray-50 border-gray-200';
     }
   };
@@ -210,7 +238,7 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
                     className={`p-4 hover:bg-gray-50 transition-colors duration-200 cursor-pointer ${
                       !notification.read ? 'bg-blue-50/50' : ''
                     }`}
-                    onClick={() => markAsRead(notification.id)}
+                    onClick={() => handleNotificationClick(notification)}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0">
@@ -261,6 +289,21 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
             </div>
           )}
         </div>
+      )}
+
+      {/* Freelancer Chat Interface */}
+      {showChat && chatEmployer && user && (
+        <FreelancerChat
+          isOpen={showChat}
+          onClose={() => {
+            setShowChat(false);
+            setChatEmployer(null);
+          }}
+          employerEmail={chatEmployer.email}
+          employerName={chatEmployer.name}
+          freelancerEmail={user.email}
+          freelancerName={user.name}
+        />
       )}
     </div>
   );

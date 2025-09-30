@@ -1,0 +1,35 @@
+[
+  {
+    "id": "1759207353357",
+    "text": "Hello from freelancer",
+    "sender": "user1@test",
+    "senderName": "User1",
+    "recipient": "emp1@test",
+    "recipientName": "Employer1",
+    "timestamp": "2025-09-30T04:42:28.251Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T04:42:33.357Z"
+  },
+  {
+    "id": "1759207353358",
+    "text": "Hello from employer",
+    "sender": "emp1@test",
+    "senderName": "Employer1",
+    "recipient": "user1@test",
+    "recipientName": "User1",
+    "timestamp": "2025-09-30T04:42:35.000Z",
+    "isFromEmployer": true,
+    "createdAt": "2025-09-30T04:42:35.000Z"
+  },
+  {
+    "id": "1759207532323",
+    "text": "Heelo",
+    "sender": "emp1@test",
+    "senderName": "Employer1",
+    "recipient": "user1@test",
+    "recipientName": "User1",
+    "timestamp": "2025-09-30T04:45:32.300Z",
+    "isFromEmployer": true,
+    "createdAt": "2025-09-30T04:45:32.323Z"
+  }
+]

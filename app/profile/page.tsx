@@ -101,10 +101,11 @@ export default function ProfilePage() {
       
       if (response.ok) {
         setProfile(data.profile);
+        setProfilePicture(data.profile.profilePicture || '');
         setFormData({
           bio: data.profile.bio || '',
           skills: data.profile.skills || [],
-          minimumRate: data.profile.minimumRate?.toString() || '',
+          minimumRate: data.profile.hourlyRate?.toString() || '',
           availability: data.profile.availability || 'available'
         });
       } else {
@@ -124,6 +125,7 @@ export default function ProfilePage() {
       const data = await response.json();
       if (response.ok) {
         setEmployerProfile(data.profile);
+        setProfilePicture(data.profile.profilePicture || '');
         setEmployerForm({
           companyName: data.profile.companyName || '',
           bio: data.profile.bio || '',
@@ -150,7 +152,8 @@ export default function ProfilePage() {
         body: JSON.stringify({
           email: user.email,
           ...formData,
-          minimumRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined
+          hourlyRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined,
+          profilePicture: profilePicture
         })
       });
       
@@ -177,6 +180,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           email: user.email,
           ...employerForm,
+          profilePicture: profilePicture
         })
       });
       const data = await response.json();
@@ -315,9 +319,28 @@ export default function ProfilePage() {
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-                  <p className="text-white/90 text-lg">{user.role === 'freelancer' ? 'Manage your professional profile and showcase your work' : 'Manage your company profile and hiring preferences'}</p>
+                <div className="flex items-center gap-6">
+                  {/* Profile Picture in Header */}
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden border-2 border-white/30">
+                      {profilePicture ? (
+                        <img
+                          src={profilePicture}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-3xl font-bold text-white">
+                          {user.name ? user.name.charAt(0).toUpperCase() : '👤'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
+                    <p className="text-white/90 text-lg">{user.role === 'freelancer' ? 'Manage your professional profile and showcase your work' : 'Manage your company profile and hiring preferences'}</p>
+                  </div>
                 </div>
                 {!editing && (
                   <button
@@ -381,6 +404,7 @@ export default function ProfilePage() {
                           currentImage={profilePicture}
                           onImageChange={setProfilePicture}
                           size="lg"
+                          disabled={!editing}
                         />
                         <div className="flex-1">
                           <p className="text-gray-600 text-sm">
@@ -506,26 +530,6 @@ export default function ProfilePage() {
                 </div>
                 ) : (
                   <div className="space-y-8">
-                    {/* Profile Picture Section */}
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <span className="text-xl">📸</span>
-                        Profile Picture
-                      </h3>
-                      <div className="flex items-center gap-6">
-                        <ProfilePictureUpload
-                          currentImage={profilePicture}
-                          onImageChange={setProfilePicture}
-                          size="lg"
-                        />
-                        <div className="flex-1">
-                          <p className="text-gray-600 text-sm">
-                            Upload a professional photo to help employers and clients recognize you. 
-                            A clear, friendly photo can increase your chances of being selected for tasks.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
 
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -558,7 +562,7 @@ export default function ProfilePage() {
                           <span className="text-xl">💰</span>
                           Minimum Rate
                         </h3>
-                        <p className="text-2xl font-bold text-gray-900">${profile?.minimumRate || 'Not set'}</p>
+                        <p className="text-2xl font-bold text-gray-900">${profile?.hourlyRate || 'Not set'}</p>
                       </div>
                       <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -810,6 +814,7 @@ export default function ProfilePage() {
                         currentImage={profilePicture}
                         onImageChange={setProfilePicture}
                         size="lg"
+                        disabled={!editing}
                       />
                       <div className="flex-1">
                         <p className="text-gray-600 text-sm">
@@ -896,26 +901,6 @@ export default function ProfilePage() {
                 </div>
                 ) : (
                   <div className="space-y-8">
-                    {/* Profile Picture Display for Employer */}
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <span className="text-xl">📸</span>
-                        Profile Picture
-                      </h3>
-                      <div className="flex items-center gap-6">
-                        <ProfilePictureUpload
-                          currentImage={profilePicture}
-                          onImageChange={setProfilePicture}
-                          size="lg"
-                        />
-                        <div className="flex-1">
-                          <p className="text-gray-600 text-sm">
-                            Upload a professional photo or company logo to help freelancers recognize you. 
-                            A clear, professional image builds trust with potential contractors.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
 
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
