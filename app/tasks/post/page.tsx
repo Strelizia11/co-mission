@@ -125,17 +125,19 @@ export default function PostTaskPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
                   <h1 className="text-4xl font-bold text-white mb-2">Post a New Task</h1>
                   <p className="text-white/90 text-lg">Create opportunities for talented freelancers</p>
                 </div>
-                <button
-                  onClick={() => router.push('/dashboard')}
-                  className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
-                >
-                  ← Back to Dashboard
-                </button>
+                <div className="mt-6 md:mt-0">
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    ← Back to Dashboard
+                  </button>
+                </div>
               </div>
             </div>
           </div>
