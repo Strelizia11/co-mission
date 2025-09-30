@@ -148,25 +148,25 @@ export default function FreelancerTasksPage() {
         {/* Accepted Tasks Content */}
         <div className="max-w-7xl mx-auto p-6">
           {/* Page Header */}
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-xl p-4 md:p-8 mb-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">My Accepted Tasks</h1>
-                  <p className="text-white/90 text-lg">Track your progress and manage your work</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">My Accepted Tasks</h1>
+                  <p className="text-white/90 text-base md:text-lg">Track your progress and manage your work</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => router.push('/tasks/browse')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     Browse More Tasks
                   </button>
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     ← Dashboard
                   </button>
@@ -207,54 +207,54 @@ export default function FreelancerTasksPage() {
           ) : (
             <div className="grid gap-8">
               {tasks.map((task) => (
-                <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100">
-                  <div className="flex justify-between items-start mb-6">
+                <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 md:p-8 border border-gray-100">
+                  <div className="flex justify-between items-start mb-4 md:mb-6">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-2xl font-bold text-gray-900">{task.title}</h3>
-                        <div className={`px-4 py-2 rounded-full text-sm font-bold ${getStatusColor(task.status)}`}>
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900">{task.title}</h3>
+                        <div className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-bold ${getStatusColor(task.status)}`}>
                           {task.status.replace('_', ' ').toUpperCase()}
                         </div>
                       </div>
-                      <p className="text-gray-700 text-lg leading-relaxed mb-6">{task.description}</p>
+                      <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-4 md:mb-6">{task.description}</p>
                       
-                      <div className="flex items-center gap-6 mb-6">
-                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-6 py-3 rounded-xl font-bold text-2xl">
+                      <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-4 md:mb-6">
+                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-xl md:text-2xl">
                           {task.price} ETH
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
-                          <span className="text-lg">📅</span>
-                          <span className="text-sm">Accepted: {new Date(task.acceptedAt!).toLocaleDateString()}</span>
+                          <span className="text-base md:text-lg">📅</span>
+                          <span className="text-xs md:text-sm">Accepted: {new Date(task.acceptedAt!).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">👤</span>
-                        <span className="font-semibold text-gray-900">Employer</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6">
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">👤</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Employer</span>
                       </div>
-                      <div className="text-gray-700 font-medium">{task.employerName}</div>
+                      <div className="text-gray-700 font-medium text-sm md:text-base">{task.employerName}</div>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">📅</span>
-                        <span className="font-semibold text-gray-900">Completion Deadline</span>
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">📅</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Completion Deadline</span>
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-700 font-medium text-sm md:text-base">
                         {new Date(task.completionDeadline).toLocaleString()}
                       </div>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">⏰</span>
-                        <span className="font-semibold text-gray-900">Time Remaining</span>
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">⏰</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Time Remaining</span>
                       </div>
-                      <div className={`font-medium ${
+                      <div className={`font-medium text-sm md:text-base ${
                         (() => {
                           const now = new Date();
                           const deadline = new Date(task.completionDeadline);
@@ -274,13 +274,13 @@ export default function FreelancerTasksPage() {
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-3">Required Skills</h4>
-                    <div className="flex flex-wrap gap-3">
+                  <div className="mb-4 md:mb-6">
+                    <h4 className="text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Required Skills</h4>
+                    <div className="flex flex-wrap gap-2 md:gap-3">
                       {task.requiredSkills.map((skill, index) => (
                         <span
                           key={index}
-                          className="px-4 py-2 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-200"
+                          className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-100 text-blue-800 text-xs md:text-sm font-medium rounded-full border border-blue-200"
                         >
                           {skill}
                         </span>
@@ -289,17 +289,17 @@ export default function FreelancerTasksPage() {
                   </div>
 
                   {task.status === 'in_progress' && (
-                    <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="text-2xl">📤</span>
-                        <h4 className="text-lg font-semibold text-gray-900">Submit Your Work</h4>
+                    <div className="mb-4 md:mb-6 p-4 md:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                      <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                        <span className="text-xl md:text-2xl">📤</span>
+                        <h4 className="text-base md:text-lg font-semibold text-gray-900">Submit Your Work</h4>
                       </div>
                       
-                      <div className="mb-6">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <div className="mb-4 md:mb-6">
+                        <label className="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">
                           Upload Files
                         </label>
-                        <div className="border-2 border-dashed border-blue-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                        <div className="border-2 border-dashed border-blue-300 rounded-xl p-4 md:p-6 text-center hover:border-blue-400 transition-colors">
                           <input
                             type="file"
                             multiple
@@ -311,30 +311,30 @@ export default function FreelancerTasksPage() {
                             htmlFor={`file-upload-${task.id}`}
                             className="cursor-pointer block"
                           >
-                            <span className="text-4xl mb-2 block">📁</span>
-                            <span className="text-gray-600 font-medium">Click to upload files</span>
-                            <span className="text-gray-500 text-sm block mt-1">or drag and drop</span>
+                            <span className="text-3xl md:text-4xl mb-1 md:mb-2 block">📁</span>
+                            <span className="text-gray-600 font-medium text-sm md:text-base">Click to upload files</span>
+                            <span className="text-gray-500 text-xs md:text-sm block mt-1">or drag and drop</span>
                           </label>
                         </div>
                         {selectedFiles.length > 0 && (
-                          <div className="mt-4 p-3 bg-blue-100 rounded-lg">
-                            <div className="text-sm font-medium text-blue-800 mb-2">Selected Files:</div>
-                            <div className="text-sm text-blue-700">
+                          <div className="mt-3 md:mt-4 p-2 md:p-3 bg-blue-100 rounded-lg">
+                            <div className="text-xs md:text-sm font-medium text-blue-800 mb-1 md:mb-2">Selected Files:</div>
+                            <div className="text-xs md:text-sm text-blue-700">
                               {selectedFiles.map(f => f.name).join(', ')}
                             </div>
                           </div>
                         )}
                       </div>
 
-                      <div className="mb-6">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <div className="mb-4 md:mb-6">
+                        <label className="block text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">
                           Additional Notes (Optional)
                         </label>
                         <textarea
                           value={submissionNotes}
                           onChange={(e) => setSubmissionNotes(e.target.value)}
                           placeholder="Add any additional notes about your work..."
-                          className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-black placeholder-gray-500"
+                          className="w-full p-3 md:p-4 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-xs md:text-sm text-black placeholder-gray-500"
                           rows={4}
                         />
                       </div>
@@ -342,7 +342,7 @@ export default function FreelancerTasksPage() {
                       <div className="flex justify-end">
                         <button
                           onClick={() => handleSubmitWork(task.id)}
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 md:px-8 py-2 md:py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg text-sm md:text-base"
                         >
                           Submit Work
                         </button>
