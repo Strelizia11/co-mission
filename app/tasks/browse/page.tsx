@@ -248,27 +248,27 @@ export default function BrowseTasksPage() {
         {/* Browse Tasks Content */}
         <div className="max-w-7xl mx-auto p-6">
           {/* Page Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-xl p-4 md:p-8 mb-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">Available Tasks</h1>
-                  <p className="text-white/90 text-lg">Discover opportunities that match your skills</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Available Tasks</h1>
+                  <p className="text-white/90 text-base md:text-lg">Discover opportunities that match your skills</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}
                   </button>
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
-                    ← Back to Dashboard
+                    ← Dashboard
                   </button>
                 </div>
               </div>
@@ -290,18 +290,18 @@ export default function BrowseTasksPage() {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Filter Tasks</h3>
+            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8 border border-gray-200">
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Filter Tasks</h3>
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                  className="text-xs md:text-sm text-gray-600 hover:text-gray-800 underline"
                 >
                   Clear All Filters
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {/* Keyword Search */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -459,40 +459,40 @@ export default function BrowseTasksPage() {
                 const canApply = task.status === 'accepting_applications' && !isDeadlinePassed;
 
                 return (
-                  <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100">
-                    <div className="flex justify-between items-start mb-6">
+                  <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 md:p-8 border border-gray-100">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="text-2xl font-bold text-gray-900">{task.title}</h3>
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-3">
+                          <h3 className="text-xl md:text-2xl font-bold text-gray-900">{task.title}</h3>
                           {matchPercentage > 70 && (
-                            <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                            <span className="px-3 py-1 bg-green-100 text-green-800 text-xs md:text-sm font-medium rounded-full">
                               🎯 Great Match
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-semibold">👤</span>
+                          <div className="w-6 h-6 md:w-8 md:h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold text-xs md:text-base">👤</span>
                           </div>
-                          <span className="text-gray-600">Posted by <span className="font-semibold text-gray-900">{task.employerName}</span></span>
+                          <span className="text-gray-600 text-sm md:text-base">Posted by <span className="font-semibold text-gray-900">{task.employerName}</span></span>
                         </div>
-                        <p className="text-gray-700 text-lg leading-relaxed mb-6">{task.description}</p>
+                        <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-4 md:mb-6">{task.description}</p>
                       </div>
-                      <div className="text-right ml-6">
-                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-6 py-3 rounded-xl font-bold text-2xl mb-2">
+                      <div className="md:text-right md:ml-6 mt-4 md:mt-0">
+                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-xl md:text-2xl mb-2 inline-block md:block">
                           {task.price} ETH
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-xs md:text-sm text-gray-500">
                           Posted {new Date(task.createdAt).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
 
                     <div className="mb-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-lg font-semibold text-gray-900">Required Skills</h4>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                        <h4 className="text-base md:text-lg font-semibold text-gray-900">Required Skills</h4>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-600">
+                          <span className="text-xs md:text-sm text-gray-600">
                             {matchingSkills}/{task.requiredSkills.length} match
                           </span>
                           {matchPercentage > 0 && (
@@ -508,7 +508,7 @@ export default function BrowseTasksPage() {
                           return (
                             <span
                               key={index}
-                              className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                              className={`px-3 py-1.5 text-xs md:text-sm font-medium rounded-full transition-all duration-200 ${
                                 isMatched
                                   ? 'bg-green-100 text-green-800 border-2 border-green-200 shadow-sm'
                                   : 'bg-gray-100 text-gray-600 border-2 border-gray-200'
@@ -522,23 +522,23 @@ export default function BrowseTasksPage() {
                     </div>
 
                     <div className="mb-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                         <div className="bg-gray-50 rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-lg">⏰</span>
-                            <span className="font-semibold text-gray-900">Application Deadline</span>
+                            <span className="text-base md:text-lg">⏰</span>
+                            <span className="font-semibold text-sm md:text-base text-gray-900">Application Deadline</span>
                           </div>
-                          <span className={`text-lg font-medium ${isDeadlinePassed ? 'text-red-600' : 'text-gray-700'}`}>
+                          <span className={`text-sm md:text-base font-medium ${isDeadlinePassed ? 'text-red-600' : 'text-gray-700'}`}>
                             {new Date(task.acceptanceDeadline).toLocaleString()}
                             {isDeadlinePassed && ' (PASSED)'}
                           </span>
                         </div>
                         <div className="bg-gray-50 rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-lg">📅</span>
-                            <span className="font-semibold text-gray-900">Completion Deadline</span>
+                            <span className="text-base md:text-lg">📅</span>
+                            <span className="font-semibold text-sm md:text-base text-gray-900">Completion Deadline</span>
                           </div>
-                          <span className="text-lg font-medium text-gray-700">
+                          <span className="text-sm md:text-base font-medium text-gray-700">
                             {new Date(task.completionDeadline).toLocaleString()}
                           </span>
                         </div>

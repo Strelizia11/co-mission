@@ -92,25 +92,25 @@ export default function AccomplishedTasksPage() {
         {/* Accomplished Tasks Content */}
         <div className="max-w-7xl mx-auto p-6">
           {/* Page Header */}
-          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl shadow-xl p-4 md:p-8 mb-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">My Accomplishments</h1>
-                  <p className="text-white/90 text-lg">Celebrate your completed tasks and achievements</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">My Accomplishments</h1>
+                  <p className="text-white/90 text-base md:text-lg">Celebrate your completed tasks and achievements</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => router.push('/tasks/browse')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     Browse More Tasks
                   </button>
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     ← Dashboard
                   </button>
@@ -151,54 +151,54 @@ export default function AccomplishedTasksPage() {
           ) : (
             <div className="grid gap-8">
               {tasks.map((task) => (
-                <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100">
-                  <div className="flex justify-between items-start mb-6">
+                <div key={task.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 md:p-8 border border-gray-100">
+                  <div className="flex justify-between items-start mb-4 md:mb-6">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-2xl font-bold text-gray-900">{task.title}</h3>
-                        <div className="px-4 py-2 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                        <h3 className="text-xl md:text-2xl font-bold text-gray-900">{task.title}</h3>
+                        <div className="px-3 py-1.5 md:px-4 md:py-2 bg-green-100 text-green-800 text-xs md:text-sm font-medium rounded-full">
                           ✅ COMPLETED
                         </div>
                       </div>
-                      <p className="text-gray-700 text-lg leading-relaxed mb-6">{task.description}</p>
+                      <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-4 md:mb-6">{task.description}</p>
                       
-                      <div className="flex items-center gap-6 mb-6">
-                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-6 py-3 rounded-xl font-bold text-2xl">
+                      <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-4 md:mb-6">
+                        <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-4 md:px-6 py-2 md:py-3 rounded-xl font-bold text-xl md:text-2xl">
                           {task.price} ETH
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
-                          <span className="text-lg">🎉</span>
-                          <span className="text-sm">Completed: {new Date(task.completedAt!).toLocaleDateString()}</span>
+                          <span className="text-base md:text-lg">🎉</span>
+                          <span className="text-xs md:text-sm">Completed: {new Date(task.completedAt!).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">👤</span>
-                        <span className="font-semibold text-gray-900">Employer</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6">
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">👤</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Employer</span>
                       </div>
-                      <div className="text-gray-700 font-medium">{task.employerName}</div>
+                      <div className="text-gray-700 font-medium text-sm md:text-base">{task.employerName}</div>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">📅</span>
-                        <span className="font-semibold text-gray-900">Accepted Date</span>
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">📅</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Accepted Date</span>
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-700 font-medium text-sm md:text-base">
                         {new Date(task.acceptedAt!).toLocaleDateString()}
                       </div>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">⏱️</span>
-                        <span className="font-semibold text-gray-900">Duration</span>
+                    <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <span className="text-base md:text-lg">⏱️</span>
+                        <span className="font-semibold text-gray-900 text-sm md:text-base">Duration</span>
                       </div>
-                      <div className="text-gray-700 font-medium">
+                      <div className="text-gray-700 font-medium text-sm md:text-base">
                         {(() => {
                           const accepted = new Date(task.acceptedAt!);
                           const completed = new Date(task.completedAt!);
@@ -210,13 +210,13 @@ export default function AccomplishedTasksPage() {
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-3">Skills Used</h4>
-                    <div className="flex flex-wrap gap-3">
+                  <div className="mb-4 md:mb-6">
+                    <h4 className="text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Skills Used</h4>
+                    <div className="flex flex-wrap gap-2 md:gap-3">
                       {task.requiredSkills.map((skill, index) => (
                         <span
                           key={index}
-                          className="px-4 py-2 bg-purple-100 text-purple-800 text-sm font-medium rounded-full border border-purple-200"
+                          className="px-3 py-1.5 md:px-4 md:py-2 bg-purple-100 text-purple-800 text-xs md:text-sm font-medium rounded-full border border-purple-200"
                         >
                           {skill}
                         </span>
