@@ -3,7 +3,7 @@ import "./theme.css";
 import "@coinbase/onchainkit/styles.css";
 import type { Metadata, Viewport } from "next";
 import { Providers } from "./providers";
-import ChatWidget from "./components/ChatWidget";
+import FloatingWidgets from "./components/FloatingWidgets";
 import GlobalLoading from "./components/GlobalLoading";
 
 export const viewport: Viewport = {
@@ -46,7 +46,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-white min-h-screen">
         <Providers>{children}</Providers>
-        <ChatWidget />
+        <FloatingWidgets />
       </body>
     </html>
   );

@@ -60,10 +60,39 @@ export async function GET(req: Request) {
 
     console.log('API received parameters:', { user1, user2 });
 
-    if (!user1 || !user2) {
-      console.error('Missing required parameters:', { user1, user2 });
+    if (!user1) {
+      console.error('Missing required parameter: user1');
       return NextResponse.json({ 
-        error: 'Both user1 and user2 are required',
+        error: 'user1 is required',
+        received: { user1, user2 }
+      }, { status: 400 });
+    }
+
+    // If user2 is 'all', return all messages for user1
+    if (user2 === 'all') {
+      try {
+        const allMessages = getMessages();
+        const userMessages = allMessages.filter((message: any) => 
+          message.sender === user1 || message.recipient === user1
+        );
+        
+        // Sort by timestamp (newest first)
+        userMessages.sort((a: any, b: any) => {
+          return new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime();
+        });
+
+        console.log(`Retrieved ${userMessages.length} messages for ${user1}`);
+        return NextResponse.json({ messages: userMessages });
+      } catch (error) {
+        console.error('Error retrieving messages:', error);
+        return NextResponse.json({ error: 'Failed to retrieve messages' }, { status: 500 });
+      }
+    }
+
+    if (!user2) {
+      console.error('Missing required parameter: user2');
+      return NextResponse.json({ 
+        error: 'user2 is required',
         received: { user1, user2 }
       }, { status: 400 });
     }
