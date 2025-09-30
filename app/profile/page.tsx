@@ -105,7 +105,7 @@ export default function ProfilePage() {
         setFormData({
           bio: data.profile.bio || '',
           skills: data.profile.skills || [],
-          minimumRate: data.profile.hourlyRate?.toString() || '',
+          minimumRate: data.profile.minimumRate?.toString() || '',
           availability: data.profile.availability || 'available'
         });
       } else {
@@ -152,7 +152,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           email: user.email,
           ...formData,
-          hourlyRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined,
+          minimumRate: formData.minimumRate ? parseFloat(formData.minimumRate) : undefined,
           profilePicture: profilePicture
         })
       });
@@ -314,7 +314,7 @@ export default function ProfilePage() {
         {/* Profile Content */}
         <div className="max-w-7xl mx-auto p-6">
           {/* Page Header */}
-          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
@@ -345,7 +345,8 @@ export default function ProfilePage() {
                 {!editing && (
                   <button
                     onClick={() => setEditing(true)}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/40 backdrop-blur-sm px-6 py-3 rounded-lg font-semibold hover:bg-white/50 transition-all duration-300 border border-white/50 shadow-lg"
+                    style={{ color: '#ed9e28' }}
                   >
                     ✏️ Edit Profile
                   </button>
@@ -354,7 +355,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-8">
             {message && (
               <div className={`mb-6 p-4 rounded-xl shadow-lg ${
                 message.includes('success') ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'
@@ -375,7 +376,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveTab(tab as any)}
                     className={`px-6 py-3 rounded-lg font-semibold capitalize transition-all duration-300 ${
                       activeTab === tab
-                        ? 'bg-white text-purple-600 shadow-md'
+                        ? 'bg-white text-[#FFBF00] shadow-md'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                     }`}
                   >
@@ -394,7 +395,7 @@ export default function ProfilePage() {
                 {editing ? (
                   <div className="space-y-6">
                     {/* Profile Picture Upload in Edit Mode */}
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">📸</span>
                         Profile Picture
@@ -415,7 +416,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">📝</span>
                         Personal Information
@@ -434,7 +435,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">🛠️</span>
                         Skills & Expertise
@@ -447,7 +448,7 @@ export default function ProfilePage() {
                           {formData.skills.map((skill, index) => (
                             <span
                               key={index}
-                              className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 border border-green-200"
+                              className="bg-[#FFBF00]/10 text-[#FFBF00] px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 border border-[#FFBF00]/20"
                             >
                               {skill}
                               <button
@@ -470,7 +471,7 @@ export default function ProfilePage() {
                           />
                           <button
                             onClick={addSkill}
-                            className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-all duration-200 font-semibold"
+                            className="bg-[#FFBF00] text-black px-6 py-3 rounded-xl hover:bg-[#FFD700] transition-all duration-200 font-semibold"
                           >
                             Add
                           </button>
@@ -478,7 +479,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">💰</span>
                         Pricing & Availability
@@ -516,7 +517,7 @@ export default function ProfilePage() {
                     <div className="flex gap-4 pt-6">
                       <button
                         onClick={handleUpdateProfile}
-                        className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                        className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl hover:from-[#FFD700] hover:to-[#FFBF00] transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
                       >
                         💾 Save Changes
                       </button>
@@ -531,7 +532,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className="space-y-8">
 
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">📝</span>
                         Bio
@@ -539,7 +540,7 @@ export default function ProfilePage() {
                       <p className="text-gray-700 text-lg leading-relaxed">{profile?.bio || 'No bio provided'}</p>
                     </div>
 
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">🛠️</span>
                         Skills
@@ -557,27 +558,27 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <span className="text-xl">💰</span>
                           Minimum Rate
                         </h3>
-                        <p className="text-2xl font-bold text-gray-900">${profile?.hourlyRate || 'Not set'}</p>
+                        <p className="text-2xl font-bold text-gray-900">${profile?.minimumRate || 'Not set'}</p>
                       </div>
-                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <span className="text-xl">🟢</span>
                           Availability
                         </h3>
                         <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                          profile?.availability === 'available' ? 'bg-green-100 text-green-800 border border-green-200' :
+                          profile?.availability === 'available' ? 'bg-[#FFBF00]/10 text-[#FFBF00] border border-[#FFBF00]/20' :
                           profile?.availability === 'busy' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
                           'bg-red-100 text-red-800 border border-red-200'
                         }`}>
                           {profile?.availability}
                         </span>
                       </div>
-                      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
+                      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                           <span className="text-xl">⭐</span>
                           Rating
@@ -657,7 +658,7 @@ export default function ProfilePage() {
                       {newPortfolioItem.technologies.map((tech, index) => (
                         <span
                           key={index}
-                          className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                          className="bg-[#FFBF00]/10 text-[#FFBF00] px-3 py-1 rounded-full text-sm flex items-center gap-2"
                         >
                           {tech}
                           <button
@@ -797,14 +798,13 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
-          </div>
           {/* Employer Profile Content */}
           {user.role === 'employer' && (
             <div className="space-y-8">
               {editing ? (
                 <div className="space-y-6">
                   {/* Profile Picture Upload for Employer */}
-                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                  <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <span className="text-xl">📸</span>
                       Profile Picture
@@ -825,7 +825,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <span className="text-xl">🏢</span>
                       Company Information
@@ -887,7 +887,7 @@ export default function ProfilePage() {
                   <div className="flex gap-4 pt-2">
                     <button
                       onClick={handleUpdateEmployerProfile}
-                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                      className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl hover:from-[#FFD700] hover:to-[#FFBF00] transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
                     >
                       💾 Save Changes
                     </button>
@@ -901,8 +901,7 @@ export default function ProfilePage() {
                 </div>
                 ) : (
                   <div className="space-y-8">
-
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">🏢</span>
                         Company Profile
@@ -936,21 +935,21 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                         <span className="text-xl">📦</span>
                         Posted Tasks
                       </h3>
                       <p className="text-2xl font-bold text-gray-900">{employerProfile?.postedTasks ?? 0}</p>
                     </div>
-                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                         <span className="text-xl">📧</span>
                         Contact Email
                       </h3>
                       <p className="text-lg font-semibold text-gray-900 break-all">{user.email}</p>
                     </div>
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-[#FFBF00]">
                       <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                         <span className="text-xl">🔗</span>
                         Website
@@ -962,6 +961,7 @@ export default function ProfilePage() {
               )}
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
