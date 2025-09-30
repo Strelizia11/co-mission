@@ -124,7 +124,12 @@ export async function getTasksByEmployer(employerEmail: string) {
 
 export async function getTasksByFreelancer(freelancerEmail: string) {
   const tasks = await readTasksFromFile();
-  return tasks.filter((task: any) => task.acceptedBy?.email === freelancerEmail);
+  return tasks.filter((task: any) => 
+    // Include tasks where freelancer is accepted
+    task.acceptedBy?.email === freelancerEmail ||
+    // Include tasks where freelancer has applied
+    (Array.isArray(task.applications) && task.applications.some((app: any) => app.email === freelancerEmail))
+  );
 }
 
 // Clean up expired tasks (3+ days past completion deadline)

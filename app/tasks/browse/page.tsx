@@ -119,7 +119,8 @@ export default function BrowseTasksPage() {
 
       const data = await response.json();
       
-      if (data.success) {
+      // The API doesn't return a success field, but returns a message field when successful
+      if (data.message && data.task) {
         setApplyFeedbackByTask(prev => ({
           ...prev,
           [taskId]: { type: 'success', text: 'Application submitted successfully!' }

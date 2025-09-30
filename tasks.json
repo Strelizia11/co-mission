@@ -15,7 +15,14 @@
     "completionDeadline": "2025-10-02T17:39",
     "visibility": "public",
     "directHireFreelancer": null,
-    "applications": [],
+    "applications": [
+      {
+        "email": "user1@test",
+        "name": "User1",
+        "coverLetter": "",
+        "appliedAt": "2025-09-30T10:45:14.403Z"
+      }
+    ],
     "acceptedBy": null,
     "acceptedAt": null,
     "completedAt": null,
