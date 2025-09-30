@@ -18,13 +18,13 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
   console.log('DashboardHeader: User received:', user);
 
   return (
-    <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md relative z-30">
+    <header className="flex flex-row justify-between items-center p-2 sm:p-4 bg-[#191B1F] shadow-md relative z-30 gap-2">
       {/* Left Side - Logo */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 w-auto">
         {/* Burger for mobile */}
         <button
           aria-label="Open menu"
-          className="text-white mr-2"
+          className="text-white mr-2 sm:mr-2"
           onClick={onToggleNav}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -34,24 +34,23 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image
-            style={{ padding: "15px" }}
+            style={{ padding: "8px" }}
             src="/logo.svg"
             alt="Co-Mission Logo"
-            width={200}
-            height={200}
+            width={100}
+            height={100}
           />
         </div>
       </div>
 
       {/* Right Side - Notifications + Connect Wallet */}
-      <div className="flex items-center gap-3">
-            {/* Notifications dropdown */}
-            {user && <NotificationDropdown user={user} />}
-            
-        <Wallet className="z-10">
-          <div className="text-black px-4 py-2 text-lg font-semibold">
-            <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
-              <span className="text-l w-36">Connected</span>
+      <div className="flex flex-row items-center gap-2 sm:gap-3 w-auto justify-end">
+        {/* Notifications dropdown */}
+        {user && <NotificationDropdown user={user} />}
+        <Wallet className="z-10 w-auto">
+          <div className="text-black px-2 py-2 text-base sm:text-lg font-semibold w-auto">
+            <ConnectWallet className="w-auto text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
+              <span className="text-base sm:text-l w-auto sm:w-36">Connected</span>
             </ConnectWallet>
           </div>
           <WalletDropdown>

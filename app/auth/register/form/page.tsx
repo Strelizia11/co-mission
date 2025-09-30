@@ -57,15 +57,15 @@ export default function RegisterFormPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 overflow-x-hidden">
-      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fade-in">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-8 overflow-x-hidden">
+      <div className="bg-white p-4 sm:p-10 rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg relative animate-fade-in mt-8 sm:mt-0">
         {/* Left Arrow */}
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-gray-100 text-gray-700 font-semibold rounded-full shadow-sm hover:bg-gray-200 hover:text-black active:bg-[#FFBF00] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFBF00]/40 p-2"
+          className="absolute left-4 sm:left-0 top-4 sm:top-1/2 sm:-translate-y-1/2 bg-gray-100 text-gray-700 font-semibold rounded-full shadow-sm hover:bg-gray-200 hover:text-black active:bg-[#FFBF00] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFBF00]/40 p-3 sm:p-2 z-10"
           aria-label="Back"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg className="w-7 h-7 sm:w-6 sm:h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
