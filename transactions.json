@@ -1,1 +1,82 @@
-[]
+[
+  {
+    "id": "1759227454450",
+    "transactionId": "1B50721D",
+    "transactionAddress": "0xd186565a23e95cac4b98f823f0267c9030d5435e391eb5bcf9363ad7ed82c1b4",
+    "taskId": "1759225427203",
+    "senderEmail": "emp3@test",
+    "recipientEmail": "user1@test",
+    "amount": 1.9,
+    "currency": "ETH",
+    "status": "pending",
+    "description": "Payment for task: testtask",
+    "taskTitle": "testtask",
+    "timestamp": "2025-09-30T10:17:34.450Z",
+    "createdAt": "2025-09-30T10:17:34.450Z",
+    "transactionHash": "0xd186565a23e95cac4b98f823f0267c9030d5435e391eb5bcf9363ad7ed82c1b4",
+    "blockNumber": 18000434,
+    "gasUsed": 88265,
+    "tokenType": "CMT",
+    "tokenReward": 0.19,
+    "from": "emp3@test",
+    "to": "user1@test",
+    "value": "1.9",
+    "gasPrice": "20",
+    "nonce": 58893,
+    "payer": {
+      "email": "emp3@test",
+      "type": "employer",
+      "role": "Payer"
+    },
+    "receiver": {
+      "email": "user1@test",
+      "type": "freelancer",
+      "role": "Receiver"
+    },
+    "paymentMethod": "ETH",
+    "ethAmount": 2,
+    "cmtAmount": 0,
+    "platformFee": 0.1,
+    "platformFeeCurrency": "ETH"
+  },
+  {
+    "id": "1759227454464",
+    "transactionId": "2BEA695D",
+    "transactionAddress": "0xd51ac72ff2f08a56146520b5b3ee635f800c3fdf340ea1fe13f413d485d7eb96",
+    "taskId": "1759225427203",
+    "senderEmail": "emp3@test",
+    "recipientEmail": "user1@test",
+    "amount": 1.9,
+    "currency": "ETH",
+    "status": "pending",
+    "description": "Payment for task: testtask",
+    "taskTitle": "testtask",
+    "timestamp": "2025-09-30T10:17:34.464Z",
+    "createdAt": "2025-09-30T10:17:34.464Z",
+    "transactionHash": "0xd51ac72ff2f08a56146520b5b3ee635f800c3fdf340ea1fe13f413d485d7eb96",
+    "blockNumber": 18000404,
+    "gasUsed": 94607,
+    "tokenType": "CMT",
+    "tokenReward": 0.19,
+    "from": "emp3@test",
+    "to": "user1@test",
+    "value": "1.9",
+    "gasPrice": "20",
+    "nonce": 344331,
+    "payer": {
+      "email": "emp3@test",
+      "type": "employer",
+      "role": "Payer"
+    },
+    "receiver": {
+      "email": "user1@test",
+      "type": "freelancer",
+      "role": "Receiver"
+    },
+    "paymentMethod": "ETH",
+    "ethAmount": 2,
+    "cmtAmount": 0,
+    "platformFee": 0.1,
+    "platformFeeCurrency": "ETH"
+  }
+]

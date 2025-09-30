@@ -43,5 +43,14 @@
     "userEmail": "emp5@test",
     "userRole": "employer",
     "lastUpdated": "2025-09-30T09:13:41.718Z"
+  },
+  "user1@test": {
+    "balance": "0.38",
+    "taskRewards": "0.38",
+    "reputationScore": "3.0",
+    "initializedAt": "2025-09-30T10:17:34.453Z",
+    "userEmail": "user1@test",
+    "userRole": "freelancer",
+    "lastUpdated": "2025-09-30T10:17:34.465Z"
   }
 }

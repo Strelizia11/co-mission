@@ -301,15 +301,15 @@ export default function EmployerTasksPage() {
                           <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
                             <div className="flex items-center justify-between">
                               <div>
-                                <h5 className="font-semibold text-gray-900">{application.freelancerName}</h5>
-                                <p className="text-sm text-gray-600">{application.freelancerEmail}</p>
+                                <h5 className="font-semibold text-gray-900">{application.name}</h5>
+                                <p className="text-sm text-gray-600">{application.email}</p>
                                 {application.coverLetter && (
                                   <p className="text-sm text-gray-700 mt-2">{application.coverLetter}</p>
                                 )}
                               </div>
                               {task.status === 'accepting_applications' && (
                                 <button
-                                  onClick={() => handleSelectFreelancer(task.id, application.freelancerEmail)}
+                                  onClick={() => handleSelectFreelancer(task.id, application.email)}
                                   disabled={!!selectingId}
                                   className={`px-4 py-2 text-sm font-semibold rounded transition ${selectingId ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg'}`}
                                 >

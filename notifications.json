@@ -126,5 +126,50 @@
       "employerEmail": "emp1@test"
     },
     "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759225427347",
+    "createdAt": "2025-09-30T09:43:47.347Z",
+    "read": false,
+    "userEmail": "emp3@test",
+    "title": "Task posted",
+    "message": "Your task \"testtask\" is now public (pending request).",
+    "meta": {
+      "taskId": "1759225427203",
+      "status": "accepting_applications"
+    }
+  },
+  {
+    "id": "1759226776364",
+    "createdAt": "2025-09-30T10:06:16.364Z",
+    "read": false,
+    "userEmail": "user1@test",
+    "title": "You were selected",
+    "message": "You were selected to work on \"testtask\".",
+    "meta": {
+      "taskId": "1759225427203"
+    }
+  },
+  {
+    "id": "1759226776377",
+    "createdAt": "2025-09-30T10:06:16.377Z",
+    "read": false,
+    "userEmail": "emp3@test",
+    "title": "Task started",
+    "message": "You selected a freelancer for \"testtask\". Ongoing.",
+    "meta": {
+      "taskId": "1759225427203"
+    }
+  },
+  {
+    "id": "1759227454495",
+    "createdAt": "2025-09-30T10:17:34.495Z",
+    "read": false,
+    "userEmail": "user1@test",
+    "title": "Task completed and payment initiated",
+    "message": "Employer marked \"testtask\" as completed. Payment of 2 ETH has been initiated.",
+    "meta": {
+      "taskId": "1759225427203"
+    }
   }
 ]
