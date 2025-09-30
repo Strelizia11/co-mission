@@ -1,194 +1,79 @@
 [
   {
-    "name": "Ramojh Salazar",
-    "email": "salazarjhomar39@gmail.com",
-    "password": "$2b$10$XPh4RUHJEidbbq1iqYtN7uhrsF6SxRLvSXoB0ssGnAVDp12MgoOlK",
+    "name": "User1",
+    "email": "user1@test",
+    "password": "$2b$10$EPO98qHNl47Z/BbZ0tTGyu3gC7Gbp8LPDAz8EGYAAMkcmyEZoe0WS",
     "role": "freelancer",
-    "createdAt": "2025-09-28T15:10:41.592Z"
+    "createdAt": "2025-09-30T03:50:03.378Z"
   },
   {
-    "name": "Strelizia",
-    "email": "belugaezrael@gmail.com",
-    "password": "$2b$10$pIIPxEn4zbegjGvCKPUfSOE9gMzzi9IK18UoXYQr5bwXYhaf3QMKi",
+    "name": "User2",
+    "email": "user2@test",
+    "password": "$2b$10$1VmfLe0j2mv9pS47OUUMKuuM18/5hZgFxttZuK7.pfn5LTAB0oUKW",
+    "role": "freelancer",
+    "createdAt": "2025-09-30T03:51:15.214Z"
+  },
+  {
+    "name": "User3",
+    "email": "user3@test",
+    "password": "$2b$10$SXVMQP6IBr0ZNBLhatWeYuQXoDC3eHeR4GIjE2270p9mh3.JU2.VC",
+    "role": "freelancer",
+    "createdAt": "2025-09-30T03:52:38.868Z"
+  },
+  {
+    "name": "User4",
+    "email": "user4@test",
+    "password": "$2b$10$ZREF5BJ7a22kzOLUmK7YMucDq5KJ2f1zlFdetMJHRJ.5oZesTDfnW",
+    "role": "freelancer",
+    "createdAt": "2025-09-30T03:53:29.919Z"
+  },
+  {
+    "name": "User5",
+    "email": "user5@test",
+    "password": "$2b$10$O1tOg1XMuFUVAXFrnTCU3O1A0Wv9sLfulUi93DdpFM7CPbgNFAMp.",
+    "role": "freelancer",
+    "createdAt": "2025-09-30T03:54:00.732Z"
+  },
+  {
+    "name": "Employer1",
+    "email": "emp1@test",
+    "password": "$2b$10$MpUbIA0SUNyDpqJnUG.Guu673T3TVVrFoHUXv7JbRbMJTm575OnuS",
     "role": "employer",
-    "createdAt": "2025-09-28T15:12:59.624Z"
+    "createdAt": "2025-09-30T03:55:00.578Z"
   },
   {
-    "name": "jonel",
-    "email": "jonel@email",
-    "password": "$2b$10$S8PN7ilC0MCE/oio68D/4uRSt86fhxvMq1PzKe54H.vK6wVg285s.",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T00:44:50.447Z",
-    "profile": {
-      "email": "jonel@email",
-      "skills": [],
-      "availability": "available",
-      "portfolio": [],
-      "ratings": [
-        {
-          "id": "1759161027535",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.535Z"
-        },
-        {
-          "id": "1759161027545",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.545Z"
-        },
-        {
-          "id": "1759161027549",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.549Z"
-        },
-        {
-          "id": "1759161027553",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.553Z"
-        },
-        {
-          "id": "1759161027567",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.567Z"
-        },
-        {
-          "id": "1759161027580",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:27.580Z"
-        },
-        {
-          "id": "1759161038318",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:38.318Z"
-        },
-        {
-          "id": "1759161038331",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:38.331Z"
-        },
-        {
-          "id": "1759161040320",
-          "taskId": "1759124328037",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 5,
-          "review": "noob",
-          "createdAt": "2025-09-29T15:50:40.320Z"
-        },
-        {
-          "id": "1759162400459",
-          "taskId": "1759160991008",
-          "employerEmail": "jonel2@email",
-          "employerName": "jonel2",
-          "rating": 3,
-          "review": "aecx",
-          "createdAt": "2025-09-29T16:13:20.459Z"
-        }
-      ],
-      "averageRating": 4.8,
-      "totalRatings": 10,
-      "completedTasks": 0,
-      "joinedAt": "2025-09-29T00:44:50.447Z",
-      "updatedAt": "2025-09-30T02:37:20.088Z",
-      "bio": "hehe",
-      "hourlyRate": 2
-    }
-  },
-  {
-    "name": "jonel2",
-    "email": "jonel2@email",
-    "password": "$2b$10$uoSK0vnpfhm7aarSq9oykO4EsyDb.wD/N4RmZMCN3TwOAJC5kdDgG",
+    "name": "Employer2",
+    "email": "emp2@test",
+    "password": "$2b$10$U9tMgSWqwQoYGi0yYLNfQu7GAXka2GCZ1ShwYvMI4nW/EdRqTMzZu",
     "role": "employer",
-    "createdAt": "2025-09-29T00:48:24.442Z"
+    "createdAt": "2025-09-30T03:55:34.970Z"
   },
   {
-    "name": "Emmanuel",
-    "email": "emmanuslsunga200527@gmail.com1234567",
-    "password": "$2b$10$dArps2Uqgv0LjESz1vTsSez3iPrEoShb3uGlomv6iwH7O3tLUnVWC",
+    "name": "Employer3",
+    "email": "emp@test",
+    "password": "$2b$10$z83wZuPLgsBeyT3PeLT3cuyM2f6aGxwY5FVh9JP8LytSN.QPY/UqK",
     "role": "freelancer",
-    "createdAt": "2025-09-29T04:42:50.044Z"
+    "createdAt": "2025-09-30T03:56:00.877Z"
   },
   {
-    "name": "Nigge",
-    "email": "rainealdana147@gmail.com",
-    "password": "$2b$10$jzDQFH6ZvpnUci3B5pZXu.5iTezcM1y.CAVJmZUAjqMHxefJlZur6",
+    "name": "Employer3",
+    "email": "emp3@test",
+    "password": "$2b$10$H.tIVk5hj7RnNzLGvBwPxuMMvHmQkxTEip0mfXmT6VMYLJYuq6p6O",
     "role": "employer",
-    "createdAt": "2025-09-29T06:04:46.026Z"
+    "createdAt": "2025-09-30T03:56:24.045Z"
   },
   {
-    "name": "yla",
-    "email": "christianaldana117@gmail.com",
-    "password": "$2b$10$wfmjkPUXIBjoiEG.CD5dAes5YebBNK.cJl3vKPAdqaU33LxnFrEg2",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T06:39:07.449Z"
-  },
-  {
-    "name": "yladd",
-    "email": "jabc@e",
-    "password": "$2b$10$MnM0CASNApFP9S9wxyLtDeuby.Bop3H6lGVX9ek1Aivfa3W2TyAwW",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T06:40:23.868Z"
-  },
-  {
-    "name": "cscc",
-    "email": "1dwd@wd32e",
-    "password": "$2b$10$MzS2mjqNQeiMD9fJ2oNZHeU3vqRTLvUjE1t2v1Nep3U6XGrQXQBRG",
+    "name": "Employer4",
+    "email": "emp4@test",
+    "password": "$2b$10$HHi60W1B7W4WVE.iMqXwQOY0EjIVzEEIV4wZZ/9kkkn2F2/cqLeaO",
     "role": "employer",
-    "createdAt": "2025-09-29T07:18:11.186Z"
+    "createdAt": "2025-09-30T03:56:47.958Z"
   },
   {
-    "name": "fwef",
-    "email": "dwqd@iehoi3i",
-    "password": "$2b$10$7.TRSBTLXJFAgJ6tnmrqjO4DNXFB4nOe714jk8Oi9xNPgLyZv3EoC",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T13:54:50.534Z"
-  },
-  {
-    "name": "dvvsdedv",
-    "email": "1dwd@wd32ej",
-    "password": "$2b$10$tc7fcgACJOLH041chTLv1.AuLW5jXr9fYVdnZVzrfWbxCBfOi7dLK",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T15:00:53.039Z"
-<<<<<<< HEAD
-=======
-  },
-  {
-    "name": "xwxxswssws",
-    "email": "1dwd@wd32ewsw",
-    "password": "$2b$10$mAcb.Se5EfOcst8Lhv7CO.zgB0RAx1ZJAhF76jCO1TBwAb.XqCKaG",
-    "role": "freelancer",
-    "createdAt": "2025-09-29T16:09:43.974Z"
->>>>>>> bb9431b3fe958b04d0b882438aa41f7fc82a29c1
+    "name": "Employer5",
+    "email": "emp5@test",
+    "password": "$2b$10$AULis5a/bnYJzL6yL0aoxuVL9hfhW8Hl62CcpUxABfcowCqK24DgG",
+    "role": "employer",
+    "createdAt": "2025-09-30T03:57:17.126Z"
   }
 ]
