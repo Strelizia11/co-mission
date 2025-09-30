@@ -106,6 +106,8 @@ export default function EmployerTasksPage() {
 
   const handleCompleteTask = async (taskId: string) => {
     try {
+      setMessage('Processing payment...');
+      
       const response = await fetch(`/api/tasks/${taskId}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -117,7 +119,11 @@ export default function EmployerTasksPage() {
       const data = await response.json();
       
       if (response.ok) {
-        setMessage('Task marked as completed!');
+        if (data.paymentInitiated) {
+          setMessage('Task completed and payment initiated! Check your transaction history.');
+        } else {
+          setMessage('Task marked as completed!');
+        }
         fetchTasks(); // Refresh tasks
       } else {
         setMessage(data.error || 'Failed to complete task');
@@ -336,7 +342,7 @@ export default function EmployerTasksPage() {
                               onClick={() => handleCompleteTask(task.id)}
                               className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
                             >
-                              Mark Complete
+                              Complete & Pay ({task.price} ETH)
                             </button>
                           )}
                         </div>

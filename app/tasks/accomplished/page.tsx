@@ -232,8 +232,16 @@ export default function AccomplishedTasksPage() {
                     <div className="text-green-800 mb-2">
                       Congratulations! You successfully completed this task and earned {task.price} ETH.
                     </div>
-                    <div className="text-sm text-green-700 bg-green-100 px-3 py-2 rounded-lg inline-block">
+                    <div className="text-sm text-green-700 bg-green-100 px-3 py-2 rounded-lg inline-block mb-3">
                       ✅ Payment released on: {new Date(task.completedAt!).toLocaleDateString()}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => window.location.href = '/transactions'}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
+                      >
+                        View Transaction History
+                      </button>
                     </div>
                   </div>
                 </div>
