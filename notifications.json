@@ -138,5 +138,65 @@
       "taskId": "1759225168910",
       "status": "accepting_applications"
     }
+  },
+  {
+    "id": "1759243730314",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T14:48:50.314Z",
+    "data": {
+      "senderEmail": "user1@test",
+      "senderName": "User1",
+      "chatId": "user1@test-emp1@test",
+      "messageId": "1759243694366"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759243844794",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T14:50:44.794Z",
+    "data": {
+      "senderEmail": "user1@test",
+      "senderName": "User1",
+      "chatId": "user1@test-emp1@test",
+      "messageId": "1759243844358"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759245012321",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T15:10:12.321Z",
+    "data": {
+      "senderEmail": "user1@test",
+      "senderName": "User1",
+      "chatId": "user1@test-emp1@test",
+      "messageId": "1759244961460"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759245179194",
+    "title": "New Message",
+    "message": "User1 sent you a message.",
+    "type": "chat_message",
+    "read": false,
+    "createdAt": "2025-09-30T15:12:59.194Z",
+    "data": {
+      "senderEmail": "user1@test",
+      "senderName": "User1",
+      "chatId": "user1@test-emp1@test",
+      "messageId": "1759245174707"
+    },
+    "recipientEmail": "emp1@test"
   }
 ]

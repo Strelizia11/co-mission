@@ -31,5 +31,49 @@
     "timestamp": "2025-09-30T04:45:32.300Z",
     "isFromEmployer": true,
     "createdAt": "2025-09-30T04:45:32.323Z"
+  },
+  {
+    "id": "1759243694442",
+    "text": "jojl",
+    "sender": "user1@test",
+    "senderName": "User1",
+    "recipient": "emp1@test",
+    "recipientName": "Employer1",
+    "timestamp": "2025-09-30T14:48:14.366Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T14:48:14.442Z"
+  },
+  {
+    "id": "1759243844585",
+    "text": "heaim",
+    "sender": "user1@test",
+    "senderName": "User1",
+    "recipient": "emp1@test",
+    "recipientName": "Employer1",
+    "timestamp": "2025-09-30T14:50:44.358Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T14:50:44.585Z"
+  },
+  {
+    "id": "1759244972056",
+    "text": "hljk",
+    "sender": "user1@test",
+    "senderName": "User1",
+    "recipient": "emp1@test",
+    "recipientName": "Employer1",
+    "timestamp": "2025-09-30T15:09:21.460Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T15:09:32.056Z"
+  },
+  {
+    "id": "1759245176321",
+    "text": "hello employer",
+    "sender": "user1@test",
+    "senderName": "User1",
+    "recipient": "emp1@test",
+    "recipientName": "Employer1",
+    "timestamp": "2025-09-30T15:12:54.707Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T15:12:56.321Z"
   }
 ]

@@ -20,9 +20,12 @@ interface ChatWidgetProps {
     skills?: string[];
   };
   currentPage?: string;
+  activeConversation: 'none' | 'chat' | 'messages';
+  setActiveConversation: (val: 'none' | 'chat' | 'messages') => void;
+  isChatModalOpen: boolean;
 }
 
-export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidgetProps) {
+export default function ChatWidget({ user, currentPage = 'dashboard', activeConversation, setActiveConversation, isChatModalOpen }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -43,6 +46,15 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveConversation('chat');
+    } else if (activeConversation === 'chat') {
+      setActiveConversation('none');
+    }
+    // eslint-disable-next-line
+  }, [isOpen]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -117,28 +129,28 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
   return (
     <>
       {/* Chat Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-        aria-label="Open chat"
-      >
-        <Image
-          src="/Screenshot_2025-09-30_214037-removebg-preview.png"
-          alt="AI Assistant"
-          width={24}
-          height={24}
-          className="object-contain"
-        />
-        {!isOpen && (
+      {activeConversation === 'none' && !isChatModalOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          aria-label="Open chat"
+        >
+          <Image
+            src="/Screenshot_2025-09-30_214037-removebg-preview.png"
+            alt="AI Assistant"
+            width={24}
+            height={24}
+            className="object-contain"
+          />
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
             💬
           </span>
-        )}
-      </button>
+        </button>
+      )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-[60] w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col">
+        <div className="fixed inset-0 z-[60] bg-white flex flex-col">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">

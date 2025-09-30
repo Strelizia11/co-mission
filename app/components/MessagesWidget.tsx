@@ -19,9 +19,12 @@ interface MessagesWidgetProps {
     email: string;
     skills?: string[];
   };
+  activeConversation: 'none' | 'chat' | 'messages';
+  setActiveConversation: (val: 'none' | 'chat' | 'messages') => void;
+  setIsChatModalOpen: (open: boolean) => void;
 }
 
-export default function MessagesWidget({ user }: MessagesWidgetProps) {
+export default function MessagesWidget({ user, activeConversation, setActiveConversation, setIsChatModalOpen }: MessagesWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(false);
@@ -95,15 +98,26 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setActiveConversation('messages');
+    } else if (activeConversation === 'messages') {
+      setActiveConversation('none');
+    }
+    // eslint-disable-next-line
+  }, [isOpen]);
+
   const handleConversationClick = (conversation: Conversation) => {
     setSelectedConversation(conversation);
     setShowChat(true);
+    setIsChatModalOpen(true);
     setIsOpen(false);
   };
 
   const handleCloseChat = () => {
     setShowChat(false);
     setSelectedConversation(null);
+    setIsChatModalOpen(false);
     // Reload conversations to update unread counts
     loadConversations();
   };
@@ -125,34 +139,36 @@ export default function MessagesWidget({ user }: MessagesWidgetProps) {
   return (
     <>
       {/* Messages Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-6 z-[60] bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-        aria-label="Open messages"
-      >
-        <svg 
-          className="h-6 w-6" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor" 
-          strokeWidth={2}
+      {activeConversation === 'none' && !showChat && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-24 right-6 z-[60] bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          aria-label="Open messages"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
-          />
-        </svg>
-        {unreadCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
-            {unreadCount}
-          </span>
-        )}
-      </button>
+          <svg 
+            className="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            strokeWidth={2}
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
+            />
+          </svg>
+          {unreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
+              {unreadCount}
+            </span>
+          )}
+        </button>
+      )}
 
       {/* Messages Window */}
-      {isOpen && (
-        <div className="fixed bottom-32 right-6 z-[60] w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col">
+      {isOpen && !showChat && (
+        <div className="fixed inset-0 z-[60] bg-white flex flex-col">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">

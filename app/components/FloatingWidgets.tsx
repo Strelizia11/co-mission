@@ -14,6 +14,8 @@ interface User {
 export default function FloatingWidgets() {
   const [user, setUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [activeConversation, setActiveConversation] = useState<'none' | 'chat' | 'messages'>('none');
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   useEffect(() => {
     // Only run on client side
@@ -44,8 +46,19 @@ export default function FloatingWidgets() {
 
   return (
     <>
-      <MessagesWidget user={user || undefined} />
-      <ChatWidget user={user || undefined} currentPage={currentPage} />
+      <MessagesWidget
+        user={user || undefined}
+        activeConversation={activeConversation}
+        setActiveConversation={setActiveConversation}
+        setIsChatModalOpen={setIsChatModalOpen}
+      />
+      <ChatWidget
+        user={user || undefined}
+        currentPage={currentPage}
+        activeConversation={activeConversation}
+        setActiveConversation={setActiveConversation}
+        isChatModalOpen={isChatModalOpen}
+      />
     </>
   );
 }
