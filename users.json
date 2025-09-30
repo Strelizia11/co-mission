@@ -89,5 +89,12 @@
     "password": "$2b$10$tc7fcgACJOLH041chTLv1.AuLW5jXr9fYVdnZVzrfWbxCBfOi7dLK",
     "role": "freelancer",
     "createdAt": "2025-09-29T15:00:53.039Z"
+  },
+  {
+    "name": "xwxxswssws",
+    "email": "1dwd@wd32ewsw",
+    "password": "$2b$10$mAcb.Se5EfOcst8Lhv7CO.zgB0RAx1ZJAhF76jCO1TBwAb.XqCKaG",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T16:09:43.974Z"
   }
 ]
