@@ -140,16 +140,25 @@
     }
   },
   {
+<<<<<<< Updated upstream
     "id": "1759243730314",
+=======
+    "id": "1759239244046",
+>>>>>>> Stashed changes
     "title": "New Message",
     "message": "User1 sent you a message.",
     "type": "chat_message",
     "read": false,
+<<<<<<< Updated upstream
     "createdAt": "2025-09-30T14:48:50.314Z",
+=======
+    "createdAt": "2025-09-30T13:34:04.046Z",
+>>>>>>> Stashed changes
     "data": {
       "senderEmail": "user1@test",
       "senderName": "User1",
       "chatId": "user1@test-emp1@test",
+<<<<<<< Updated upstream
       "messageId": "1759243694366"
     },
     "recipientEmail": "emp1@test"
@@ -196,6 +205,9 @@
       "senderName": "User1",
       "chatId": "user1@test-emp1@test",
       "messageId": "1759245174707"
+=======
+      "messageId": "1759239234693"
+>>>>>>> Stashed changes
     },
     "recipientEmail": "emp1@test"
   }

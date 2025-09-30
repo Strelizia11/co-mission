@@ -33,12 +33,18 @@
     "createdAt": "2025-09-30T04:45:32.323Z"
   },
   {
+<<<<<<< Updated upstream
     "id": "1759243694442",
     "text": "jojl",
+=======
+    "id": "1759239234763",
+    "text": "bwelo",
+>>>>>>> Stashed changes
     "sender": "user1@test",
     "senderName": "User1",
     "recipient": "emp1@test",
     "recipientName": "Employer1",
+<<<<<<< Updated upstream
     "timestamp": "2025-09-30T14:48:14.366Z",
     "isFromEmployer": false,
     "createdAt": "2025-09-30T14:48:14.442Z"
@@ -75,5 +81,10 @@
     "timestamp": "2025-09-30T15:12:54.707Z",
     "isFromEmployer": false,
     "createdAt": "2025-09-30T15:12:56.321Z"
+=======
+    "timestamp": "2025-09-30T13:33:54.693Z",
+    "isFromEmployer": false,
+    "createdAt": "2025-09-30T13:33:54.763Z"
+>>>>>>> Stashed changes
   }
 ]

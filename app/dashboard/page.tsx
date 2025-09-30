@@ -300,22 +300,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Logout Section */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mt-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚪</span>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Need to Sign Out?</h3>
-              <p className="text-gray-600 mb-6">You can always come back to continue your work</p>
-              <button
-                onClick={handleLogout}
-                className="bg-gradient-to-r from-red-500 to-red-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

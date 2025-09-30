@@ -338,15 +338,15 @@ export default function ProfilePage() {
                   </div>
                   
                   <div>
-                    <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-                    <p className="text-white/90 text-lg">{user.role === 'freelancer' ? 'Manage your professional profile and showcase your work' : 'Manage your company profile and hiring preferences'}</p>
+                    <h1 className="text-4xl font-bold text-black mb-2">My Profile</h1>
+                    <p className="text-black/90 text-lg">{user.role === 'freelancer' ? 'Manage your professional profile and showcase your work' : 'Manage your company profile and hiring preferences'}</p>
                   </div>
                 </div>
                 {!editing && (
                   <button
                     onClick={() => setEditing(true)}
-                    className="bg-white/40 backdrop-blur-sm px-6 py-3 rounded-lg font-semibold hover:bg-white/50 transition-all duration-300 border border-white/50 shadow-lg"
-                    style={{ color: '#ed9e28' }}
+                    className="bg-white backdrop-blur-sm px-6 py-3 rounded-lg font-semibold hover:bg-white/50 transition-all duration-300 border border-white/50 shadow-lg"
+                    style={{ color: '#191B1F' }}
                   >
                     ✏️ Edit Profile
                   </button>
@@ -376,7 +376,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveTab(tab as any)}
                     className={`px-6 py-3 rounded-lg font-semibold capitalize transition-all duration-300 ${
                       activeTab === tab
-                        ? 'bg-white text-[#FFBF00] shadow-md'
+                        ? 'bg-white text-black shadow-md'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                     }`}
                   >
@@ -663,7 +663,7 @@ export default function ProfilePage() {
                           {tech}
                           <button
                             onClick={() => removeTech(tech)}
-                            className="text-green-600 hover:text-green-800"
+                            className="text-black hover:text-black"
                           >
                             ×
                           </button>
@@ -690,7 +690,7 @@ export default function ProfilePage() {
 
                   <button
                     onClick={handleAddPortfolioItem}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                    className="bg-[#FFBF00] text-black px-6 py-2 rounded-lg hover:bg-[#FFD700]"
                   >
                     Add Portfolio Item
                   </button>
@@ -893,7 +893,7 @@ export default function ProfilePage() {
                     </button>
                     <button
                       onClick={() => setEditing(false)}
-                      className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-8 py-3 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
+                      className="bg-[#191B1F] text-white px-8 py-3 rounded-xl hover:bg-black hover:text-white transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
                     >
                       ❌ Cancel
                     </button>
