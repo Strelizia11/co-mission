@@ -1,0 +1,23 @@
+{
+  "name": "comission-token",
+  "version": "1.0.0",
+  "description": "CoMission Token (CMT) smart contract",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy-token.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy-token.js --network sepolia",
+    "test": "hardhat test",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.1"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

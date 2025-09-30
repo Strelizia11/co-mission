@@ -1,0 +1,47 @@
+{
+  "emp1@test": {
+    "balance": "20.0",
+    "taskRewards": "0.0",
+    "reputationScore": "5.0",
+    "initializedAt": "2025-09-30T09:13:41.716Z",
+    "userEmail": "emp1@test",
+    "userRole": "employer",
+    "lastUpdated": "2025-09-30T09:13:41.717Z"
+  },
+  "emp2@test": {
+    "balance": "20.0",
+    "taskRewards": "0.0",
+    "reputationScore": "5.0",
+    "initializedAt": "2025-09-30T09:13:41.717Z",
+    "userEmail": "emp2@test",
+    "userRole": "employer",
+    "lastUpdated": "2025-09-30T09:13:41.717Z"
+  },
+  "emp3@test": {
+    "balance": "20.0",
+    "taskRewards": "0.0",
+    "reputationScore": "5.0",
+    "initializedAt": "2025-09-30T09:13:41.718Z",
+    "userEmail": "emp3@test",
+    "userRole": "employer",
+    "lastUpdated": "2025-09-30T09:13:41.718Z"
+  },
+  "emp4@test": {
+    "balance": "20.0",
+    "taskRewards": "0.0",
+    "reputationScore": "5.0",
+    "initializedAt": "2025-09-30T09:13:41.718Z",
+    "userEmail": "emp4@test",
+    "userRole": "employer",
+    "lastUpdated": "2025-09-30T09:13:41.718Z"
+  },
+  "emp5@test": {
+    "balance": "20.0",
+    "taskRewards": "0.0",
+    "reputationScore": "5.0",
+    "initializedAt": "2025-09-30T09:13:41.718Z",
+    "userEmail": "emp5@test",
+    "userRole": "employer",
+    "lastUpdated": "2025-09-30T09:13:41.718Z"
+  }
+}

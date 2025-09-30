@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import TokenBalance from "./TokenBalance";
 
 interface SideNavigationProps {
   user?: {
@@ -145,19 +146,30 @@ export default function SideNavigation({ user, isOpen = false, onClose }: SideNa
                   const activeClasses = ' bg-black/20 border border-black/40 shadow-md';
                   const hoverClasses = ' hover:bg-black/10 border border-black/20 hover:border-black/40 hover:shadow-md';
                   const classes = `${base}${isActive ? activeClasses : hoverClasses}`;
+                  
+                  // Add TokenBalance after the first 2 tools (index 1)
+                  const shouldShowTokenBalance = index === 1;
+                  
                   return (
-                    <button
-                      key={index}
-                      onClick={() => handleNavigation(tool.href)}
-                      role="link"
-                      className={classes}
-                    >
-                      <span className="text-2xl mr-4 transition-transform duration-200 group-hover:translate-x-0.5">{tool.icon}</span>
-                      <div>
-                        <div className="font-semibold text-black text-base sm:text-lg group-hover:text-black">{tool.name}</div>
-                        <div className="text-xs sm:text-sm text-black/70">{tool.description}</div>
-                      </div>
-                    </button>
+                    <div key={index}>
+                      <button
+                        onClick={() => handleNavigation(tool.href)}
+                        role="link"
+                        className={classes}
+                      >
+                        <span className="text-2xl mr-4 transition-transform duration-200 group-hover:translate-x-0.5">{tool.icon}</span>
+                        <div>
+                          <div className="font-semibold text-black text-base sm:text-lg group-hover:text-black">{tool.name}</div>
+                          <div className="text-xs sm:text-sm text-black/70">{tool.description}</div>
+                        </div>
+                      </button>
+                      
+                      {shouldShowTokenBalance && (
+                        <div className="mb-4">
+                          <TokenBalance className="w-full" userEmail={user?.email} />
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>

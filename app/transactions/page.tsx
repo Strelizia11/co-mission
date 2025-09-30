@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import DashboardHeader from '../components/DashboardHeader';
+import SideNavigation from '../components/SideNavigation';
 
 interface Transaction {
   id: string;
+  transactionId: string;
+  transactionAddress: string;
   taskId: string;
   senderEmail: string;
   recipientEmail: string;
@@ -18,6 +22,30 @@ interface Transaction {
   blockNumber?: number;
   gasUsed?: number;
   completedAt?: string;
+  tokenType?: 'ETH' | 'CMT';
+  tokenReward?: number;
+  // Enhanced fields
+  from: string;
+  to: string;
+  value: string;
+  gasPrice: string;
+  nonce: number;
+  payer: {
+    email: string;
+    type: string;
+    role: string;
+  };
+  receiver: {
+    email: string;
+    type: string;
+    role: string;
+  };
+  // Payment method fields
+  paymentMethod?: string;
+  ethAmount?: number;
+  cmtAmount?: number;
+  platformFee?: number;
+  platformFeeCurrency?: string;
 }
 
 export default function TransactionsPage() {
@@ -25,6 +53,7 @@ export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -74,6 +103,22 @@ export default function TransactionsPage() {
     }
   };
 
+  const formatTransactionAddress = (address: string) => {
+    if (!address) return 'N/A';
+    if (address.length <= 10) return address;
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
+  const formatDate = (timestamp: string) => {
+    return new Date(timestamp).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -86,14 +131,22 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-[#191B1F] text-white p-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Transaction History</h1>
-          <p className="text-gray-300">View all your payment transactions</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
+      {/* Side Navigation */}
+      <SideNavigation user={user} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
+      
+      {/* Main Content Area */}
+      <div className={`flex-1 ${isNavOpen ? '' : ''}`}>
+        {/* Header */}
+        <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
+        
+        {/* Page Header */}
+        <div className="bg-[#191B1F] text-white p-6">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-3xl font-bold mb-2">Transaction History</h1>
+            <p className="text-gray-300">View all your payment transactions</p>
+          </div>
         </div>
-      </div>
 
       <div className="max-w-7xl mx-auto p-6">
         {error && (
@@ -121,13 +174,25 @@ export default function TransactionsPage() {
                       <h3 className="text-lg font-semibold text-gray-900">{transaction.taskTitle}</h3>
                       <p className="text-gray-600">{transaction.description}</p>
                       <p className="text-sm text-gray-500 mt-1">
-                        {new Date(transaction.timestamp).toLocaleString()}
+                        {formatDate(transaction.timestamp)}
                       </p>
+                      {/* Transaction Address */}
+                      <div className="mt-2">
+                        <span className="text-xs text-gray-500">Transaction ID:</span>
+                        <span className="text-xs font-mono text-gray-700 ml-1">
+                          {formatTransactionAddress(transaction.transactionAddress || transaction.transactionId)}
+                        </span>
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className={`text-2xl font-bold ${transactionType.color}`}>
                         {transactionType.type === 'sent' ? '-' : '+'}{transaction.amount} {transaction.currency}
                       </div>
+                      {transaction.tokenReward && (
+                        <div className="text-lg font-semibold text-[#FFBF00] mb-1">
+                          +{transaction.tokenReward} CMT
+                        </div>
+                      )}
                       <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.status)}`}>
                         {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                       </div>
@@ -143,10 +208,18 @@ export default function TransactionsPage() {
                       <span className="font-medium text-gray-700">Task ID:</span>
                       <span className="ml-2 text-gray-600 font-mono">{transaction.taskId}</span>
                     </div>
-                    {transaction.transactionHash && (
+                    <div>
+                      <span className="font-medium text-gray-700">Payer:</span>
+                      <span className="ml-2 text-gray-600">{transaction.payer?.email || transaction.senderEmail}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Receiver:</span>
+                      <span className="ml-2 text-gray-600">{transaction.receiver?.email || transaction.recipientEmail}</span>
+                    </div>
+                    {transaction.transactionAddress && (
                       <div className="md:col-span-2">
-                        <span className="font-medium text-gray-700">Transaction Hash:</span>
-                        <span className="ml-2 text-gray-600 font-mono text-xs break-all">{transaction.transactionHash}</span>
+                        <span className="font-medium text-gray-700">Transaction Address:</span>
+                        <span className="ml-2 text-gray-600 font-mono text-xs break-all">{formatTransactionAddress(transaction.transactionAddress)}</span>
                       </div>
                     )}
                     {transaction.blockNumber && (
@@ -159,6 +232,38 @@ export default function TransactionsPage() {
                       <div>
                         <span className="font-medium text-gray-700">Gas Used:</span>
                         <span className="ml-2 text-gray-600">{transaction.gasUsed.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div>
+                      <span className="font-medium text-gray-700">Date:</span>
+                      <span className="ml-2 text-gray-600">{formatDate(transaction.timestamp)}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Amount:</span>
+                      <span className="ml-2 text-gray-600 font-semibold">{transaction.amount} {transaction.currency}</span>
+                    </div>
+                    {transaction.paymentMethod && (
+                      <div>
+                        <span className="font-medium text-gray-700">Payment Method:</span>
+                        <span className="ml-2 text-gray-600">{transaction.paymentMethod}</span>
+                      </div>
+                    )}
+                    {transaction.ethAmount && transaction.ethAmount > 0 && (
+                      <div>
+                        <span className="font-medium text-gray-700">ETH Amount:</span>
+                        <span className="ml-2 text-gray-600">{transaction.ethAmount} ETH</span>
+                      </div>
+                    )}
+                    {transaction.cmtAmount && transaction.cmtAmount > 0 && (
+                      <div>
+                        <span className="font-medium text-gray-700">CMT Amount:</span>
+                        <span className="ml-2 text-gray-600">{transaction.cmtAmount} CMT</span>
+                      </div>
+                    )}
+                    {transaction.platformFee && transaction.platformFee > 0 && (
+                      <div>
+                        <span className="font-medium text-gray-700">Platform Fee:</span>
+                        <span className="ml-2 text-gray-600">{transaction.platformFee} {transaction.platformFeeCurrency}</span>
                       </div>
                     )}
                   </div>
@@ -202,6 +307,7 @@ export default function TransactionsPage() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

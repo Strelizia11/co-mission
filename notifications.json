@@ -92,7 +92,7 @@
     "title": "New Task Application",
     "message": "You have a new application for your task.",
     "type": "task_application",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:46:40.001Z",
     "data": {
       "taskId": "task123",

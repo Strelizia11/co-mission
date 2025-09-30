@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { updateTask, getTasks } from '@/lib/task-storage-persistent';
 import { addFreelancerRating } from '@/lib/db';
 import { createNotification } from '@/lib/notifications';
+import { calculateTaskReward } from '@/lib/token-utils';
+import { createTransactionRecord } from '@/lib/transaction-utils';
+import { calculatePayment, EXCHANGE_RATES } from '@/lib/payment-utils';
+import { processPayment, updateCMTBalance } from '@/lib/cmt-balance-utils';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -24,7 +28,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { rating, review } = await req.json();
+    const { rating, review, paymentMethod = 'ETH' } = await req.json();
     const taskId = params.id;
 
     // Get the task to find freelancer info
@@ -63,22 +67,51 @@ export async function POST(
 
     // Create payment transaction
     if (task.acceptedBy && task.price) {
-      const transaction = {
-        id: Date.now().toString(),
+      // Calculate payment details based on method
+      const freelancerRating = task.acceptedBy.rating || 3.0;
+      const taskPrice = parseFloat(task.price);
+      
+      // Calculate payment based on method
+      const paymentCalculation = calculatePayment(
+        taskPrice,
+        { type: paymentMethod, amount: taskPrice, currency: paymentMethod === 'CMT' ? 'CMT' : 'ETH' },
+        freelancerRating
+      );
+      
+      // Create enhanced transaction record with crypto-style address
+      const transaction = createTransactionRecord({
         taskId,
         senderEmail: task.employerEmail,
         recipientEmail: task.acceptedBy.email,
-        amount: parseFloat(task.price),
-        currency: 'ETH',
-        status: 'pending',
-        description: `Payment for task: ${task.title}`,
+        amount: paymentCalculation.freelancerAmount,
+        currency: paymentCalculation.currency,
         taskTitle: task.title,
-        timestamp: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-        transactionHash: null,
-        blockNumber: null,
-        gasUsed: null
-      };
+        description: `Payment for task: ${task.title}`,
+        tokenReward: paymentCalculation.cmtReward,
+        paymentMethod: paymentMethod,
+        ethAmount: paymentCalculation.paymentBreakdown.eth || 0,
+        cmtAmount: paymentCalculation.paymentBreakdown.cmt || 0,
+        platformFee: paymentCalculation.platformFee
+      });
+
+      // Process payment and update CMT balances
+      const paymentResult = processPayment({
+        employerEmail: task.employerEmail,
+        freelancerEmail: task.acceptedBy.email,
+        amount: paymentCalculation.freelancerAmount,
+        currency: paymentCalculation.currency,
+        paymentMethod: paymentMethod,
+        ethAmount: paymentCalculation.paymentBreakdown.eth,
+        cmtAmount: paymentCalculation.paymentBreakdown.cmt,
+        platformFee: paymentCalculation.platformFee,
+        cmtReward: paymentCalculation.cmtReward
+      });
+
+      if (!paymentResult.success) {
+        return NextResponse.json({ 
+          error: paymentResult.message 
+        }, { status: 400 });
+      }
 
       // Save transaction
       const allTransactions = getTransactions();
@@ -86,6 +119,7 @@ export async function POST(
       saveTransactions(allTransactions);
 
       console.log('Payment transaction created:', transaction.id);
+      console.log('Payment processed:', paymentResult.message);
     }
 
     // Notify freelancer about completion (and rating if provided)

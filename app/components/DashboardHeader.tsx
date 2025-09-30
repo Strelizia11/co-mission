@@ -47,6 +47,7 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
       <div className="flex items-center gap-3">
             {/* Notifications dropdown */}
             {user && <NotificationDropdown user={user} />}
+            
         <Wallet className="z-10">
           <div className="text-black px-4 py-2 text-lg font-semibold">
             <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">
