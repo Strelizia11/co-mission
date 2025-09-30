@@ -53,6 +53,14 @@ export default function BrowseFreelancersPage() {
   const [hireMessage, setHireMessage] = useState('');
   const [hireSubmitting, setHireSubmitting] = useState(false);
 
+  const SKILL_TAGS = [
+    "Web Development", "Mobile Development", "UI/UX Design", "Graphic Design",
+    "Content Writing", "Digital Marketing", "Data Analysis", "Blockchain Development",
+    "Smart Contract Development", "DeFi Development", "NFT Development", "Game Development",
+    "Video Editing", "Photography", "Translation", "Virtual Assistant",
+    "Social Media Management", "SEO", "Copywriting", "Technical Writing"
+  ];
+
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -678,7 +686,7 @@ export default function BrowseFreelancersPage() {
       </div>
       {showHireModal && hireTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative max-h-screen overflow-y-auto">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl"
               onClick={() => setShowHireModal(false)}
@@ -700,18 +708,26 @@ export default function BrowseFreelancersPage() {
               </div>
               <div>
                 <label className="block text-lg font-semibold mb-2">Required Skills *</label>
-                <div className="flex flex-wrap gap-2">
-                  {hireTarget.skills.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => toggleHireTag(tag)}
-                      className={`px-3 py-1 rounded-full border-2 text-sm font-medium ${hireForm.selectedTags.includes(tag) ? 'bg-green-200 border-green-500' : 'bg-white border-gray-300'}`}
-                    >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border rounded-lg bg-gray-50">
+                  {SKILL_TAGS.map(tag => (
+                    <label key={tag} className="flex items-center gap-2 cursor-pointer text-sm font-medium">
+                      <input
+                        type="checkbox"
+                        checked={hireForm.selectedTags.includes(tag)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setHireForm(prev => ({ ...prev, selectedTags: [...prev.selectedTags, tag] }));
+                          } else {
+                            setHireForm(prev => ({ ...prev, selectedTags: prev.selectedTags.filter(t => t !== tag) }));
+                          }
+                        }}
+                        className="accent-green-500 w-4 h-4"
+                      />
                       {tag}
-                    </button>
+                    </label>
                   ))}
                 </div>
+                <p className="text-sm text-gray-500 mt-1">Select one or more skills required for this task.</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

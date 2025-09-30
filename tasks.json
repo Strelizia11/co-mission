@@ -326,5 +326,28 @@
     "acceptedAt": "2025-09-29T16:13:08.661Z",
     "completedAt": "2025-09-29T16:13:20.441Z",
     "submittedFiles": null
+  },
+  {
+    "id": "1759201750022",
+    "title": "pabili",
+    "description": "asd",
+    "price": 2.001,
+    "requiredSkills": [
+      "SEO",
+      "Photography"
+    ],
+    "employerName": "jonel2",
+    "employerEmail": "jonel2@email",
+    "status": "pending_acceptance",
+    "createdAt": "2025-09-30T03:09:10.022Z",
+    "acceptanceDeadline": "2025-10-01T11:08",
+    "completionDeadline": "2025-10-08T11:08",
+    "visibility": "private",
+    "directHireFreelancer": "jonel@email",
+    "applications": [],
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "completedAt": null,
+    "submittedFiles": null
   }
 ]

@@ -100,5 +100,29 @@
     "meta": {
       "taskId": "1759160991008"
     }
+  },
+  {
+    "id": "1759201750075",
+    "createdAt": "2025-09-30T03:09:10.075Z",
+    "read": false,
+    "userEmail": "jonel@email",
+    "title": "Direct Hire Invitation",
+    "message": "You have been directly hired for the task \"pabili\". Accept or reject this offer.",
+    "meta": {
+      "taskId": "1759201750022",
+      "status": "pending_acceptance"
+    }
+  },
+  {
+    "id": "1759201750129",
+    "createdAt": "2025-09-30T03:09:10.129Z",
+    "read": false,
+    "userEmail": "jonel2@email",
+    "title": "Direct Hire Sent",
+    "message": "Your direct hire invitation for \"pabili\" was sent to the freelancer.",
+    "meta": {
+      "taskId": "1759201750022",
+      "status": "pending_acceptance"
+    }
   }
 ]
