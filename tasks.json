@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "1759225168910",
+    "title": "data analysis",
+    "description": "test",
+    "price": 1,
+    "requiredSkills": [
+      "Data Analysis"
+    ],
+    "employerName": "Employer1",
+    "employerEmail": "emp1@test",
+    "status": "accepting_applications",
+    "createdAt": "2025-09-30T09:39:28.910Z",
+    "acceptanceDeadline": "2025-10-01T17:39",
+    "completionDeadline": "2025-10-02T17:39",
+    "visibility": "public",
+    "directHireFreelancer": null,
+    "applications": [],
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "completedAt": null,
+    "submittedFiles": null
+  }
+]

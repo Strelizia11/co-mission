@@ -23,7 +23,7 @@ export default function WelcomeLayout({
   return (
     <>
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-[#191B1F] shadow-lg drop-shadow-lg">
+      <header className="absolute top-0 left-0 right-0 z-50 flex flex-row justify-between items-center p-4 bg-[#191B1F] shadow-lg drop-shadow-lg">
         <h1 className="text-xl font-bold text-blue-600">
           <Link href="/">
             <Image
@@ -39,10 +39,7 @@ export default function WelcomeLayout({
         <nav className="mt-2 flex gap-4">
           <Link
             href="/auth/login"
-            className="px-5 py-1 rounded-lg font-semibold 
-               text-black bg-[#FFBF00] border-2 border-[#FFBF00] 
-               hover:bg-[#e6ac00] hover:border-[#e6ac00] 
-               transition-colors text-[20px] "
+            className="px-4 py-2 rounded-lg font-semibold text-black bg-[#FFBF00] border-2 border-[#FFBF00] hover:bg-[#e6ac00] hover:border-[#e6ac00] transition-colors text-[16px] sm:text-[20px] text-center min-w-[90px]"
           >
             Sign In
           </Link>

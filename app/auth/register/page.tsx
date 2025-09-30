@@ -89,7 +89,7 @@ export default function RegisterAnimatedPage() {
           <div className="flex flex-col md:flex-row gap-8 justify-center items-center mb-4">
             <button
               onClick={() => handleChoice("employer")}
-              className="flex-1 flex flex-col items-center justify-center py-8 px-8 text-2xl md:text-3xl font-semibold border-4 border-gray-200 hover:border-[#FFBF00] text-black rounded-xl shadow-lg bg-white hover:bg-[#FFBF00] transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#FFBF00]/40"
+              className="flex-1 flex flex-col items-center justify-center py-8 px-8 text-2xl md:text-3xl font-semibold border-4 border-gray-200 hover:border-[#FFBF00] text-black rounded-xl shadow-lg bg-white hover:bg-[#FFBF00] transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#FFBF00]/40 min-h-[220px] w-full"
             >
               <span className="text-5xl mb-3">🏢</span>
               Employer
@@ -97,7 +97,7 @@ export default function RegisterAnimatedPage() {
             </button>
             <button
               onClick={() => handleChoice("freelancer")}
-              className="flex-1 flex flex-col items-center justify-center py-8 px-8 text-2xl md:text-3xl font-semibold border-4 border-gray-200 hover:border-[#FFBF00] text-black rounded-xl shadow-lg bg-white hover:bg-[#FFBF00] transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#FFBF00]/40"
+              className="flex-1 flex flex-col items-center justify-center py-8 px-8 text-2xl md:text-3xl font-semibold border-4 border-gray-200 hover:border-[#FFBF00] text-black rounded-xl shadow-lg bg-white hover:bg-[#FFBF00] transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#FFBF00]/40 min-h-[220px] w-full"
             >
               <span className="text-5xl mb-3">💼</span>
               Freelancer
