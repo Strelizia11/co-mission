@@ -271,13 +271,21 @@ export default function BrowseFreelancersPage() {
     // Load existing chat messages
     try {
       console.log('Loading messages for employer:', { employerEmail: user?.email, freelancerEmail: freelancer.email });
+      
+      // Check if both emails are valid
+      if (!user?.email || !freelancer.email) {
+        console.error('Missing email parameters for employer:', { employerEmail: user?.email, freelancerEmail: freelancer.email });
+        return;
+      }
+      
       const response = await fetch(`/api/chat/message?user1=${user?.email}&user2=${freelancer.email}`);
       if (response.ok) {
         const data = await response.json();
         console.log('Loaded messages for employer:', data.messages);
         setChatMessages(data.messages || []);
       } else {
-        console.error('Failed to load messages for employer:', response.status);
+        const errorData = await response.json();
+        console.error('Failed to load messages for employer:', response.status, errorData);
       }
     } catch (error) {
       console.error('Error loading chat messages:', error);

@@ -54,13 +54,21 @@ export default function FreelancerChat({
   const loadMessages = async () => {
     try {
       console.log('Loading messages for:', { employerEmail, freelancerEmail });
+      
+      // Check if both emails are valid
+      if (!employerEmail || !freelancerEmail) {
+        console.error('Missing email parameters:', { employerEmail, freelancerEmail });
+        return;
+      }
+      
       const response = await fetch(`/api/chat/message?user1=${employerEmail}&user2=${freelancerEmail}`);
       if (response.ok) {
         const data = await response.json();
         console.log('Loaded messages:', data.messages);
         setMessages(data.messages || []);
       } else {
-        console.error('Failed to load messages:', response.status);
+        const errorData = await response.json();
+        console.error('Failed to load messages:', response.status, errorData);
       }
     } catch (error) {
       console.error('Error loading messages:', error);

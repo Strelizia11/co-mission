@@ -111,6 +111,9 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
 
   const markAllAsRead = async () => {
     try {
+      console.log('Marking all notifications as read for user:', user!.email);
+      console.log('Current notifications before mark all as read:', notifications);
+      
       const response = await fetch('/api/notifications/mark-all-read', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,10 +121,18 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
       });
 
       if (response.ok) {
+        console.log('Successfully marked all notifications as read');
         setNotifications(prev => prev.map(n => ({ ...n, read: true })));
         setUnread(0);
+        console.log('Updated notifications after mark all as read:', notifications.map(n => ({ ...n, read: true })));
+        
+        // Refresh notifications to ensure UI is updated
+        setTimeout(() => {
+          fetchNotifications();
+        }, 100);
       } else {
-        console.error('Failed to mark all notifications as read:', response.status, response.statusText);
+        const errorData = await response.json();
+        console.error('Failed to mark all notifications as read:', response.status, response.statusText, errorData);
       }
     } catch (error) {
       console.error('Error marking all notifications as read:', error);

@@ -4,7 +4,7 @@
     "title": "New Contact Request",
     "message": "Employer1 wants to contact you about a potential project.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:34:42.843Z",
     "data": {
       "employerEmail": "emp1@test",
@@ -18,7 +18,7 @@
     "title": "New Message",
     "message": "Employer1 sent you a message.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:34:45.999Z",
     "data": {
       "employerEmail": "emp1@test",
@@ -33,7 +33,7 @@
     "title": "New Message",
     "message": "User1 sent you a message.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:39:31.598Z",
     "data": {
       "freelancerEmail": "user1@test",
@@ -48,7 +48,7 @@
     "title": "New Message",
     "message": "User1 sent you a message.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:42:37.084Z",
     "data": {
       "freelancerEmail": "user1@test",
@@ -63,7 +63,7 @@
     "title": "New Contact Request",
     "message": "Employer1 wants to contact you about a potential project.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:45:28.333Z",
     "data": {
       "employerEmail": "emp1@test",
@@ -77,13 +77,53 @@
     "title": "New Message",
     "message": "Employer1 sent you a message.",
     "type": "chat_message",
-    "read": false,
+    "read": true,
     "createdAt": "2025-09-30T04:45:32.364Z",
     "data": {
       "employerEmail": "emp1@test",
       "employerName": "Employer1",
       "chatId": "emp1@test-user1@test",
       "messageId": "1759207532300"
+    },
+    "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759207600001",
+    "title": "New Task Application",
+    "message": "You have a new application for your task.",
+    "type": "task_application",
+    "read": false,
+    "createdAt": "2025-09-30T04:46:40.001Z",
+    "data": {
+      "taskId": "task123",
+      "applicantEmail": "user1@test"
+    },
+    "recipientEmail": "emp1@test"
+  },
+  {
+    "id": "1759207600002",
+    "title": "New Contact Request",
+    "message": "Employer2 wants to contact you about a potential project.",
+    "type": "chat_message",
+    "read": true,
+    "createdAt": "2025-09-30T04:46:40.002Z",
+    "data": {
+      "employerEmail": "emp2@test",
+      "employerName": "Employer2",
+      "chatId": "emp2@test-user1@test"
+    },
+    "recipientEmail": "user1@test"
+  },
+  {
+    "id": "1759207600003",
+    "title": "Task Selected",
+    "message": "Congratulations! You have been selected for a task.",
+    "type": "task_selected",
+    "read": true,
+    "createdAt": "2025-09-30T04:46:40.003Z",
+    "data": {
+      "taskId": "task456",
+      "employerEmail": "emp1@test"
     },
     "recipientEmail": "user1@test"
   }

@@ -58,8 +58,14 @@ export async function GET(req: Request) {
     const user1 = searchParams.get('user1');
     const user2 = searchParams.get('user2');
 
+    console.log('API received parameters:', { user1, user2 });
+
     if (!user1 || !user2) {
-      return NextResponse.json({ error: 'Both user1 and user2 are required' }, { status: 400 });
+      console.error('Missing required parameters:', { user1, user2 });
+      return NextResponse.json({ 
+        error: 'Both user1 and user2 are required',
+        received: { user1, user2 }
+      }, { status: 400 });
     }
 
     // Get all messages and filter for conversation between these two users
