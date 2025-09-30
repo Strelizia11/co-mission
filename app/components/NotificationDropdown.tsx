@@ -143,15 +143,9 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
     // Mark as read
     markAsRead(notification.id);
     
-    // Handle chat message notifications
-    if (notification.type === 'chat_message' && notification.data) {
-      // Open chat interface
-      setChatEmployer({
-        email: notification.data.employerEmail || '',
-        name: notification.data.employerName || 'Employer'
-      });
-      setShowChat(true);
-      setIsOpen(false); // Close notification dropdown
+    // Don't handle chat message notifications - they should not be clickable
+    if (notification.type === 'chat_message') {
+      return; // Do nothing for chat message notifications
     }
   };
 

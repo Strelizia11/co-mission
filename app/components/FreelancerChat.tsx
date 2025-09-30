@@ -158,13 +158,13 @@ export default function FreelancerChat({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col relative">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-yellow-100 rounded-none shadow-none w-full h-full flex flex-col relative">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 p-4 rounded-none">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 bg-white/40 rounded-full flex items-center justify-center overflow-hidden">
                 {employerProfilePicture ? (
                   <Image
                     src={employerProfilePicture}
@@ -174,19 +174,19 @@ export default function FreelancerChat({
                     className="object-cover rounded-full"
                   />
                 ) : (
-                  <span className="text-lg font-bold text-white">
+                  <span className="text-lg font-bold text-gray-900">
                     {employerName ? employerName.charAt(0).toUpperCase() : '👤'}
                   </span>
                 )}
               </div>
               <div>
                 <h3 className="font-bold text-lg">Chat with {employerName}</h3>
-                <p className="text-sm text-white/80">{employerEmail}</p>
+                <p className="text-sm text-gray-700/80">{employerEmail}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:text-white/70 transition-colors"
+              className="text-gray-900 hover:text-gray-700 transition-colors"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -199,7 +199,7 @@ export default function FreelancerChat({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
             <div className="text-center text-gray-500 py-8">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-yellow-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">💬</span>
               </div>
               <p>Start a conversation with {employerName}</p>
@@ -211,7 +211,7 @@ export default function FreelancerChat({
                 className={`flex ${message.isFromEmployer ? 'justify-start' : 'justify-end'} gap-2`}
               >
                 {message.isFromEmployer && (
-                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div className="w-8 h-8 bg-yellow-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {employerProfilePicture ? (
                       <Image
                         src={employerProfilePicture}
@@ -221,7 +221,7 @@ export default function FreelancerChat({
                         className="object-cover rounded-full"
                       />
                     ) : (
-                      <span className="text-sm font-bold text-gray-600">
+                      <span className="text-sm font-bold text-gray-700">
                         {employerName ? employerName.charAt(0).toUpperCase() : '👤'}
                       </span>
                     )}
@@ -230,8 +230,8 @@ export default function FreelancerChat({
                 <div
                   className={`max-w-[80%] p-3 rounded-2xl ${
                     message.isFromEmployer
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                      ? 'bg-yellow-200 text-gray-900'
+                      : 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
@@ -240,7 +240,7 @@ export default function FreelancerChat({
                   </p>
                 </div>
                 {!message.isFromEmployer && (
-                  <div className="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div className="w-8 h-8 bg-yellow-300 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {freelancerProfilePicture ? (
                       <Image
                         src={freelancerProfilePicture}
@@ -250,7 +250,7 @@ export default function FreelancerChat({
                         className="object-cover rounded-full"
                       />
                     ) : (
-                      <span className="text-sm font-bold text-blue-600">
+                      <span className="text-sm font-bold text-yellow-700">
                         {freelancerName ? freelancerName.charAt(0).toUpperCase() : '👤'}
                       </span>
                     )}
@@ -288,6 +288,13 @@ export default function FreelancerChat({
             </button>
           </div>
         </div>
+        
+        {/* Add CSS to hide floating widgets when chat is open */}
+        <style jsx global>{`
+          .fixed.inset-0.z-\\[9999\\] ~ .fixed.bottom-6 {
+            display: none !important;
+          }
+        `}</style>
       </div>
     </div>
   );
