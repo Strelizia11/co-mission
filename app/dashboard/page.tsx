@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
 import SideNavigation from "../components/SideNavigation";
+import { FullScreenLoading } from "../components/LoadingSpinner";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -16,7 +17,11 @@ export default function DashboardPage() {
     // For now, we'll simulate getting user data
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const userData = JSON.parse(savedUser);
+      console.log('Dashboard: User data loaded:', userData);
+      setUser(userData);
+    } else {
+      console.log('Dashboard: No user data found in localStorage');
     }
     setLoading(false);
   }, []);
@@ -28,7 +33,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <FullScreenLoading text="Loading your dashboard..." />;
   }
 
   if (!user) {
@@ -207,12 +212,12 @@ export default function DashboardPage() {
                       </div>
                       <h3 className="text-lg font-semibold text-gray-900">Accomplished Tasks</h3>
                     </div>
-                    <p className="text-gray-600 mb-4">View all your completed tasks and achievements</p>
+                    <p className="text-gray-600 mb-4">View all your completed tasks and achievement                                    </p>
                     <button 
                       onClick={() => router.push('/tasks/accomplished')}
                       className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
                     >
-                      View Accomplishments
+                      My Accomplishments
                     </button>
                   </div>
                 </>

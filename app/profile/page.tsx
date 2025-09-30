@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
 import SideNavigation from "../components/SideNavigation";
+import { InlineLoading } from "../components/LoadingSpinner";
+import ProfilePictureUpload from "../components/ProfilePictureUpload";
 
 interface PortfolioItem {
   id: string;
@@ -49,6 +51,8 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState<'profile' | 'portfolio' | 'ratings'>('profile');
   const [editing, setEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string>('');
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [formData, setFormData] = useState({
     bio: '',
     skills: [] as string[],
@@ -72,7 +76,6 @@ export default function ProfilePage() {
   });
   const [newSkill, setNewSkill] = useState('');
   const [newTech, setNewTech] = useState('');
-  const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -287,7 +290,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return <InlineLoading text="Loading your profile..." />;
   }
 
   if (!user) {
@@ -367,6 +370,27 @@ export default function ProfilePage() {
               <div className="space-y-8">
                 {editing ? (
                   <div className="space-y-6">
+                    {/* Profile Picture Upload in Edit Mode */}
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">📸</span>
+                        Profile Picture
+                      </h3>
+                      <div className="flex items-center gap-6">
+                        <ProfilePictureUpload
+                          currentImage={profilePicture}
+                          onImageChange={setProfilePicture}
+                          size="lg"
+                        />
+                        <div className="flex-1">
+                          <p className="text-gray-600 text-sm">
+                            Upload a professional photo to help employers and clients recognize you. 
+                            A clear, friendly photo can increase your chances of being selected for tasks.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">📝</span>
@@ -482,6 +506,27 @@ export default function ProfilePage() {
                 </div>
                 ) : (
                   <div className="space-y-8">
+                    {/* Profile Picture Section */}
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">📸</span>
+                        Profile Picture
+                      </h3>
+                      <div className="flex items-center gap-6">
+                        <ProfilePictureUpload
+                          currentImage={profilePicture}
+                          onImageChange={setProfilePicture}
+                          size="lg"
+                        />
+                        <div className="flex-1">
+                          <p className="text-gray-600 text-sm">
+                            Upload a professional photo to help employers and clients recognize you. 
+                            A clear, friendly photo can increase your chances of being selected for tasks.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                         <span className="text-xl">📝</span>
@@ -754,6 +799,27 @@ export default function ProfilePage() {
             <div className="space-y-8">
               {editing ? (
                 <div className="space-y-6">
+                  {/* Profile Picture Upload for Employer */}
+                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <span className="text-xl">📸</span>
+                      Profile Picture
+                    </h3>
+                    <div className="flex items-center gap-6">
+                      <ProfilePictureUpload
+                        currentImage={profilePicture}
+                        onImageChange={setProfilePicture}
+                        size="lg"
+                      />
+                      <div className="flex-1">
+                        <p className="text-gray-600 text-sm">
+                          Upload a professional photo or company logo to help freelancers recognize you. 
+                          A clear, professional image builds trust with potential contractors.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                       <span className="text-xl">🏢</span>
@@ -828,13 +894,34 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </div>
-              ) : (
-                <div className="space-y-8">
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="text-xl">🏢</span>
-                      Company Profile
-                    </h3>
+                ) : (
+                  <div className="space-y-8">
+                    {/* Profile Picture Display for Employer */}
+                    <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">📸</span>
+                        Profile Picture
+                      </h3>
+                      <div className="flex items-center gap-6">
+                        <ProfilePictureUpload
+                          currentImage={profilePicture}
+                          onImageChange={setProfilePicture}
+                          size="lg"
+                        />
+                        <div className="flex-1">
+                          <p className="text-gray-600 text-sm">
+                            Upload a professional photo or company logo to help freelancers recognize you. 
+                            A clear, professional image builds trust with potential contractors.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span className="text-xl">🏢</span>
+                        Company Profile
+                      </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <div className="text-sm text-gray-600">Company Name</div>

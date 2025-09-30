@@ -16,6 +16,7 @@ export default function RegisterFormPage() {
   });
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (role) {
@@ -29,6 +30,8 @@ export default function RegisterFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -37,13 +40,11 @@ export default function RegisterFormPage() {
     const data = await res.json();
     if (res.ok) {
       setMessage(data.message);
-      // Auto-login: Save user data to localStorage and redirect immediately
       try {
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
       } catch (_) {}
-      // Redirect based on role without delay
       if (data.user.role === 'freelancer') {
         router.push("/auth/skills-setup");
       } else {
@@ -51,20 +52,22 @@ export default function RegisterFormPage() {
       }
     } else {
       setMessage(data.error);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-white pt-20 px-4">
-      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 overflow-x-hidden">
+      <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fade-in">
+        {/* Left Arrow */}
         <button
           onClick={() => router.back()}
-          className="inline-flex items-center gap-2 px-4 py-2 mb-4 bg-gray-100 text-gray-700 font-semibold rounded-full shadow-sm hover:bg-gray-200 hover:text-black active:bg-[#FFBF00] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFBF00]/40"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-gray-100 text-gray-700 font-semibold rounded-full shadow-sm hover:bg-gray-200 hover:text-black active:bg-[#FFBF00] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#FFBF00]/40 p-2"
+          aria-label="Back"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Back
         </button>
         <div className="mb-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center text-black mb-2">
@@ -74,7 +77,7 @@ export default function RegisterFormPage() {
         </div>
 
         {message && (
-          <p className="text-red-500 mb-4 text-center">{message}</p>
+          <p className={`mb-4 text-center ${message.toLowerCase().includes('success') ? 'text-green-600' : 'text-red-600'}`}>{message}</p>
         )}
 
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -110,6 +113,7 @@ export default function RegisterFormPage() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              aria-label="Toggle password visibility"
             >
               {showPassword ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,12 +130,22 @@ export default function RegisterFormPage() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-[#FFBF00] text-black font-bold rounded-lg shadow-md hover:bg-[#AE8200] transition text-lg tracking-wide"
+            disabled={isSubmitting}
+            className={`w-full py-3 font-bold rounded-lg shadow-md transition text-lg tracking-wide ${isSubmitting ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#FFBF00] text-black hover:bg-[#AE8200]'}`}
           >
-            Register
+            {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
       </div>
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px);}
+          to { opacity: 1; transform: translateY(0);}
+        }
+      `}</style>
     </div>
   );
 }

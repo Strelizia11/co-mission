@@ -3,35 +3,19 @@
 import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet";
 import { Identity, Avatar, Name, Address, EthBalance } from "@coinbase/onchainkit/identity";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import NotificationDropdown from "./NotificationDropdown";
 
 interface DashboardHeaderProps {
   user?: {
     name: string;
     role: string;
+    email: string;
   };
   onToggleNav?: () => void;
 }
 
 export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderProps) {
-  const [unread, setUnread] = useState<number>(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        if (!user?.email) return;
-        const res = await fetch(`/api/notifications?email=${encodeURIComponent(user.email)}`);
-        const data = await res.json();
-        if (!cancelled && res.ok && Array.isArray(data.notifications)) {
-          setUnread(data.notifications.filter((n: any) => !n.read).length);
-        }
-      } catch {}
-    }
-    load();
-    const id = setInterval(load, 10000);
-    return () => { cancelled = true; clearInterval(id); };
-  }, [user?.email]);
+  console.log('DashboardHeader: User received:', user);
 
   return (
     <header className="flex justify-between items-center p-4 bg-[#191B1F] shadow-md relative z-30">
@@ -61,20 +45,8 @@ export default function DashboardHeader({ user, onToggleNav }: DashboardHeaderPr
 
       {/* Right Side - Notifications + Connect Wallet */}
       <div className="flex items-center gap-3">
-        {/* Notifications button */}
-        {user && (
-          <a
-            href="/notifications"
-            className="relative text-white border-2 border-[#FFBF00] rounded-[12px] px-3 py-2 hover:bg-[#AE8200]"
-          >
-            Notifications
-            {unread > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                {unread}
-              </span>
-            )}
-          </a>
-        )}
+            {/* Notifications dropdown */}
+            {user && <NotificationDropdown user={user} />}
         <Wallet className="z-10">
           <div className="text-black px-4 py-2 text-lg font-semibold">
             <ConnectWallet className="text-white bg-[#191B1F] border-2 border-[#FFBF00] rounded-[15px] hover:bg-[#AE8200]">

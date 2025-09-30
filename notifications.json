@@ -1,14 +1,104 @@
 [
   {
-    "id": "1759133865373",
-    "createdAt": "2025-09-29T08:17:45.373Z",
+    "id": "1759159298307",
+    "createdAt": "2025-09-29T15:21:38.307Z",
     "read": true,
     "userEmail": "jonel2@email",
     "title": "Task posted",
-    "message": "Your task \"notif test\" is now public (pending request).",
+    "message": "Your task \"Task34\" is now public (pending request).",
     "meta": {
-      "taskId": "1759133865295",
+      "taskId": "1759159297817",
       "status": "accepting_applications"
+    }
+  },
+  {
+    "id": "1759159866111",
+    "createdAt": "2025-09-29T15:31:06.111Z",
+    "read": true,
+    "userEmail": "jonel2@email",
+    "title": "Task posted",
+    "message": "Your task \"taskpls\" is now public (pending request).",
+    "meta": {
+      "taskId": "1759159866086",
+      "status": "accepting_applications"
+    }
+  },
+  {
+    "id": "1759160991038",
+    "createdAt": "2025-09-29T15:49:51.038Z",
+    "read": false,
+    "userEmail": "jonel2@email",
+    "title": "Task posted",
+    "message": "Your task \"task12wqedsc\" is now public (pending request).",
+    "meta": {
+      "taskId": "1759160991008",
+      "status": "accepting_applications"
+    }
+  },
+  {
+    "id": "1759161027698",
+    "createdAt": "2025-09-29T15:50:27.698Z",
+    "read": true,
+    "userEmail": "jonel@email",
+    "title": "Task rated",
+    "message": "Employer rated your work on \"task1\" with 5 star(s).",
+    "meta": {
+      "taskId": "1759124328037"
+    }
+  },
+  {
+    "id": "1759161040526",
+    "createdAt": "2025-09-29T15:50:40.526Z",
+    "read": true,
+    "userEmail": "jonel@email",
+    "title": "Task rated",
+    "message": "Employer rated your work on \"task1\" with 5 star(s).",
+    "meta": {
+      "taskId": "1759124328037"
+    }
+  },
+  {
+    "id": "1759162388673",
+    "createdAt": "2025-09-29T16:13:08.673Z",
+    "read": true,
+    "userEmail": "jonel@email",
+    "title": "You were selected",
+    "message": "You were selected to work on \"task12wqedsc\".",
+    "meta": {
+      "taskId": "1759160991008"
+    }
+  },
+  {
+    "id": "1759162388680",
+    "createdAt": "2025-09-29T16:13:08.680Z",
+    "read": false,
+    "userEmail": "jonel2@email",
+    "title": "Task started",
+    "message": "You selected a freelancer for \"task12wqedsc\". Ongoing.",
+    "meta": {
+      "taskId": "1759160991008"
+    }
+  },
+  {
+    "id": "1759162400470",
+    "createdAt": "2025-09-29T16:13:20.470Z",
+    "read": true,
+    "userEmail": "jonel@email",
+    "title": "Task completed",
+    "message": "Employer marked \"task12wqedsc\" as completed.",
+    "meta": {
+      "taskId": "1759160991008"
+    }
+  },
+  {
+    "id": "1759162400496",
+    "createdAt": "2025-09-29T16:13:20.496Z",
+    "read": true,
+    "userEmail": "jonel@email",
+    "title": "Task rated",
+    "message": "Employer rated your work on \"task12wqedsc\" with 3 star(s).",
+    "meta": {
+      "taskId": "1759160991008"
     }
   }
 ]

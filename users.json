@@ -9,7 +9,7 @@
   {
     "name": "Strelizia",
     "email": "belugaezrael@gmail.com",
-    "password": "$2b$10$HrGm1QFwTlI.iQb8BzIntO2yM7blANrs0lFGxmrLeTZ8J4TQgeBYy",
+    "password": "$2b$10$pIIPxEn4zbegjGvCKPUfSOE9gMzzi9IK18UoXYQr5bwXYhaf3QMKi",
     "role": "employer",
     "createdAt": "2025-09-28T15:12:59.624Z"
   },
@@ -24,12 +24,103 @@
       "skills": [],
       "availability": "available",
       "portfolio": [],
-      "ratings": [],
-      "averageRating": 0,
-      "totalRatings": 0,
+      "ratings": [
+        {
+          "id": "1759161027535",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.535Z"
+        },
+        {
+          "id": "1759161027545",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.545Z"
+        },
+        {
+          "id": "1759161027549",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.549Z"
+        },
+        {
+          "id": "1759161027553",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.553Z"
+        },
+        {
+          "id": "1759161027567",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.567Z"
+        },
+        {
+          "id": "1759161027580",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:27.580Z"
+        },
+        {
+          "id": "1759161038318",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:38.318Z"
+        },
+        {
+          "id": "1759161038331",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:38.331Z"
+        },
+        {
+          "id": "1759161040320",
+          "taskId": "1759124328037",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 5,
+          "review": "noob",
+          "createdAt": "2025-09-29T15:50:40.320Z"
+        },
+        {
+          "id": "1759162400459",
+          "taskId": "1759160991008",
+          "employerEmail": "jonel2@email",
+          "employerName": "jonel2",
+          "rating": 3,
+          "review": "aecx",
+          "createdAt": "2025-09-29T16:13:20.459Z"
+        }
+      ],
+      "averageRating": 4.8,
+      "totalRatings": 10,
       "completedTasks": 0,
       "joinedAt": "2025-09-29T00:44:50.447Z",
-      "updatedAt": "2025-09-29T03:02:21.757Z",
+      "updatedAt": "2025-09-29T16:13:20.460Z",
       "bio": "hehe",
       "hourlyRate": 2
     }
@@ -75,5 +166,34 @@
     "password": "$2b$10$MzS2mjqNQeiMD9fJ2oNZHeU3vqRTLvUjE1t2v1Nep3U6XGrQXQBRG",
     "role": "employer",
     "createdAt": "2025-09-29T07:18:11.186Z"
+  },
+  {
+    "name": "fwef",
+    "email": "dwqd@iehoi3i",
+    "password": "$2b$10$7.TRSBTLXJFAgJ6tnmrqjO4DNXFB4nOe714jk8Oi9xNPgLyZv3EoC",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T13:54:50.534Z"
+  },
+  {
+    "name": "dvvsdedv",
+    "email": "1dwd@wd32ej",
+    "password": "$2b$10$tc7fcgACJOLH041chTLv1.AuLW5jXr9fYVdnZVzrfWbxCBfOi7dLK",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T15:00:53.039Z"
+  },
+  {
+<<<<<<< HEAD
+    "name": "xwxxswssws",
+    "email": "1dwd@wd32ewsw",
+    "password": "$2b$10$mAcb.Se5EfOcst8Lhv7CO.zgB0RAx1ZJAhF76jCO1TBwAb.XqCKaG",
+    "role": "freelancer",
+    "createdAt": "2025-09-29T16:09:43.974Z"
+=======
+    "name": "beluga",
+    "email": "beluga@test",
+    "password": "$2b$10$PoLDzxNrmS1oGOVy6xLOT.6Sn4YkAFd3rVBofMCfPXwQPOEy/V8oq",
+    "role": "employer",
+    "createdAt": "2025-09-29T16:09:24.084Z"
+>>>>>>> b4b0929d37f10f4623065dbcb078f629b7a72e8e
   }
 ]
