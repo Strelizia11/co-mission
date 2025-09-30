@@ -122,31 +122,13 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
         className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         aria-label="Open chat"
       >
-        <svg 
-          className="h-6 w-6" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor" 
-          strokeWidth={1.5}
-        >
-          {/* Robot head - more angular */}
-          <rect x="5" y="3" width="14" height="12" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-          {/* Robot eyes - square/rectangular */}
-          <rect x="7" y="6" width="2" height="2" fill="currentColor"/>
-          <rect x="15" y="6" width="2" height="2" fill="currentColor"/>
-          {/* Robot mouth - more mechanical */}
-          <rect x="8" y="10" width="8" height="1" fill="currentColor"/>
-          {/* Robot antenna with blinking light */}
-          <path d="M12 3v-1" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="12" cy="1" r="0.8" fill="currentColor"/>
-          {/* Robot body with details */}
-          <rect x="7" y="15" width="10" height="8" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-          {/* Robot chest panel */}
-          <rect x="9" y="17" width="6" height="4" rx="0.5" strokeWidth="1.5" fill="#FFA500"/>
-          {/* Robot arms */}
-          <rect x="4" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-          <rect x="17" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-        </svg>
+        <Image
+          src="/Screenshot_2025-09-30_214037-removebg-preview.png"
+          alt="AI Assistant"
+          width={24}
+          height={24}
+          className="object-contain"
+        />
         {!isOpen && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[20px] text-center">
             💬
@@ -161,32 +143,14 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
           <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <svg 
-                    className="h-5 w-5" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor" 
-                    strokeWidth={1.5}
-                  >
-                    {/* Robot head - more angular */}
-                    <rect x="5" y="3" width="14" height="12" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                    {/* Robot eyes - square/rectangular */}
-                    <rect x="7" y="6" width="2" height="2" fill="currentColor"/>
-                    <rect x="15" y="6" width="2" height="2" fill="currentColor"/>
-                    {/* Robot mouth - more mechanical */}
-                    <rect x="8" y="10" width="8" height="1" fill="currentColor"/>
-                    {/* Robot antenna with blinking light */}
-                    <path d="M12 3v-1" strokeWidth="1.5" strokeLinecap="round"/>
-                    <circle cx="12" cy="1" r="0.8" fill="currentColor"/>
-                    {/* Robot body with details */}
-                    <rect x="7" y="15" width="10" height="8" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                    {/* Robot chest panel */}
-                    <rect x="9" y="17" width="6" height="4" rx="0.5" strokeWidth="1.5" fill="#FFA500"/>
-                    {/* Robot arms */}
-                    <rect x="4" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                    <rect x="17" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                  </svg>
+                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center p-1">
+                  <Image
+                    src="/Screenshot_2025-09-30_214037-removebg-preview.png"
+                    alt="AI Assistant"
+                    width={32}
+                    height={32}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
                   <h3 className="font-bold text-black">Co-Mission Assistant</h3>
@@ -212,32 +176,14 @@ export default function ChatWidget({ user, currentPage = 'dashboard' }: ChatWidg
                 className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} gap-2`}
               >
                 {!message.isUser && (
-                  <div className="w-8 h-8 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg 
-                      className="h-4 w-4" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor" 
-                      strokeWidth={1.5}
-                    >
-                      {/* Robot head - more angular */}
-                      <rect x="5" y="3" width="14" height="12" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                      {/* Robot eyes - square/rectangular */}
-                      <rect x="7" y="6" width="2" height="2" fill="currentColor"/>
-                      <rect x="15" y="6" width="2" height="2" fill="currentColor"/>
-                      {/* Robot mouth - more mechanical */}
-                      <rect x="8" y="10" width="8" height="1" fill="currentColor"/>
-                      {/* Robot antenna with blinking light */}
-                      <path d="M12 3v-1" strokeWidth="1.5" strokeLinecap="round"/>
-                      <circle cx="12" cy="1" r="0.8" fill="currentColor"/>
-                      {/* Robot body with details */}
-                      <rect x="7" y="15" width="10" height="8" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                      {/* Robot chest panel */}
-                      <rect x="9" y="17" width="6" height="4" rx="0.5" strokeWidth="1.5" fill="#FFA500"/>
-                      {/* Robot arms */}
-                      <rect x="4" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                      <rect x="17" y="16" width="3" height="6" rx="1" strokeWidth="1.5" fill="#FFD700"/>
-                    </svg>
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center flex-shrink-0 p-1">
+                    <Image
+                      src="/Screenshot_2025-09-30_214037-removebg-preview.png"
+                      alt="AI Assistant"
+                      width={28}
+                      height={28}
+                      className="object-contain"
+                    />
                   </div>
                 )}
                 <div
