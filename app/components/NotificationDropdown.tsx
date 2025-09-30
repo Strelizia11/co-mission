@@ -216,7 +216,7 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50">
+        <div className="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-0 top-full mt-2 w-96 max-w-[95vw] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50">
           {/* Header */}
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
@@ -236,51 +236,50 @@ export default function NotificationDropdown({ user }: NotificationDropdownProps
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔔</span>
-                </div>
-                <p className="text-gray-600">No notifications yet</p>
+                <p className="text-gray-500">No notifications yet</p>
               </div>
             ) : (
-              <div className="divide-y divide-gray-100">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-4 hover:bg-gray-50 transition-colors duration-200 cursor-pointer ${
-                      !notification.read ? 'bg-blue-50/50' : ''
-                    }`}
-                    onClick={() => handleNotificationClick(notification)}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
-                          getNotificationColor(notification.type)
-                        }`}>
-                          {getNotificationIcon(notification.type)}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h4 className={`text-sm font-semibold ${
-                            !notification.read ? 'text-gray-900' : 'text-gray-700'
+              <>
+                {notifications.map((notification) => {
+                  return (
+                    <div
+                      key={notification.id}
+                      className={`p-4 hover:bg-gray-50 transition-colors duration-200 cursor-pointer ${
+                        !notification.read ? 'bg-blue-50/50' : ''
+                      }`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                            getNotificationColor(notification.type)
                           }`}>
-                            {notification.title}
-                          </h4>
-                          {!notification.read && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                          )}
+                            {getNotificationIcon(notification.type)}
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                          {notification.message}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-2">
-                          {formatTimeAgo(notification.createdAt)}
-                        </p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className={`text-sm font-semibold ${
+                              !notification.read ? 'text-gray-900' : 'text-gray-700'
+                            }`}>
+                              {notification.title}
+                            </h4>
+                            {!notification.read && (
+                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">
+                            {formatTimeAgo(notification.createdAt)}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  );
+                })}
+              </>
             )}
           </div>
 
