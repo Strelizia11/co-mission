@@ -140,173 +140,222 @@ export default function TransactionsPage() {
         {/* Header */}
         <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
         
-        {/* Page Header */}
-        <div className="bg-[#191B1F] text-white p-6">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold mb-2">Transaction History</h1>
-            <p className="text-gray-300">View all your payment transactions</p>
+        {/* Distinct Page Header */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="bg-gradient-to-br from-[#FFBF00] to-[#FF6B00] p-3 rounded-xl shadow-sm">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">Transaction History</h1>
+                  <p className="text-gray-600 mt-1">View all your payment transactions and transfer history</p>
+                </div>
+              </div>
+              
+              {transactions.length > 0 && (
+                <div className="mt-6 md:mt-0 flex items-center space-x-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {transactions.filter(t => t.recipientEmail === user?.email).length}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600">Received</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-600">
+                      {transactions.filter(t => t.senderEmail === user?.email).length}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600">Sent</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {transactions.filter(t => t.status === 'completed').length}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600">Completed</div>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Quick Stats Bar */}
+            {transactions.length > 0 && (
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-green-700">
+                    +{transactions.filter(t => t.recipientEmail === user?.email).reduce((sum, t) => sum + t.amount, 0).toFixed(4)} ETH
+                  </div>
+                  <div className="text-sm font-medium text-green-600">Total Received</div>
+                </div>
+                <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-red-700">
+                    {transactions.filter(t => t.senderEmail === user?.email).reduce((sum, t) => sum + t.amount, 0).toFixed(4)} ETH
+                  </div>
+                  <div className="text-sm font-medium text-red-600">Total Sent</div>
+                </div>
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-blue-700">
+                    {transactions.filter(t => t.status === 'completed').length}
+                  </div>
+                  <div className="text-sm font-medium text-blue-600">Completed</div>
+                </div>
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-purple-700">
+                    {transactions.length}
+                  </div>
+                  <div className="text-sm font-medium text-purple-600">Total Transactions</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-      <div className="max-w-7xl mx-auto p-6">
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
-          </div>
-        )}
-
-        {transactions.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">💰</span>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto p-6">
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+              {error}
             </div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No Transactions Yet</h3>
-            <p className="text-gray-500">Your transaction history will appear here once you start working on tasks.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {transactions.map((transaction) => {
-              const transactionType = getTransactionType(transaction);
-              return (
-                <div key={transaction.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{transaction.taskTitle}</h3>
-                      <p className="text-gray-600">{transaction.description}</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {formatDate(transaction.timestamp)}
-                      </p>
-                      {/* Transaction Address */}
-                      <div className="mt-2">
-                        <span className="text-xs text-gray-500">Transaction ID:</span>
-                        <span className="text-xs font-mono text-gray-700 ml-1">
-                          {formatTransactionAddress(transaction.transactionAddress || transaction.transactionId)}
-                        </span>
+          )}
+
+          {transactions.length === 0 ? (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-gray-700 mb-3">No Transactions Yet</h3>
+              <p className="text-gray-500 text-lg max-w-md mx-auto">
+                Your transaction history will appear here once you start making or receiving payments.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Recent Transactions</h2>
+                <span className="text-sm text-gray-500">
+                  Showing {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              
+              {transactions.map((transaction) => {
+                const transactionType = getTransactionType(transaction);
+                return (
+                  <div key={transaction.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{transaction.taskTitle}</h3>
+                        <p className="text-gray-600">{transaction.description}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {formatDate(transaction.timestamp)}
+                        </p>
+                        {/* Transaction Address */}
+                        <div className="mt-2">
+                          <span className="text-xs text-gray-500">Transaction ID:</span>
+                          <span className="text-xs font-mono text-gray-700 ml-1">
+                            {formatTransactionAddress(transaction.transactionAddress || transaction.transactionId)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-2xl font-bold ${transactionType.color}`}>
+                          {transactionType.type === 'sent' ? '-' : '+'}{transaction.amount} {transaction.currency}
+                        </div>
+                        {transaction.tokenReward && (
+                          <div className="text-lg font-semibold text-[#FFBF00] mb-1">
+                            +{transaction.tokenReward} CMT
+                          </div>
+                        )}
+                        <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.status)}`}>
+                          {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className={`text-2xl font-bold ${transactionType.color}`}>
-                        {transactionType.type === 'sent' ? '-' : '+'}{transaction.amount} {transaction.currency}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium text-gray-700">Transaction Type:</span>
+                        <span className="ml-2 text-gray-600">{transactionType.label}</span>
                       </div>
-                      {transaction.tokenReward && (
-                        <div className="text-lg font-semibold text-[#FFBF00] mb-1">
-                          +{transaction.tokenReward} CMT
+                      <div>
+                        <span className="font-medium text-gray-700">Task ID:</span>
+                        <span className="ml-2 text-gray-600 font-mono">{transaction.taskId}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-700">Payer:</span>
+                        <span className="ml-2 text-gray-600">{transaction.payer?.email || transaction.senderEmail}</span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-700">Receiver:</span>
+                        <span className="ml-2 text-gray-600">{transaction.receiver?.email || transaction.recipientEmail}</span>
+                      </div>
+                      {transaction.transactionAddress && (
+                        <div className="md:col-span-2">
+                          <span className="font-medium text-gray-700">Transaction Address:</span>
+                          <span className="ml-2 text-gray-600 font-mono text-xs break-all">{formatTransactionAddress(transaction.transactionAddress)}</span>
                         </div>
                       )}
-                      <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.status)}`}>
-                        {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                      {transaction.blockNumber && (
+                        <div>
+                          <span className="font-medium text-gray-700">Block Number:</span>
+                          <span className="ml-2 text-gray-600">{transaction.blockNumber.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {transaction.gasUsed && (
+                        <div>
+                          <span className="font-medium text-gray-700">Gas Used:</span>
+                          <span className="ml-2 text-gray-600">{transaction.gasUsed.toLocaleString()}</span>
+                        </div>
+                      )}
+                      <div>
+                        <span className="font-medium text-gray-700">Date:</span>
+                        <span className="ml-2 text-gray-600">{formatDate(transaction.timestamp)}</span>
                       </div>
+                      <div>
+                        <span className="font-medium text-gray-700">Amount:</span>
+                        <span className="ml-2 text-gray-600 font-semibold">{transaction.amount} {transaction.currency}</span>
+                      </div>
+                      {transaction.paymentMethod && (
+                        <div>
+                          <span className="font-medium text-gray-700">Payment Method:</span>
+                          <span className="ml-2 text-gray-600">{transaction.paymentMethod}</span>
+                        </div>
+                      )}
+                      {transaction.ethAmount && transaction.ethAmount > 0 && (
+                        <div>
+                          <span className="font-medium text-gray-700">ETH Amount:</span>
+                          <span className="ml-2 text-gray-600">{transaction.ethAmount} ETH</span>
+                        </div>
+                      )}
+                      {transaction.cmtAmount && transaction.cmtAmount > 0 && (
+                        <div>
+                          <span className="font-medium text-gray-700">CMT Amount:</span>
+                          <span className="ml-2 text-gray-600">{transaction.cmtAmount} CMT</span>
+                        </div>
+                      )}
+                      {transaction.platformFee && transaction.platformFee > 0 && (
+                        <div>
+                          <span className="font-medium text-gray-700">Platform Fee:</span>
+                          <span className="ml-2 text-gray-600">{transaction.platformFee} {transaction.platformFeeCurrency}</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">Transaction Type:</span>
-                      <span className="ml-2 text-gray-600">{transactionType.label}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Task ID:</span>
-                      <span className="ml-2 text-gray-600 font-mono">{transaction.taskId}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Payer:</span>
-                      <span className="ml-2 text-gray-600">{transaction.payer?.email || transaction.senderEmail}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Receiver:</span>
-                      <span className="ml-2 text-gray-600">{transaction.receiver?.email || transaction.recipientEmail}</span>
-                    </div>
-                    {transaction.transactionAddress && (
-                      <div className="md:col-span-2">
-                        <span className="font-medium text-gray-700">Transaction Address:</span>
-                        <span className="ml-2 text-gray-600 font-mono text-xs break-all">{formatTransactionAddress(transaction.transactionAddress)}</span>
-                      </div>
-                    )}
-                    {transaction.blockNumber && (
-                      <div>
-                        <span className="font-medium text-gray-700">Block Number:</span>
-                        <span className="ml-2 text-gray-600">{transaction.blockNumber.toLocaleString()}</span>
-                      </div>
-                    )}
-                    {transaction.gasUsed && (
-                      <div>
-                        <span className="font-medium text-gray-700">Gas Used:</span>
-                        <span className="ml-2 text-gray-600">{transaction.gasUsed.toLocaleString()}</span>
-                      </div>
-                    )}
-                    <div>
-                      <span className="font-medium text-gray-700">Date:</span>
-                      <span className="ml-2 text-gray-600">{formatDate(transaction.timestamp)}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Amount:</span>
-                      <span className="ml-2 text-gray-600 font-semibold">{transaction.amount} {transaction.currency}</span>
-                    </div>
-                    {transaction.paymentMethod && (
-                      <div>
-                        <span className="font-medium text-gray-700">Payment Method:</span>
-                        <span className="ml-2 text-gray-600">{transaction.paymentMethod}</span>
-                      </div>
-                    )}
-                    {transaction.ethAmount && transaction.ethAmount > 0 && (
-                      <div>
-                        <span className="font-medium text-gray-700">ETH Amount:</span>
-                        <span className="ml-2 text-gray-600">{transaction.ethAmount} ETH</span>
-                      </div>
-                    )}
-                    {transaction.cmtAmount && transaction.cmtAmount > 0 && (
-                      <div>
-                        <span className="font-medium text-gray-700">CMT Amount:</span>
-                        <span className="ml-2 text-gray-600">{transaction.cmtAmount} CMT</span>
-                      </div>
-                    )}
-                    {transaction.platformFee && transaction.platformFee > 0 && (
-                      <div>
-                        <span className="font-medium text-gray-700">Platform Fee:</span>
-                        <span className="ml-2 text-gray-600">{transaction.platformFee} {transaction.platformFeeCurrency}</span>
+                    {transaction.status === 'completed' && transaction.completedAt && (
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <p className="text-sm text-gray-600">
+                          Completed on: {new Date(transaction.completedAt).toLocaleString()}
+                        </p>
                       </div>
                     )}
                   </div>
-
-                  {transaction.status === 'completed' && transaction.completedAt && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <p className="text-sm text-gray-600">
-                        Completed on: {new Date(transaction.completedAt).toLocaleString()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Summary Stats */}
-        {transactions.length > 0 && (
-          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  +{transactions.filter(t => t.recipientEmail === user?.email).reduce((sum, t) => sum + t.amount, 0).toFixed(4)} ETH
-                </div>
-                <div className="text-sm text-gray-600">Total Received</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-red-600">
-                  -{transactions.filter(t => t.senderEmail === user?.email).reduce((sum, t) => sum + t.amount, 0).toFixed(4)} ETH
-                </div>
-                <div className="text-sm text-gray-600">Total Sent</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {transactions.filter(t => t.status === 'completed').length}
-                </div>
-                <div className="text-sm text-gray-600">Completed Transactions</div>
-              </div>
+                );
+              })}
             </div>
-          </div>
-        )}
+          )}
         </div>
       </div>
     </div>
