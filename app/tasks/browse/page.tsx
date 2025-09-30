@@ -25,9 +25,20 @@ export default function BrowseTasksPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    keyword: '',
+    skills: [] as string[],
+    minRate: '',
+    maxRate: '',
+    sortBy: 'newest' as 'newest' | 'oldest' | 'price_high' | 'price_low' | 'deadline_soon' | 'deadline_late' | 'rate_high' | 'rate_low'
+  });
+  const [applyingId, setApplyingId] = useState<string | null>(null);
+  const [applyFeedbackByTask, setApplyFeedbackByTask] = useState<Record<string, { type: string; text: string }>>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -50,19 +61,30 @@ export default function BrowseTasksPage() {
     }
   }, [user]);
 
+  useEffect(() => {
+    applyFilters();
+  }, [tasks, filters]);
+
   const fetchTasks = async () => {
     try {
       console.log('Fetching tasks...');
       const response = await fetch('/api/tasks');
-      const data = await response.json();
       
+      if (!response.ok) {
+        console.error('Failed to fetch tasks:', response.status, response.statusText);
+        setMessage('Failed to load tasks');
+        return;
+      }
+      
+      const data = await response.json();
       console.log('Tasks response:', data);
       
-      if (response.ok) {
+      if (Array.isArray(data.tasks)) {
         setTasks(data.tasks);
         console.log('Tasks loaded:', data.tasks.length);
       } else {
-        setMessage('Failed to load tasks');
+        console.error('Invalid tasks data format:', data);
+        setMessage('Invalid tasks data received');
       }
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -74,6 +96,8 @@ export default function BrowseTasksPage() {
 
   const handleApplyToTask = async (taskId: string) => {
     try {
+      if (applyingId) return; // prevent double submit across tasks
+      setApplyingId(taskId);
       const response = await fetch(`/api/tasks/${taskId}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -84,23 +108,126 @@ export default function BrowseTasksPage() {
         })
       });
 
+      if (!response.ok) {
+        console.error('Failed to apply to task:', response.status, response.statusText);
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'error', text: `Failed to apply: ${response.status} ${response.statusText}` }
+        }));
+        return;
+      }
+
       const data = await response.json();
       
-      if (response.ok) {
-        setMessage('Application submitted successfully! The employer will review applications and select a freelancer.');
+      if (data.success) {
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'success', text: 'Application submitted successfully!' }
+        }));
         fetchTasks(); // Refresh tasks
       } else {
-        setMessage(data.error || 'Failed to submit application');
+        setApplyFeedbackByTask(prev => ({
+          ...prev,
+          [taskId]: { type: 'error', text: data.error || 'Failed to submit application' }
+        }));
       }
     } catch (error) {
       console.error('Error submitting application:', error);
-      setMessage('Failed to submit application');
+      setApplyFeedbackByTask(prev => ({
+        ...prev,
+        [taskId]: { type: 'error', text: 'Failed to submit application' }
+      }));
+    } finally {
+      setApplyingId(null);
     }
   };
 
   const getMatchingSkills = (requiredSkills: string[]) => {
     if (!user?.skills) return 0;
     return requiredSkills.filter(skill => user.skills.includes(skill)).length;
+  };
+
+  const applyFilters = () => {
+    let filtered = [...tasks];
+
+    // Keyword filter
+    if (filters.keyword) {
+      const keyword = filters.keyword.toLowerCase();
+      filtered = filtered.filter(task => 
+        task.title.toLowerCase().includes(keyword) ||
+        task.description.toLowerCase().includes(keyword) ||
+        task.employerName.toLowerCase().includes(keyword)
+      );
+    }
+
+    // Skills filter
+    if (filters.skills.length > 0) {
+      filtered = filtered.filter(task =>
+        filters.skills.some(skill => 
+          task.requiredSkills.some(requiredSkill => 
+            requiredSkill.toLowerCase().includes(skill.toLowerCase())
+          )
+        )
+      );
+    }
+
+    // Rate filter
+    if (filters.minRate) {
+      filtered = filtered.filter(task => task.price >= parseFloat(filters.minRate));
+    }
+    if (filters.maxRate) {
+      filtered = filtered.filter(task => task.price <= parseFloat(filters.maxRate));
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'newest':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'rate_high':
+          return b.price - a.price;
+        case 'rate_low':
+          return a.price - b.price;
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredTasks(filtered);
+  };
+
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const addSkillFilter = (skill: string) => {
+    if (skill && !filters.skills.includes(skill)) {
+      setFilters(prev => ({ ...prev, skills: [...prev.skills, skill] }));
+    }
+  };
+
+  const removeSkillFilter = (skill: string) => {
+    setFilters(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skill) }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      keyword: '',
+      skills: [],
+      minRate: '',
+      maxRate: '',
+      sortBy: 'newest'
+    });
+  };
+
+  const getAllSkills = () => {
+    const allSkills = new Set<string>();
+    tasks.forEach(task => {
+      task.requiredSkills.forEach(skill => allSkills.add(skill));
+    });
+    return Array.from(allSkills).sort();
   };
 
   if (!user) {
@@ -129,12 +256,20 @@ export default function BrowseTasksPage() {
                   <h1 className="text-4xl font-bold text-white mb-2">Available Tasks</h1>
                   <p className="text-white/90 text-lg">Discover opportunities that match your skills</p>
                 </div>
-                <button
-                  onClick={() => router.push('/dashboard')}
-                  className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
-                >
-                  ← Back to Dashboard
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}
+                  </button>
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    ← Back to Dashboard
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -152,25 +287,164 @@ export default function BrowseTasksPage() {
             </div>
           )}
 
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Filter Tasks</h3>
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Keyword Search */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🔍 Keyword Search
+                  </label>
+                  <input
+                    type="text"
+                    value={filters.keyword}
+                    onChange={(e) => handleFilterChange('keyword', e.target.value)}
+                    placeholder="Search tasks, employers..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+
+                {/* Skills Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🛠️ Required Skills
+                  </label>
+                  <div className="space-y-2">
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          addSkillFilter(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    >
+                      <option value="">Select a skill...</option>
+                      {getAllSkills().map(skill => (
+                        <option key={skill} value={skill}>{skill}</option>
+                      ))}
+                    </select>
+                    {filters.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {filters.skills.map(skill => (
+                          <span
+                            key={skill}
+                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                          >
+                            {skill}
+                            <button
+                              onClick={() => removeSkillFilter(skill)}
+                              className="text-blue-600 hover:text-blue-800 font-bold"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Rate Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    💰 Rate Range (ETH)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="number"
+                      value={filters.minRate}
+                      onChange={(e) => handleFilterChange('minRate', e.target.value)}
+                      placeholder="Min"
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <input
+                      type="number"
+                      value={filters.maxRate}
+                      onChange={(e) => handleFilterChange('maxRate', e.target.value)}
+                      placeholder="Max"
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
+                {/* Sort By */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    📊 Sort By
+                  </label>
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="rate_high">Highest Rate</option>
+                    <option value="rate_low">Lowest Rate</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Results Summary */}
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Showing <span className="font-semibold text-gray-900">{filteredTasks.length}</span> of <span className="font-semibold text-gray-900">{tasks.length}</span> tasks
+                  </div>
+                  {filters.keyword || filters.skills.length > 0 || filters.minRate || filters.maxRate ? (
+                    <div className="text-sm text-blue-600">
+                      Filters applied
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+
       {loading ? (
         <InlineLoading text="Loading tasks..." />
-      ) : tasks.length === 0 ? (
+      ) : filteredTasks.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-4xl">📋</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No tasks available</h3>
-              <p className="text-gray-600 mb-6">Check back later for new opportunities</p>
-              <button
-                onClick={fetchTasks}
-                className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
-              >
-                Refresh Tasks
-              </button>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {tasks.length === 0 ? 'No tasks available' : 'No tasks match your filters'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {tasks.length === 0 ? 'Check back later for new opportunities' : 'Try adjusting your filters to see more results'}
+              </p>
+              {tasks.length === 0 ? (
+                <button
+                  onClick={fetchTasks}
+                  className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  Refresh Tasks
+                </button>
+              ) : (
+                <button
+                  onClick={clearFilters}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
           ) : (
             <div className="grid gap-8">
-              {tasks.map((task) => {
+              {filteredTasks.map((task) => {
                 const matchingSkills = getMatchingSkills(task.requiredSkills);
                 const matchPercentage = task.requiredSkills.length > 0 
                   ? Math.round((matchingSkills / task.requiredSkills.length) * 100)
@@ -180,6 +454,7 @@ export default function BrowseTasksPage() {
                 const now = new Date();
                 const acceptanceDeadline = new Date(task.acceptanceDeadline);
                 const isDeadlinePassed = now > acceptanceDeadline;
+                const alreadyApplied = Array.isArray(task.applications) && task.applications.some((a: any) => a?.email === user?.email);
                 const canApply = task.status === 'accepting_applications' && !isDeadlinePassed;
 
                 return (
@@ -289,9 +564,12 @@ export default function BrowseTasksPage() {
                       {canApply && (
                         <button
                           onClick={() => handleApplyToTask(task.id)}
-                          className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                          disabled={!!applyingId || alreadyApplied}
+                          className={`bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
+                            !!applyingId || alreadyApplied ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-lg transform hover:scale-105'
+                          }`}
                         >
-                          Apply to Task
+                          {alreadyApplied ? 'Applied' : (applyingId === task.id ? 'Applying...' : 'Apply to Task')}
                         </button>
                       )}
                       {!canApply && (
@@ -307,6 +585,14 @@ export default function BrowseTasksPage() {
                         </span>
                       )}
                     </div>
+                    {applyFeedbackByTask[task.id] && (
+                      <div className={`mt-4 rounded-lg text-sm px-3 py-2 inline-flex items-center gap-2 ${
+                        applyFeedbackByTask[task.id].type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                      }`}>
+                        <span>{applyFeedbackByTask[task.id].type === 'success' ? '✅' : '❌'}</span>
+                        <span>{applyFeedbackByTask[task.id].text}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}

@@ -17,7 +17,11 @@ export default function DashboardPage() {
     // For now, we'll simulate getting user data
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const userData = JSON.parse(savedUser);
+      console.log('Dashboard: User data loaded:', userData);
+      setUser(userData);
+    } else {
+      console.log('Dashboard: No user data found in localStorage');
     }
     setLoading(false);
   }, []);

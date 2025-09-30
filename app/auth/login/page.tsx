@@ -30,6 +30,7 @@ export default function LoginPage() {
       if (res.ok) {
         setMessage(data.message)
         localStorage.setItem('user', JSON.stringify(data.user))
+        // keep button disabled while redirecting to avoid double submits
         window.location.href = '/dashboard'
       } else {
         setMessage(data.error)
@@ -52,7 +53,7 @@ export default function LoginPage() {
         </div>
 
         {message && (
-          <p className="text-red-500 mb-4 text-center">{message}</p>
+          <p className={`mb-4 text-center ${message.toLowerCase().includes('success') ? 'text-green-600' : 'text-red-600'}`}>{message}</p>
         )}
 
         <form className="flex flex-col gap-5" onSubmit={handleSubmit} autoComplete="off">

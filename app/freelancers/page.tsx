@@ -3,111 +3,201 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../components/DashboardHeader";
+import SideNavigation from "../components/SideNavigation";
+import { InlineLoading } from "../components/LoadingSpinner";
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  projectUrl?: string;
-  technologies: string[];
-  completedAt: string;
-}
-
-interface Rating {
-  id: string;
-  taskId: string;
-  employerEmail: string;
-  employerName: string;
-  rating: number;
-  review: string;
-  createdAt: string;
-}
-
-interface FreelancerProfile {
+interface Freelancer {
   email: string;
+  name: string;
   bio?: string;
   skills: string[];
-  minimumRate?: number;
+  hourlyRate?: number;
   availability: 'available' | 'busy' | 'unavailable';
-  portfolio: PortfolioItem[];
-  ratings: Rating[];
   averageRating: number;
   totalRatings: number;
   completedTasks: number;
   joinedAt: string;
-  updatedAt: string;
+  portfolio: any[];
 }
 
-export default function FreelancersPage() {
+export default function BrowseFreelancersPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [profiles, setProfiles] = useState<FreelancerProfile[]>([]);
+  const [freelancers, setFreelancers] = useState<Freelancer[]>([]);
+  const [filteredFreelancers, setFilteredFreelancers] = useState<Freelancer[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const [showHireModal, setShowHireModal] = useState(false);
-  const [hireTarget, setHireTarget] = useState<FreelancerProfile | null>(null);
-  const [hireForm, setHireForm] = useState({
-    title: '',
-    description: '',
-    price: '',
-    completionDeadline: ''
-  });
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
-    skills: '',
+    keyword: '',
+    skills: [] as string[],
+    minRate: '',
+    maxRate: '',
+    availability: 'all' as 'all' | 'available' | 'busy' | 'unavailable',
     minRating: '',
-    availability: ''
+    sortBy: 'newest' as 'newest' | 'oldest' | 'rating_high' | 'rating_low' | 'rate_high' | 'rate_low'
   });
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (!userData) {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      
+      // Check if user is employer
+      if (userData.role !== 'employer') {
+        router.push('/dashboard');
+      }
+    } else {
       router.push('/auth/login');
-      return;
     }
-    
-    const parsedUser = JSON.parse(userData);
-    setUser(parsedUser);
-    
-    fetchProfiles();
   }, [router]);
 
-  const fetchProfiles = async () => {
-    try {
-      const params = new URLSearchParams();
-      if (filters.skills) params.append('skills', filters.skills);
-      if (filters.minRating) params.append('minRating', filters.minRating);
-      if (filters.availability) params.append('availability', filters.availability);
+  useEffect(() => {
+    if (user) {
+      fetchFreelancers();
+    }
+  }, [user]);
 
-      const response = await fetch(`/api/freelancer/profiles?${params.toString()}`);
+  useEffect(() => {
+    applyFilters();
+  }, [freelancers, filters]);
+
+  const fetchFreelancers = async () => {
+    try {
+      const response = await fetch('/api/freelancer/profiles');
+      
+      if (!response.ok) {
+        console.error('Failed to fetch freelancers:', response.status, response.statusText);
+        setMessage('Failed to load freelancers');
+        return;
+      }
+      
       const data = await response.json();
       
-      if (response.ok) {
-        setProfiles(data.profiles);
+      if (Array.isArray(data.profiles)) {
+        console.log('Freelancers data received:', data.profiles);
+        setFreelancers(data.profiles);
       } else {
-        setMessage(data.error || 'Failed to fetch freelancer profiles');
+        console.error('Invalid freelancers data format:', data);
+        setMessage('Invalid freelancers data received');
       }
     } catch (error) {
-      console.error('Error fetching profiles:', error);
-      setMessage('Failed to fetch freelancer profiles');
+      console.error('Error fetching freelancers:', error);
+      setMessage('Failed to load freelancers');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFilterChange = (key: string, value: string) => {
+  const applyFilters = () => {
+    if (!freelancers || !Array.isArray(freelancers)) {
+      setFilteredFreelancers([]);
+      return;
+    }
+    let filtered = [...freelancers];
+
+    // Keyword filter
+    if (filters.keyword) {
+      const keyword = filters.keyword.toLowerCase();
+      filtered = filtered.filter(freelancer => 
+        (freelancer.name && freelancer.name.toLowerCase().includes(keyword)) ||
+        (freelancer.bio && freelancer.bio.toLowerCase().includes(keyword)) ||
+        (freelancer.skills && freelancer.skills.some(skill => skill.toLowerCase().includes(keyword)))
+      );
+    }
+
+    // Skills filter
+    if (filters.skills.length > 0) {
+      filtered = filtered.filter(freelancer =>
+        freelancer.skills && filters.skills.some(skill => 
+          freelancer.skills.some(freelancerSkill => 
+            freelancerSkill.toLowerCase().includes(skill.toLowerCase())
+          )
+        )
+      );
+    }
+
+    // Rate filter
+    if (filters.minRate) {
+      filtered = filtered.filter(freelancer => 
+        freelancer.hourlyRate && freelancer.hourlyRate >= parseFloat(filters.minRate)
+      );
+    }
+    if (filters.maxRate) {
+      filtered = filtered.filter(freelancer => 
+        freelancer.hourlyRate && freelancer.hourlyRate <= parseFloat(filters.maxRate)
+      );
+    }
+
+    // Availability filter
+    if (filters.availability !== 'all') {
+      filtered = filtered.filter(freelancer => freelancer.availability === filters.availability);
+    }
+
+    // Rating filter
+    if (filters.minRating) {
+      filtered = filtered.filter(freelancer => 
+        freelancer.averageRating >= parseFloat(filters.minRating)
+      );
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'newest':
+          return new Date(b.joinedAt).getTime() - new Date(a.joinedAt).getTime();
+        case 'oldest':
+          return new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime();
+        case 'rating_high':
+          return b.averageRating - a.averageRating;
+        case 'rating_low':
+          return a.averageRating - b.averageRating;
+        case 'rate_high':
+          return (b.hourlyRate || 0) - (a.hourlyRate || 0);
+        case 'rate_low':
+          return (a.hourlyRate || 0) - (b.hourlyRate || 0);
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredFreelancers(filtered);
+  };
+
+  const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
-  const applyFilters = () => {
-    setLoading(true);
-    fetchProfiles();
+  const addSkillFilter = (skill: string) => {
+    if (skill && !filters.skills.includes(skill)) {
+      setFilters(prev => ({ ...prev, skills: [...prev.skills, skill] }));
+    }
+  };
+
+  const removeSkillFilter = (skill: string) => {
+    setFilters(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skill) }));
   };
 
   const clearFilters = () => {
-    setFilters({ skills: '', minRating: '', availability: '' });
-    setLoading(true);
-    fetchProfiles();
+    setFilters({
+      keyword: '',
+      skills: [],
+      minRate: '',
+      maxRate: '',
+      availability: 'all',
+      minRating: '',
+      sortBy: 'newest'
+    });
+  };
+
+  const getAllSkills = () => {
+    const allSkills = new Set<string>();
+    freelancers.forEach(freelancer => {
+      freelancer.skills.forEach(skill => allSkills.add(skill));
+    });
+    return Array.from(allSkills).sort();
   };
 
   const renderStars = (rating: number) => {
@@ -118,319 +208,379 @@ export default function FreelancersPage() {
     ));
   };
 
-  const getAvailabilityColor = (availability: string) => {
-    switch (availability) {
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'busy': return 'bg-yellow-100 text-yellow-800';
-      case 'unavailable': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  if (loading) {
+  if (!user) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <DashboardHeader />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
+      {/* Side Navigation */}
+      <SideNavigation user={user} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Browse Freelancers</h1>
-
-          {message && (
-            <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-800">
-              {message}
-            </div>
-          )}
-
-          {/* Filters */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Skills
-                </label>
-                <input
-                  type="text"
-                  value={filters.skills}
-                  onChange={(e) => handleFilterChange('skills', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., Web Development, Design"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Minimum Rating
-                </label>
-                <select
-                  value={filters.minRating}
-                  onChange={(e) => handleFilterChange('minRating', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Any Rating</option>
-                  <option value="4">4+ Stars</option>
-                  <option value="3">3+ Stars</option>
-                  <option value="2">2+ Stars</option>
-                  <option value="1">1+ Stars</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Availability
-                </label>
-                <select
-                  value={filters.availability}
-                  onChange={(e) => handleFilterChange('availability', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Any Status</option>
-                  <option value="available">Available</option>
-                  <option value="busy">Busy</option>
-                  <option value="unavailable">Unavailable</option>
-                </select>
-              </div>
-              
-              <div className="flex items-end gap-2">
-                <button
-                  onClick={applyFilters}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  Apply Filters
-                </button>
-                <button
-                  onClick={clearFilters}
-                  className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
-                >
-                  Clear
-                </button>
+      {/* Main Content Area */}
+      <div className="flex-1">
+        {/* Header */}
+        <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
+        
+        {/* Browse Freelancers Content */}
+        <div className="max-w-7xl mx-auto p-6">
+          {/* Page Header */}
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">Browse Freelancers</h1>
+                  <p className="text-white/90 text-lg">Discover talented freelancers for your projects</p>
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}
+                  </button>
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                  >
+                    ← Dashboard
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Freelancer Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {profiles.map((profile) => (
-              <div key={profile.email} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                      {profile.email.split('@')[0]}
-                    </h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(profile.availability)}`}>
-                      {profile.availability}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 mb-1">
-                      {renderStars(Math.round(profile.averageRating))}
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {profile.averageRating.toFixed(1)} ({profile.totalRatings} reviews)
-                    </p>
-                  </div>
+          {message && (
+            <div className={`p-4 rounded-xl mb-6 shadow-lg ${
+              message.includes('successfully') 
+                ? 'bg-green-50 border border-green-200 text-green-800' 
+                : 'bg-red-50 border border-red-200 text-red-800'
+            }`}>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{message.includes('successfully') ? '✅' : '❌'}</span>
+                <span className="font-medium">{message}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Filter Freelancers</h3>
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-gray-600 hover:text-gray-800 underline"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Keyword Search */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🔍 Keyword Search
+                  </label>
+                  <input
+                    type="text"
+                    value={filters.keyword}
+                    onChange={(e) => handleFilterChange('keyword', e.target.value)}
+                    placeholder="Search freelancers, skills..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
                 </div>
 
-                {profile.bio && (
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                    {profile.bio}
-                  </p>
-                )}
-
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Skills</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {profile.skills.slice(0, 5).map((skill, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {profile.skills.length > 5 && (
-                      <span className="text-xs text-gray-500">
-                        +{profile.skills.length - 5} more
-                      </span>
+                {/* Skills Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🛠️ Skills
+                  </label>
+                  <div className="space-y-2">
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          addSkillFilter(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    >
+                      <option value="">Select a skill...</option>
+                      {getAllSkills().map(skill => (
+                        <option key={skill} value={skill}>{skill}</option>
+                      ))}
+                    </select>
+                    {filters.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {filters.skills.map(skill => (
+                          <span
+                            key={skill}
+                            className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+                          >
+                            {skill}
+                            <button
+                              onClick={() => removeSkillFilter(skill)}
+                              className="text-blue-600 hover:text-blue-800 font-bold"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {profile.minimumRate && (
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium">Minimum Rate:</span> ${profile.minimumRate}
-                    </p>
+                {/* Rate Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    💰 Hourly Rate ($)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="number"
+                      value={filters.minRate}
+                      onChange={(e) => handleFilterChange('minRate', e.target.value)}
+                      placeholder="Min"
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <input
+                      type="number"
+                      value={filters.maxRate}
+                      onChange={(e) => handleFilterChange('maxRate', e.target.value)}
+                      placeholder="Max"
+                      className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
                   </div>
-                )}
-
-                <div className="mb-4">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Completed Tasks:</span> {profile.completedTasks}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">Joined:</span> {new Date(profile.joinedAt).toLocaleDateString()}
-                  </p>
                 </div>
 
-                {profile.portfolio.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">Recent Work</h4>
-                    <div className="space-y-2">
-                      {profile.portfolio.slice(0, 2).map((item) => (
-                        <div key={item.id} className="text-sm">
-                          <p className="font-medium text-gray-900">{item.title}</p>
-                          <p className="text-gray-600 text-xs line-clamp-2">{item.description}</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {item.technologies.slice(0, 3).map((tech, index) => (
-                              <span
-                                key={index}
-                                className="bg-gray-100 text-gray-700 px-1 py-0.5 rounded text-xs"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Availability */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    🟢 Availability
+                  </label>
+                  <select
+                    value={filters.availability}
+                    onChange={(e) => handleFilterChange('availability', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  >
+                    <option value="all">All</option>
+                    <option value="available">Available</option>
+                    <option value="busy">Busy</option>
+                    <option value="unavailable">Unavailable</option>
+                  </select>
+                </div>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      console.log('View profile:', profile.email);
-                    }}
-                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
+                {/* Min Rating */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    ⭐ Minimum Rating
+                  </label>
+                  <select
+                    value={filters.minRating}
+                    onChange={(e) => handleFilterChange('minRating', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
-                    View Profile
-                  </button>
-                  <button
-                    onClick={() => {
-                      setHireTarget(profile);
-                      setHireForm({ title: '', description: '', price: String(profile.minimumRate || ''), completionDeadline: '' });
-                      setShowHireModal(true);
-                    }}
-                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
+                    <option value="">Any Rating</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="3">3+ Stars</option>
+                    <option value="2">2+ Stars</option>
+                    <option value="1">1+ Stars</option>
+                  </select>
+                </div>
+
+                {/* Sort By */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    📊 Sort By
+                  </label>
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
-                    Hire
-                  </button>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="rating_high">Highest Rating</option>
+                    <option value="rating_low">Lowest Rating</option>
+                    <option value="rate_high">Highest Rate</option>
+                    <option value="rate_low">Lowest Rate</option>
+                  </select>
                 </div>
               </div>
-            ))}
-          </div>
 
-          {profiles.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No freelancers found matching your criteria.</p>
-              <button
-                onClick={clearFilters}
-                className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Clear Filters
-              </button>
+              {/* Results Summary */}
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">
+                    Showing <span className="font-semibold text-gray-900">{filteredFreelancers.length}</span> of <span className="font-semibold text-gray-900">{freelancers.length}</span> freelancers
+                  </div>
+                  {filters.keyword || filters.skills.length > 0 || filters.minRate || filters.maxRate || filters.availability !== 'all' || filters.minRating ? (
+                    <div className="text-sm text-blue-600">
+                      Filters applied
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {loading ? (
+            <InlineLoading text="Loading freelancers..." />
+          ) : filteredFreelancers.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">👥</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {(!freelancers || freelancers.length === 0) ? 'No freelancers available' : 'No freelancers match your filters'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {(!freelancers || freelancers.length === 0) ? 'Check back later for new freelancers' : 'Try adjusting your filters to see more results'}
+              </p>
+              {(!freelancers || freelancers.length === 0) ? (
+                <button
+                  onClick={fetchFreelancers}
+                  className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  Refresh Freelancers
+                </button>
+              ) : (
+                <button
+                  onClick={clearFilters}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-8">
+              {filteredFreelancers.map((freelancer) => (
+                <div key={freelancer.email} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-16 h-16 bg-gradient-to-r from-[#FFBF00] to-[#FFD700] rounded-full flex items-center justify-center">
+                          <span className="text-2xl font-bold text-black">
+                            {freelancer.name ? freelancer.name.charAt(0).toUpperCase() : '👤'}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-900">{freelancer.name || 'Unknown User'}</h3>
+                          <p className="text-gray-600">{freelancer.email}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="flex text-lg">
+                              {renderStars(Math.round(freelancer.averageRating || 0))}
+                            </div>
+                            <span className="text-sm text-gray-600">
+                              {(freelancer.averageRating || 0).toFixed(1)} ({freelancer.totalRatings || 0} reviews)
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {freelancer.bio && (
+                        <p className="text-gray-700 text-lg leading-relaxed mb-6">{freelancer.bio}</p>
+                      )}
+                      
+                      <div className="flex items-center gap-6 mb-6">
+                        {freelancer.hourlyRate && (
+                          <div className="bg-gradient-to-r from-[#FFBF00] to-[#FFD700] text-black px-6 py-3 rounded-xl font-bold text-2xl">
+                            ${freelancer.hourlyRate}/hr
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <span className={`w-3 h-3 rounded-full ${
+                            freelancer.availability === 'available' ? 'bg-green-500' :
+                            freelancer.availability === 'busy' ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}></span>
+                          <span className="text-sm capitalize">{freelancer.availability || 'unknown'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <span className="text-lg">📅</span>
+                          <span className="text-sm">Joined: {freelancer.joinedAt ? new Date(freelancer.joinedAt).toLocaleDateString() : 'Unknown'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-3">Skills</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {freelancer.skills && freelancer.skills.length > 0 ? (
+                        freelancer.skills.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-4 py-2 bg-blue-100 text-blue-800 text-sm font-medium rounded-full border border-blue-200"
+                          >
+                            {skill}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-500 text-sm">No skills listed</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">⭐</span>
+                        <span className="font-semibold text-gray-900">Rating</span>
+                      </div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {(freelancer.averageRating || 0).toFixed(1)}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {freelancer.totalRatings || 0} reviews
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">✅</span>
+                        <span className="font-semibold text-gray-900">Completed Tasks</span>
+                      </div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {freelancer.completedTasks || 0}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">💼</span>
+                        <span className="font-semibold text-gray-900">Portfolio</span>
+                      </div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {freelancer.portfolio ? freelancer.portfolio.length : 0}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        projects
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => {
+                        // In a real app, this would open a contact modal or navigate to a contact page
+                        setMessage(`Contact information for ${freelancer.name || 'this freelancer'} would be displayed here`);
+                      }}
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+                    >
+                      Contact Freelancer
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
       </div>
-      {/* Direct Hire Modal */}
-      {showHireModal && hireTarget && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Direct Hire: {hireTarget.email.split('@')[0]}</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
-                <input
-                  type="text"
-                  value={hireForm.title}
-                  onChange={(e) => setHireForm(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="e.g., Build landing page"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  value={hireForm.description}
-                  onChange={(e) => setHireForm(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  rows={4}
-                  placeholder="Describe the task requirements..."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Offer Price ($, must be ≥ minimum)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={hireForm.price}
-                  onChange={(e) => setHireForm(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  min={hireTarget.minimumRate || 0}
-                />
-                <p className="text-xs text-gray-500 mt-1">Minimum rate: ${hireTarget.minimumRate || 'Not set'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Completion Deadline</label>
-                <input
-                  type="datetime-local"
-                  value={hireForm.completionDeadline}
-                  onChange={(e) => setHireForm(prev => ({ ...prev, completionDeadline: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-            </div>
-            <div className="flex gap-3 justify-end mt-5">
-              <button
-                onClick={() => { setShowHireModal(false); setHireTarget(null); }}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={async () => {
-                  if (!hireForm.title || !hireForm.description || !hireForm.price || !hireForm.completionDeadline) return;
-                  const employer = JSON.parse(localStorage.getItem('user') || '{}');
-                  const res = await fetch('/api/tasks/direct-hire', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      title: hireForm.title,
-                      description: hireForm.description,
-                      price: parseFloat(hireForm.price),
-                      employerName: employer.name || '',
-                      employerEmail: employer.email || '',
-                      freelancerEmail: hireTarget.email,
-                      completionDeadline: hireForm.completionDeadline,
-                    })
-                  });
-                  const data = await res.json();
-                  if (res.ok) {
-                    setMessage('Direct hire task created!');
-                    setShowHireModal(false);
-                    setHireTarget(null);
-                  } else {
-                    setMessage(data.error || 'Failed to create direct hire task');
-                  }
-                }}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
-                disabled={
-                  !hireForm.title || !hireForm.description || !hireForm.price || !hireForm.completionDeadline ||
-                  (hireTarget.minimumRate != null && parseFloat(hireForm.price) < (hireTarget.minimumRate as number))
-                }
-              >
-                Create Task
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

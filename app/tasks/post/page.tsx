@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardHeader from "../../components/DashboardHeader";
+import SideNavigation from "../../components/SideNavigation";
+import { FullScreenLoading } from "../../components/LoadingSpinner";
 
 const SKILL_TAGS = [
   "Web Development", "Mobile Development", "UI/UX Design", "Graphic Design",
@@ -15,6 +17,8 @@ const SKILL_TAGS = [
 export default function PostTaskPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -24,6 +28,7 @@ export default function PostTaskPage() {
     completionDeadline: ""
   });
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -38,6 +43,7 @@ export default function PostTaskPage() {
     } else {
       router.push('/auth/login');
     }
+    setLoading(false);
   }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,6 +61,7 @@ export default function PostTaskPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // prevent duplicate submits
     
     if (!form.title || !form.description || !form.price || form.selectedTags.length === 0 || !form.acceptanceDeadline || !form.completionDeadline) {
       setMessage("Please fill in all fields and select at least one skill tag");
@@ -62,6 +69,7 @@ export default function PostTaskPage() {
     }
 
     try {
+      setIsSubmitting(true);
       const response = await fetch('/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,45 +85,81 @@ export default function PostTaskPage() {
       
       if (response.ok) {
         setMessage("Task posted successfully!");
+        // Keep button disabled while redirecting to avoid duplicate posts
         setTimeout(() => {
           router.push('/dashboard');
-        }, 1500);
+        }, 1000);
       } else {
         setMessage(data.error || "Failed to post task");
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Error posting task:', error);
       setMessage("Failed to post task. Please try again.");
+      setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoading text="Loading post task form..." />;
+  }
 
   if (!user) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <DashboardHeader user={user} />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
+      {/* Side Navigation */}
+      <SideNavigation user={user} isOpen={isNavOpen} onClose={() => setIsNavOpen(false)} />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h1 className="text-2xl font-bold text-black mb-6">Post a New Task</h1>
+      {/* Main Content Area */}
+      <div className="flex-1">
+        {/* Header */}
+        <DashboardHeader user={user} onToggleNav={() => setIsNavOpen(true)} />
+        
+        {/* Post Task Content */}
+        <div className="max-w-4xl mx-auto p-6">
+          {/* Page Header */}
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-xl p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-white mb-2">Post a New Task</h1>
+                  <p className="text-white/90 text-lg">Create opportunities for talented freelancers</p>
+                </div>
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                >
+                  ← Back to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             
             {message && (
-              <div className={`p-3 rounded mb-4 ${
+              <div className={`p-4 rounded-xl mb-6 shadow-lg ${
                 message.includes('successfully') 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-red-100 text-red-700'
+                  ? 'bg-green-50 border border-green-200 text-green-800' 
+                  : 'bg-red-50 border border-red-200 text-red-800'
               }`}>
-                {message}
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{message.includes('successfully') ? '✅' : '❌'}</span>
+                  <span className="font-medium">{message}</span>
+                </div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {/* Task Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                <label className="block text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-xl">📝</span>
                   Task Title *
                 </label>
                 <input
@@ -124,14 +168,15 @@ export default function PostTaskPage() {
                   value={form.title}
                   onChange={handleChange}
                   placeholder="Enter a clear, descriptive title for your task"
-                  className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+                  className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-500"
                   required
                 />
               </div>
 
               {/* Task Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                <label className="block text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-xl">📋</span>
                   Task Description *
                 </label>
                 <textarea
@@ -139,15 +184,16 @@ export default function PostTaskPage() {
                   value={form.description}
                   onChange={handleChange}
                   placeholder="Provide detailed information about what needs to be done, requirements, deliverables, etc."
-                  className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+                  className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-500"
                   rows={6}
                   required
                 />
               </div>
 
               {/* Price in ETH */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                <label className="block text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-xl">💰</span>
                   Price (ETH) *
                 </label>
                 <div className="relative">
@@ -159,33 +205,34 @@ export default function PostTaskPage() {
                     placeholder="0.1"
                     step="0.001"
                     min="0"
-                    className="w-full p-3 pr-12 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black placeholder-gray-500"
+                    className="w-full p-4 pr-16 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 text-black placeholder-gray-500"
                     required
                   />
-                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                  <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">
                     ETH
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  This amount will be held in escrow and released upon task completion
+                <p className="text-sm text-gray-600 mt-2 bg-yellow-100 px-3 py-2 rounded-lg">
+                  💡 This amount will be held in escrow and released upon task completion
                 </p>
               </div>
 
               {/* Required Skills */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                <label className="block text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-xl">🛠️</span>
                   Required Skills *
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {SKILL_TAGS.map((tag) => (
                     <button
                       key={tag}
                       type="button"
                       onClick={() => toggleTag(tag)}
-                      className={`p-2 text-sm rounded border transition ${
+                      className={`p-3 text-sm font-medium rounded-xl border-2 transition-all duration-200 ${
                         form.selectedTags.includes(tag)
-                          ? 'bg-[#FFBF00] text-black border-[#FFBF00]'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-[#FFBF00]'
+                          ? 'bg-[#FFBF00] text-black border-[#FFBF00] shadow-md transform scale-105'
+                          : 'bg-white text-gray-700 border-gray-300 hover:border-green-400 hover:bg-green-50'
                       }`}
                     >
                       {tag}
@@ -193,46 +240,54 @@ export default function PostTaskPage() {
                   ))}
                 </div>
                 {form.selectedTags.length > 0 && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    {form.selectedTags.length} skill{form.selectedTags.length !== 1 ? 's' : ''} selected
-                  </p>
+                  <div className="mt-4 p-3 bg-green-100 rounded-lg">
+                    <p className="text-sm font-medium text-green-800">
+                      ✅ {form.selectedTags.length} skill{form.selectedTags.length !== 1 ? 's' : ''} selected
+                    </p>
+                  </div>
                 )}
               </div>
 
               {/* Deadlines */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Application Deadline *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    name="acceptanceDeadline"
-                    value={form.acceptanceDeadline}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black"
-                    required
-                  />
-                  <p className="text-sm text-gray-600 mt-1">
-                    When freelancers can no longer apply
-                  </p>
-                </div>
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-6 border border-red-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-xl">⏰</span>
+                  Task Deadlines *
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      Application Deadline
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="acceptanceDeadline"
+                      value={form.acceptanceDeadline}
+                      onChange={handleChange}
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 text-black"
+                      required
+                    />
+                    <p className="text-sm text-gray-600 mt-2 bg-red-100 px-3 py-2 rounded-lg">
+                      📅 When freelancers can no longer apply
+                    </p>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Completion Deadline *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    name="completionDeadline"
-                    value={form.completionDeadline}
-                    onChange={handleChange}
-                    className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-[#FFBF00] text-black"
-                    required
-                  />
-                  <p className="text-sm text-gray-600 mt-1">
-                    When the chosen freelancer must complete the task
-                  </p>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      Completion Deadline
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="completionDeadline"
+                      value={form.completionDeadline}
+                      onChange={handleChange}
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 text-black"
+                      required
+                    />
+                    <p className="text-sm text-gray-600 mt-2 bg-red-100 px-3 py-2 rounded-lg">
+                      🎯 When the chosen freelancer must complete the task
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -242,7 +297,7 @@ export default function PostTaskPage() {
                   onClick={() => router.push('/dashboard')}
                   className="flex-1 py-3 bg-gray-300 text-gray-700 font-semibold rounded hover:bg-gray-400 transition"
                 >
-                  Cancel
+                  ❌ Cancel
                 </button>
                 <button
                   type="submit"
@@ -251,6 +306,9 @@ export default function PostTaskPage() {
                 >
                   Post Task
                 </button>
+                {message && (
+                  <span className={`text-sm ${message.includes('successfully') ? 'text-green-700' : 'text-red-700'}`}>{message}</span>
+                )}
               </div>
             </form>
           </div>

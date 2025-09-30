@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { spawn } from 'child_process';
-import path from 'path';
 
 // Fallback responses when Llama 3 is not available
 function getFallbackResponse(message: string): string {
@@ -95,9 +93,6 @@ Current user context: ${context || 'General user'}
 
 Please provide helpful, concise answers about using the platform. If the user asks about something not related to the platform, politely redirect them to platform-related questions.
     `;
-
-    // Prepare the full prompt
-    const fullPrompt = `${appContext}\n\nUser Question: ${message}`;
 
     // For now, use fallback responses directly (bypass Llama 3)
     // TODO: Enable Llama 3 integration once properly configured
