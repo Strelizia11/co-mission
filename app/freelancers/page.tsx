@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import DashboardHeader from "../components/DashboardHeader";
 import SideNavigation from "../components/SideNavigation";
 import { InlineLoading } from "../components/LoadingSpinner";
@@ -60,6 +61,8 @@ export default function BrowseFreelancersPage() {
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [chatSubmitting, setChatSubmitting] = useState(false);
+  const [employerProfilePicture, setEmployerProfilePicture] = useState<string>('');
+  const [freelancerProfilePicture, setFreelancerProfilePicture] = useState<string>('');
 
   const SKILL_TAGS = [
     "Web Development", "Mobile Development", "UI/UX Design", "Graphic Design",
@@ -261,12 +264,38 @@ export default function BrowseFreelancersPage() {
     setShowHireModal(true);
   };
 
+  // Load profile pictures for chat
+  const loadProfilePictures = async (freelancer: Freelancer) => {
+    try {
+      // Fetch employer profile picture
+      if (user?.email) {
+        const employerResponse = await fetch(`/api/user/profile?email=${user.email}`);
+        if (employerResponse.ok) {
+          const employerData = await employerResponse.json();
+          setEmployerProfilePicture(employerData.profile.profilePicture || '');
+        }
+      }
+
+      // Fetch freelancer profile picture
+      const freelancerResponse = await fetch(`/api/user/profile?email=${freelancer.email}`);
+      if (freelancerResponse.ok) {
+        const freelancerData = await freelancerResponse.json();
+        setFreelancerProfilePicture(freelancerData.profile.profilePicture || '');
+      }
+    } catch (error) {
+      console.error('Error loading profile pictures:', error);
+    }
+  };
+
   // Contact chat handler
   const openContactChat = async (freelancer: Freelancer) => {
     setContactTarget(freelancer);
     setChatMessages([]);
     setNewMessage('');
     setShowContactChat(true);
+    
+    // Load profile pictures
+    loadProfilePictures(freelancer);
     
     // Load existing chat messages
     try {
@@ -882,12 +911,14 @@ export default function BrowseFreelancersPage() {
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                    {contactTarget.profilePicture ? (
-                      <img
-                        src={contactTarget.profilePicture}
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                    {freelancerProfilePicture ? (
+                      <Image
+                        src={freelancerProfilePicture}
                         alt={contactTarget.name}
-                        className="w-full h-full object-cover rounded-full"
+                        width={40}
+                        height={40}
+                        className="object-cover rounded-full"
                       />
                     ) : (
                       <span className="text-lg font-bold text-white">
@@ -924,8 +955,25 @@ export default function BrowseFreelancersPage() {
                 chatMessages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex ${message.isFromEmployer ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${message.isFromEmployer ? 'justify-end' : 'justify-start'} gap-2`}
                   >
+                    {!message.isFromEmployer && (
+                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {freelancerProfilePicture ? (
+                          <Image
+                            src={freelancerProfilePicture}
+                            alt={contactTarget.name}
+                            width={32}
+                            height={32}
+                            className="object-cover rounded-full"
+                          />
+                        ) : (
+                          <span className="text-sm font-bold text-gray-600">
+                            {contactTarget.name ? contactTarget.name.charAt(0).toUpperCase() : '👤'}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div
                       className={`max-w-[80%] p-3 rounded-2xl ${
                         message.isFromEmployer
@@ -938,6 +986,23 @@ export default function BrowseFreelancersPage() {
                         {new Date(message.timestamp || message.createdAt).toLocaleTimeString()}
                       </p>
                     </div>
+                    {message.isFromEmployer && (
+                      <div className="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {employerProfilePicture ? (
+                          <Image
+                            src={employerProfilePicture}
+                            alt={user?.name || 'You'}
+                            width={32}
+                            height={32}
+                            className="object-cover rounded-full"
+                          />
+                        ) : (
+                          <span className="text-sm font-bold text-blue-600">
+                            {user?.name ? user.name.charAt(0).toUpperCase() : '👤'}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))
               )}

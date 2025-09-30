@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 interface ChatMessage {
   id: string;
@@ -33,6 +34,8 @@ export default function FreelancerChat({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [employerProfilePicture, setEmployerProfilePicture] = useState<string>('');
+  const [freelancerProfilePicture, setFreelancerProfilePicture] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -48,6 +51,8 @@ export default function FreelancerChat({
     if (isOpen) {
       // Load chat messages when chat opens
       loadMessages();
+      // Load profile pictures
+      loadProfilePictures();
     }
   }, [isOpen, employerEmail, freelancerEmail]);
 
@@ -72,6 +77,26 @@ export default function FreelancerChat({
       }
     } catch (error) {
       console.error('Error loading messages:', error);
+    }
+  };
+
+  const loadProfilePictures = async () => {
+    try {
+      // Fetch employer profile picture
+      const employerResponse = await fetch(`/api/user/profile?email=${employerEmail}`);
+      if (employerResponse.ok) {
+        const employerData = await employerResponse.json();
+        setEmployerProfilePicture(employerData.profile.profilePicture || '');
+      }
+
+      // Fetch freelancer profile picture
+      const freelancerResponse = await fetch(`/api/user/profile?email=${freelancerEmail}`);
+      if (freelancerResponse.ok) {
+        const freelancerData = await freelancerResponse.json();
+        setFreelancerProfilePicture(freelancerData.profile.profilePicture || '');
+      }
+    } catch (error) {
+      console.error('Error loading profile pictures:', error);
     }
   };
 
@@ -139,10 +164,20 @@ export default function FreelancerChat({
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <span className="text-lg font-bold text-white">
-                  {employerName ? employerName.charAt(0).toUpperCase() : '👤'}
-                </span>
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                {employerProfilePicture ? (
+                  <Image
+                    src={employerProfilePicture}
+                    alt={`${employerName}'s profile`}
+                    width={40}
+                    height={40}
+                    className="object-cover rounded-full"
+                  />
+                ) : (
+                  <span className="text-lg font-bold text-white">
+                    {employerName ? employerName.charAt(0).toUpperCase() : '👤'}
+                  </span>
+                )}
               </div>
               <div>
                 <h3 className="font-bold text-lg">Chat with {employerName}</h3>
@@ -173,8 +208,25 @@ export default function FreelancerChat({
             messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.isFromEmployer ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${message.isFromEmployer ? 'justify-start' : 'justify-end'} gap-2`}
               >
+                {message.isFromEmployer && (
+                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {employerProfilePicture ? (
+                      <Image
+                        src={employerProfilePicture}
+                        alt={`${employerName}'s profile`}
+                        width={32}
+                        height={32}
+                        className="object-cover rounded-full"
+                      />
+                    ) : (
+                      <span className="text-sm font-bold text-gray-600">
+                        {employerName ? employerName.charAt(0).toUpperCase() : '👤'}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <div
                   className={`max-w-[80%] p-3 rounded-2xl ${
                     message.isFromEmployer
@@ -187,6 +239,23 @@ export default function FreelancerChat({
                     {new Date(message.timestamp || message.createdAt).toLocaleTimeString()}
                   </p>
                 </div>
+                {!message.isFromEmployer && (
+                  <div className="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {freelancerProfilePicture ? (
+                      <Image
+                        src={freelancerProfilePicture}
+                        alt={`${freelancerName}'s profile`}
+                        width={32}
+                        height={32}
+                        className="object-cover rounded-full"
+                      />
+                    ) : (
+                      <span className="text-sm font-bold text-blue-600">
+                        {freelancerName ? freelancerName.charAt(0).toUpperCase() : '👤'}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             ))
           )}
