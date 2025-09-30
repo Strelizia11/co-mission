@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { EXCHANGE_RATES } from './payment-utils';
 
 const TOKEN_BALANCES_FILE = path.join(process.cwd(), 'token-balances.json');
 
@@ -96,8 +97,15 @@ export function processPayment(paymentData: {
 
     // Update employer balance (subtract payment)
     if (paymentMethod === 'ETH') {
-      // For ETH payments, we don't update CMT balance for employer
-      console.log(`Employer ${employerEmail} paid ${amount} ETH`);
+      // For ETH payments, we need to subtract CMT equivalent from employer
+      // because freelancer receives CMT rewards and platform collects CMT fees
+      const totalCMTCost = (amount * EXCHANGE_RATES.ETH_TO_CMT) + (platformFee || 0);
+      const employerBalance = getCMTBalance(employerEmail);
+      if (employerBalance < totalCMTCost) {
+        return { success: false, message: 'Insufficient CMT balance for ETH payment conversion' };
+      }
+      updateCMTBalance(employerEmail, totalCMTCost, 'subtract');
+      console.log(`Employer ${employerEmail} paid ${amount} ETH (${totalCMTCost} CMT deducted)`);
     } else if (paymentMethod === 'CMT') {
       // For CMT payments, subtract from employer's CMT balance
       const employerBalance = getCMTBalance(employerEmail);
@@ -106,14 +114,14 @@ export function processPayment(paymentData: {
       }
       updateCMTBalance(employerEmail, amount, 'subtract');
     } else if (paymentMethod === 'HYBRID') {
-      // For hybrid payments, subtract CMT portion from employer
-      if (cmtAmount && cmtAmount > 0) {
-        const employerBalance = getCMTBalance(employerEmail);
-        if (employerBalance < cmtAmount) {
-          return { success: false, message: 'Insufficient CMT balance for hybrid payment' };
-        }
-        updateCMTBalance(employerEmail, cmtAmount, 'subtract');
+      // For hybrid payments, subtract both ETH and CMT portions from employer
+      const ethCMTCost = (ethAmount || 0) * EXCHANGE_RATES.ETH_TO_CMT;
+      const totalCMTCost = ethCMTCost + (cmtAmount || 0);
+      const employerBalance = getCMTBalance(employerEmail);
+      if (employerBalance < totalCMTCost) {
+        return { success: false, message: 'Insufficient CMT balance for hybrid payment' };
       }
+      updateCMTBalance(employerEmail, totalCMTCost, 'subtract');
     }
 
     // Update freelancer balance (add payment + rewards)
