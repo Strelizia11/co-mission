@@ -142,15 +142,15 @@ export default function MessagesPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">Messages</h1>
-                  <p className="text-white/90 text-lg">Communicate with employers about projects</p>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Messages</h1>
+                  <p className="text-white/90 text-base md:text-lg">Communicate with employers about projects</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-4 sm:mt-0">
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30 text-sm md:text-base"
                   >
                     ← Back to Dashboard
                   </button>
